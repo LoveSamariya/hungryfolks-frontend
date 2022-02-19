@@ -1,11 +1,10 @@
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
 import * as React from 'react';
 import {Image, StatusBar} from 'react-native';
-
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
-import {RecipeScreen, IngredientsScreen} from './src/screens';
-import CookingSvgIcon from './src/icons/CookingSvg';
+import {DEFAULT_LIGHT_THEME} from './src/constants/light.theme.js';
+import {ThemeProvider, useTheme} from './src/context/thme.context.js';
+import {IngredientsScreen, RecipeScreen} from './src/screens';
 
 const TAB_ONE = require('./src/assets/images/cooking.png');
 const TAB_TWO = require('./src/assets/images/ing.png');
@@ -39,9 +38,11 @@ function MyTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-      <MyTabs />
-    </NavigationContainer>
+    <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
+      <NavigationContainer>
+        <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
+        <MyTabs />
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }
