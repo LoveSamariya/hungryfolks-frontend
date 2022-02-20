@@ -6,6 +6,7 @@ import {Heading1} from '../../shared/UI/TypoGraphy/Typography';
 import Search from './components/Search';
 
 import IndianCategory from '../../assets/images/categories/indian-categories.jpg';
+import dummyRecipeData from '../../data/dummyRecipe.data';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -41,8 +42,15 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function RecipeScreen() {
+export default function RecipeScreen({navigation}) {
   const Styles = useThemeAwareObject(createStyles);
+
+  const onCardPressed = (id, name) => {
+    navigation.navigate('RecipeDetails', {
+      id,
+      name,
+    });
+  };
 
   return (
     <SafeAreaView>
@@ -55,46 +63,28 @@ export default function RecipeScreen() {
             <Heading1>Main categories</Heading1>
           </View>
           <View style={Styles.row}>
-            <View style={Styles.col}>
-              <Card title="Indian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
+            {dummyRecipeData.map(({name, id, img}) => {
+              return (
+                <View style={Styles.col} key={name}>
+                  <Card
+                    title={name}
+                    onCardPressed={() => onCardPressed(id, name)}
+                    img={img}
+                  />
+                </View>
+              );
+            })}
           </View>
           <View style={Styles.headingGap}>
             <Heading1>Main categories</Heading1>
           </View>
           <View style={Styles.row}>
             <View style={Styles.col}>
-              <Card title="Indian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
-            </View>
-            <View style={Styles.col}>
-              <Card title="Italian" img={IndianCategory} />
+              <Card
+                title="Indian"
+                img={IndianCategory}
+                onCardPressed={onCardPressed}
+              />
             </View>
           </View>
         </View>

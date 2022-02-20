@@ -4,12 +4,18 @@ import * as React from 'react';
 import {Image, StatusBar} from 'react-native';
 import {DEFAULT_LIGHT_THEME} from './src/constants/light.theme.js';
 import {ThemeProvider, useTheme} from './src/context/thme.context.js';
-import {IngredientsScreen, RecipeScreen} from './src/screens';
+import {
+  IngredientsScreen,
+  RecipeScreen,
+  RecipeDetailedListsScreen,
+} from './src/screens';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const TAB_ONE = require('./src/assets/images/cooking.png');
 const TAB_TWO = require('./src/assets/images/ing.png');
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 function MyTabs() {
   return (
@@ -41,7 +47,23 @@ export default function App() {
     <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
       <NavigationContainer>
         <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-        <MyTabs />
+
+        <Stack.Navigator initialRouteName="Home">
+          <>
+            <Stack.Screen
+              name="Home"
+              component={MyTabs}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen name="Recipe" component={RecipeScreen} />
+            <Stack.Screen name="Ingredients" component={IngredientsScreen} />
+            <Stack.Screen
+              options={{headerShown: false}}
+              name="RecipeDetails"
+              component={RecipeDetailedListsScreen}
+            />
+          </>
+        </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
   );

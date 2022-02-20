@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {useTheme} from '../../context/thme.context';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
 
@@ -34,19 +34,25 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function Card({img, title}) {
+export default function Card({img, title, onCardPressed}) {
   const {theme} = useTheme();
   const Styles = useThemeAwareObject(createStyles);
 
   return (
-    <View style={Styles.card}>
-      <View style={Styles.imgContainer}>
-        <Image
-          style={Styles.img}
-          source={require('../../assets/images/categories/indian-categories.jpg')}
-        />
+    <TouchableHighlight
+      onPress={() => {
+        onCardPressed();
+      }}
+      underlayColor="white">
+      <View style={Styles.card}>
+        <View style={Styles.imgContainer}>
+          <Image
+            style={Styles.img}
+            source={require('../../assets/images/categories/indian-categories.jpg')}
+          />
+        </View>
+        <Text style={Styles.cardText}>{title}</Text>
       </View>
-      <Text style={Styles.cardText}>{title}</Text>
-    </View>
+    </TouchableHighlight>
   );
 }

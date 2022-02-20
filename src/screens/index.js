@@ -1,2 +1,3 @@
 export {default as IngredientsScreen} from './Ingredients.screen';
-export {default as RecipeScreen} from './Recipe/Recipe.screen';
+export * from './Recipe';
+export * from './Recipe/RecipeDetailedLists';
