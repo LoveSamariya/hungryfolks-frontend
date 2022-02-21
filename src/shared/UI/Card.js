@@ -15,7 +15,7 @@ const createStyles = theme => {
     cardText: {
       paddingTop: theme.spacing[3],
       color: theme.color.onSurface,
-      fontFamily: theme.fontFamily.primaryBlack,
+      fontFamily: theme.fontFamily.secondaryBlack,
     },
     img: {
       maxWidth: '100%',

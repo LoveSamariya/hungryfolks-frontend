@@ -1,7 +1,6 @@
 import React from 'react';
-import {Text, View, StyleSheet, Image} from 'react-native';
-import {useThemeAwareObject} from '../../../hooks/themeAwareObject';
-import Card from '../../../shared/UI/Card';
+import {Text, View, StyleSheet} from 'react-native';
+import {useThemeAwareObject} from '../../hooks/themeAwareObject';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -67,49 +66,19 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function RecipeDetailedListsScreen({navigation, route}) {
-  const {id, name} = route.params;
-
+export default function RecipeSubDetailsListScreen() {
   const Styles = useThemeAwareObject(createStyles);
-
-  const onCardPressed = (id, name) => {
-    navigation.navigate('RecipeSubDetailsList', {
-      id,
-      name,
-    });
-  };
 
   return (
     <>
-      <View style={Styles.headerAsBreadCrums}>
-        <Text style={Styles.headerAsBreadCrumsTitle}> {name}</Text>
-      </View>
-      <View style={Styles.container}>
-        {/* <View style={Styles.cardOne}>
-          <View style={Styles.cardOneImgContainer}>
-            <Image
-              style={Styles.cardOneImg}
-              source={require('../../../assets/images/categories/indian-categories.jpg')}
-            />
-            <View style={Styles.cardOneCaptionContainer}>
-              <Text style={Styles.cardOneCaption}>Pav Bhaji</Text>
-            </View>
-          </View>
-        </View> */}
-        <View style={Styles.row}>
-          <View style={Styles.col}>
-            <Card title="Breakfast" onCardPressed={onCardPressed} />
-          </View>
-          <View style={Styles.col}>
-            <Card title="Lunch" />
-          </View>
-          <View style={Styles.col}>
-            <Card title="Dinner" />
-          </View>
-          <View style={Styles.col}>
-            <Card title="Main Course" />
-          </View>
-        </View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'gray',
+        }}>
+        <Text>Recipe Details</Text>
       </View>
     </>
   );

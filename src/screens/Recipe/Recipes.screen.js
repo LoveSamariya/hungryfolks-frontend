@@ -46,7 +46,7 @@ export default function RecipeScreen({navigation}) {
   const Styles = useThemeAwareObject(createStyles);
 
   const onCardPressed = (id, name) => {
-    navigation.navigate('RecipeDetails', {
+    navigation.navigate('RecipeDetailedList', {
       id,
       name,
     });

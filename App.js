@@ -8,6 +8,7 @@ import {
   IngredientsScreen,
   RecipeScreen,
   RecipeDetailedListsScreen,
+  // RecipeSubDetailsListScreen,
 } from './src/screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -46,7 +47,7 @@ export default function App() {
   return (
     <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
       <NavigationContainer>
-        <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
+        <StatusBar barStyle="light-content" backgroundColor="#FFBC97" />
 
         <Stack.Navigator initialRouteName="Home">
           <>
@@ -59,9 +60,14 @@ export default function App() {
             <Stack.Screen name="Ingredients" component={IngredientsScreen} />
             <Stack.Screen
               options={{headerShown: false}}
-              name="RecipeDetails"
+              name="RecipeDetailedList"
               component={RecipeDetailedListsScreen}
             />
+            {/* <Stack.Screen
+              options={{headerShown: false}}
+              name="RecipeSubDetailsList"
+              component={RecipeSubDetailsListScreen}
+            /> */}
           </>
         </Stack.Navigator>
       </NavigationContainer>

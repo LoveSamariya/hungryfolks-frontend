@@ -12,6 +12,8 @@ target 'HFolks1' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+
   target 'HFolks1Tests' do
     inherit! :complete
     # Pods for testing
