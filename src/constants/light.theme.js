@@ -8,7 +8,7 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   onHighlight: '#000000',
   surface: '#ffffff',
   onSurface: '#303030',
-  gray1: '#F7F7F7',
+  gray1: '#EAEFF2',
   gray2: '#E5DCC3',
 };
 
@@ -47,6 +47,7 @@ export const DEFAULT_LIGHT_THEME_BOX = {
 export const DEFAULT_LIGHT_THEME_FONT_FAMILY = {
   primaryBold: 'RobotoCondensed-Bold',
   secondaryBlack: 'PlayfairDisplay-Black',
+  secondaryMedium: 'PlayfairDisplay-Medium',
 };
 
 export const DEFAULT_LIGHT_THEME = {

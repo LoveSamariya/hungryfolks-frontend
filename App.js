@@ -8,7 +8,8 @@ import {
   IngredientsScreen,
   RecipeScreen,
   RecipeDetailedListsScreen,
-  // RecipeSubDetailsListScreen,
+  RecipeSubDetailsListScreen,
+  RecipeDetails,
 } from './src/screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -63,11 +64,16 @@ export default function App() {
               name="RecipeDetailedList"
               component={RecipeDetailedListsScreen}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               options={{headerShown: false}}
               name="RecipeSubDetailsList"
               component={RecipeSubDetailsListScreen}
-            /> */}
+            />
+            <Stack.Screen
+              options={{headerShown: false}}
+              name="RecipeDetails"
+              component={RecipeDetails}
+            />
           </>
         </Stack.Navigator>
       </NavigationContainer>

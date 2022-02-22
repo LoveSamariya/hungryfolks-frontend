@@ -1,7 +1,7 @@
 import React from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
-import Card from '../../shared/UI/Card';
+import Card from '../../shared/UI/Card/Card';
 import {Heading1} from '../../shared/UI/TypoGraphy/Typography';
 import Search from './components/Search';
 

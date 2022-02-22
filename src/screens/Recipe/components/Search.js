@@ -8,7 +8,7 @@ const createStyles = theme => {
       padding: theme.spacing[3],
       backgroundColor: theme.color.surface,
       borderWidth: 1,
-      borderColor: theme.color.gray2,
+      borderColor: theme.color.gray1,
       borderRadius: 48,
       ...theme.box.shadowProp,
     },
