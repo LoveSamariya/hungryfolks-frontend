@@ -11,6 +11,12 @@ const createStyles = theme => {
       borderColor: theme.color.gray1,
       padding: theme.spacing[3],
       marginTop: theme.spacing[3],
+      shadowColor: theme.color.gray3,
+      backgroundColor: theme.color.surface,
+      shadowOffset: {width: 0, height: 1},
+      shadowOpacity: 0.6,
+      shadowRadius: 2,
+      elevation: 5,
     },
     cardText: {
       paddingTop: theme.spacing[3],
@@ -34,7 +40,12 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function Card({img, title, onCardPressed}) {
+export default function Card({
+  img: ImgComponent,
+  title,
+  onCardPressed,
+  children,
+}) {
   const {theme} = useTheme();
   const Styles = useThemeAwareObject(createStyles);
 
@@ -46,10 +57,11 @@ export default function Card({img, title, onCardPressed}) {
       underlayColor="white">
       <View style={Styles.card}>
         <View style={Styles.imgContainer}>
-          <Image
+          {children}
+          {/* <Image
             style={Styles.img}
             source={require('../../../assets/images/categories/indian-categories.jpg')}
-          />
+          /> */}
         </View>
         <Text style={Styles.cardText}>{title}</Text>
       </View>

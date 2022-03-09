@@ -1,5 +1,12 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from 'react-native';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
 import {Heading1} from '../../shared/UI/TypoGraphy/Typography';
@@ -11,11 +18,14 @@ import dummyRecipeData from '../../data/dummyRecipe.data';
 const createStyles = theme => {
   const styles = StyleSheet.create({
     container: {
+      flex: 1,
       backgroundColor: theme.color.surface,
       color: theme.color.onSurface,
-      flex: 1,
       padding: theme.spacing[5],
       fontFamily: 'RobotoCondensed-Bold',
+    },
+    bottomGap: {
+      marginBottom: theme.spacing[5],
     },
     row: {
       display: 'flex',
@@ -38,6 +48,10 @@ const createStyles = theme => {
       marginTop: theme.spacing[7],
       marginBottom: theme.spacing[3],
     },
+    img: {
+      maxWidth: '100%',
+      height: '100%',
+    },
   });
   return styles;
 };
@@ -53,9 +67,9 @@ export default function RecipeScreen({navigation}) {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={Styles.container}>
       <ScrollView>
-        <View style={Styles.container}>
+        <View style={Styles.bottomGap}>
           <SafeAreaView>
             <Search />
           </SafeAreaView>
@@ -64,28 +78,17 @@ export default function RecipeScreen({navigation}) {
           </View>
           <View style={Styles.row}>
             {dummyRecipeData.map(({name, id, img}) => {
+              // const imgSrc = `../../${img}`;
               return (
                 <View style={Styles.col} key={name}>
                   <Card
                     title={name}
-                    onCardPressed={() => onCardPressed(id, name)}
-                    img={img}
-                  />
+                    onCardPressed={() => onCardPressed(id, name)}>
+                    <Image style={Styles.img} source={img} />
+                  </Card>
                 </View>
               );
             })}
-          </View>
-          <View style={Styles.headingGap}>
-            <Heading1>Main categories</Heading1>
-          </View>
-          <View style={Styles.row}>
-            <View style={Styles.col}>
-              <Card
-                title="Indian"
-                img={IndianCategory}
-                onCardPressed={onCardPressed}
-              />
-            </View>
           </View>
         </View>
       </ScrollView>

@@ -4,12 +4,14 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   onPrimary: '#ffffff',
   secondary: '#FFBC97',
   onSecondary: '#ffffff',
-  highlight: '#FFE300',
+  highlight: '#FFE800',
   onHighlight: '#000000',
   surface: '#ffffff',
   onSurface: '#303030',
   gray1: '#EAEFF2',
   gray2: '#E5DCC3',
+  gray3: '#878787',
+  gray4: '#f5f5f5',
 };
 
 const defaultSpacingFactor = 16;
@@ -35,18 +37,19 @@ export const DEFAULT_LIGHT_THEME_BOX = {
   radius: 12,
   borderColor: '#dddddd',
   shadowProp: {
-    shadowOpacity: 1,
+    shadowColor: DEFAULT_LIGHT_COLOR_THEME.gray3,
+    backgroundColor: DEFAULT_LIGHT_COLOR_THEME.surface,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.6,
+    shadowRadius: 2,
     elevation: 5,
-    shadowColor: '#9A9483',
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    // shadowOffset: {width: -2, height: 4},
   },
 };
 
 export const DEFAULT_LIGHT_THEME_FONT_FAMILY = {
   primaryBold: 'RobotoCondensed-Bold',
   secondaryBlack: 'PlayfairDisplay-Black',
+  secondaryBold: 'PlayfairDisplay-Bold',
   secondaryMedium: 'PlayfairDisplay-Medium',
 };
 
