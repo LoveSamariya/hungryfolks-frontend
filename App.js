@@ -12,6 +12,13 @@ import {
   RecipeDetails,
 } from './src/screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faAngleRight,
+  faBowlFood,
+  faBowlRice,
+  faPuzzlePiece,
+} from '@fortawesome/free-solid-svg-icons';
 
 const TAB_ONE = require('./src/assets/images/cooking.png');
 const TAB_TWO = require('./src/assets/images/ing.png');
@@ -19,15 +26,42 @@ const TAB_TWO = require('./src/assets/images/ing.png');
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+const screenOptions = {
+  headerShown: false,
+  tabBarStyle: {
+    backgroundColor: '#efefef',
+    borderWidth: 0,
+    color: 'red',
+    // borderColor: 'red',
+    // borderWidth: 1,/
+    // marginTop: 4,
+    // width: '80%',
+    // marginLeft: '50%',
+    // marginRight: '50%',
+  },
+  tabBarItemStyle: {
+    borderRadius: 10,
+    color: 'red',
+  },
+  tabBarActiveTintColor: 'tomato',
+  tabBarInactiveTintColor: 'gray',
+};
+
 function MyTabs() {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false}}>
+    <Tab.Navigator {...{screenOptions}}>
       <Tab.Screen
-        name="Recipe"
+        name="Recipes"
         component={RecipeScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => {
-            return <Image source={TAB_ONE} style={{width: 32, height: 32}} />;
+            return (
+              <FontAwesomeIcon
+                icon={faBowlRice}
+                size={24}
+                color={focused ? 'red' : 'gray'}
+              />
+            );
           },
         }}
       />
@@ -36,7 +70,13 @@ function MyTabs() {
         component={IngredientsScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => {
-            return <Image source={TAB_TWO} style={{width: 24, height: 24}} />;
+            return (
+              <FontAwesomeIcon
+                icon={faPuzzlePiece}
+                size={24}
+                color={focused ? 'red' : 'gray'}
+              />
+            );
           },
         }}
       />

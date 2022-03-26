@@ -48,6 +48,7 @@ export const DEFAULT_LIGHT_THEME_BOX = {
 
 export const DEFAULT_LIGHT_THEME_FONT_FAMILY = {
   primaryBold: 'RobotoCondensed-Bold',
+  primaryRegular: 'RobotoCondensed-Regular',
   secondaryBlack: 'PlayfairDisplay-Black',
   secondaryBold: 'PlayfairDisplay-Bold',
   secondaryMedium: 'PlayfairDisplay-Medium',

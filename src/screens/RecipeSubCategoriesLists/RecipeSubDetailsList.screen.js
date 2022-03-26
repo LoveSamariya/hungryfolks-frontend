@@ -156,7 +156,7 @@ function Chips({Styles, title}) {
 export default function RecipeSubDetailsListScreen({navigation, route}) {
   const Styles = useThemeAwareObject(createStyles);
 
-  const {id, name, subtitle} = route.params;
+  const {id, name, subtitle, customTitle} = route.params || {};
 
   const onCardPressed = itemName => {
     navigation.navigate('RecipeDetails', {
@@ -171,7 +171,7 @@ export default function RecipeSubDetailsListScreen({navigation, route}) {
     <>
       <View style={Styles.headerAsBreadCrums}>
         <Text style={Styles.headerAsBreadCrumsTitle}>
-          {name} / {subtitle}
+          {customTitle ? customTitle : `${name} / ${subtitle}`}
         </Text>
         <SafeAreaView style={Styles.searchWrapper}>
           <Search />

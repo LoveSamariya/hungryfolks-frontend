@@ -10,13 +10,14 @@ const createStyles = theme => {
       borderWidth: 1,
       borderColor: theme.color.gray1,
       borderRadius: 48,
+      color: 'black',
       ...theme.box.shadowProp,
     },
   });
   return styles;
 };
 
-export default function Search() {
+export default function Search({placeholder = 'Search...'}) {
   const [number, onChangeNumber] = React.useState('');
 
   const Styles = useThemeAwareObject(createStyles);
@@ -26,8 +27,8 @@ export default function Search() {
       style={Styles.search}
       onChangeText={onChangeNumber}
       value={number}
-      placeholderTextColor="black"
-      placeholder="Search..."
+      placeholderTextColor="rgba(0,0,0,0.5)"
+      placeholder={placeholder}
     />
   );
 }

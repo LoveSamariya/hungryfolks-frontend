@@ -71,7 +71,7 @@ export default function RecipeScreen({navigation}) {
       <ScrollView>
         <View style={Styles.bottomGap}>
           <SafeAreaView>
-            <Search />
+            <Search placeholder="Search Recipes (e.g. Pizza, Burger, Noodles etc...)" />
           </SafeAreaView>
           <View style={Styles.headingGap}>
             <Heading1>Main categories</Heading1>
