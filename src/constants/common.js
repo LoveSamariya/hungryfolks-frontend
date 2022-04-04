@@ -29,3 +29,4 @@ export const w50 = {
     width: '50%',
   },
 };
+

@@ -7,7 +7,7 @@ import Card from '../../shared/UI/Card/Card';
 const createStyles = theme => {
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: theme.color.surface,
+      backgroundColor: theme.color.pageBgColor,
       color: theme.color.onSurface,
       flex: 1,
       padding: theme.spacing[5],
@@ -23,6 +23,7 @@ const createStyles = theme => {
     headerAsBreadCrumsTitle: {
       fontSize: 24,
       fontFamily: theme.fontFamily.primaryBold,
+      color:'#ffffff'
     },
     row: {
       display: 'flex',

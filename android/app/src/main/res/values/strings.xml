@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">HFolks1</string>
+	<string name="app_name">
+		Hungry Folks
+	</string>
 </resources>

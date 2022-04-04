@@ -30,6 +30,7 @@ const createStyles = theme => {
     headerAsBreadCrumsTitle: {
       fontSize: 24,
       fontFamily: theme.fontFamily.primaryBold,
+      color:'#ffffff',
       textAlign: 'center',
     },
     cardOne: {
@@ -81,11 +82,11 @@ const createStyles = theme => {
       paddingRight: theme.spacing[3],
     },
     listingBg: {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: theme.color.pageBgColor,
     },
     cardListing: {
       paddingTop: theme.spacing[7],
-      backgroundColor: '#f5f5f5',
+      backgroundColor: theme.color.pageBgColor,
       paddingLeft: theme.spacing[3],
       paddingRight: theme.spacing[3],
       paddingBottom: 200,

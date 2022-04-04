@@ -8,6 +8,13 @@ import {dFlex, vhCenter, w50} from '../../constants/common';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleRight} from '@fortawesome/free-solid-svg-icons';
 
+
+import {
+  faCheck,
+  faListCheck,
+  faTableList
+} from '@fortawesome/free-solid-svg-icons';
+
 const createStyles = theme => {
   const styles = StyleSheet.create({
     mainContainer: {
@@ -139,20 +146,28 @@ const createStyles = theme => {
       // opacity: 0,
       backgroundColor: '#028000',
     },
+    helperTextRow:{
+      backgroundColor: '#fa004c',
+      flexDirection: 'row',
+      padding: 16,
+
+    },
     helperText: {
       color: theme.color.onSurface,
       fontFamily: theme.fontFamily.primaryRegular,
       fontSize: 18,
       // opacity: 0.5,
       // marginBottom: 15,
-      backgroundColor: '#FFBC97',
+      backgroundColor: '#fa004c',
       color: 'white',
-      padding: 16,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     goNext: {
       width: 64,
       height: 64,
-      backgroundColor: '#F9B208',
+      backgroundColor: '#fa004c',
       borderRadius: 64 / 2,
       position: 'absolute',
       bottom: 200,
@@ -206,7 +221,13 @@ export default function IngredientsScreen({navigation}) {
 
   return (
     <>
-      <Text style={Styles.helperText}>Select ingredients and get recipes</Text>
+    <View style={{...Styles.helperTextRow, ...vhCenter}}>
+    <FontAwesomeIcon
+                color="white"
+                icon={faListCheck}
+                size={24}/>
+      <Text style={Styles.helperText}>    Select ingredients and get recipes</Text>
+    </View>
       <View style={Styles.mainContainer}>
         <View style={{...Styles.itemContainer}}>
           <View style={{width: '100%'}}>
@@ -274,7 +295,9 @@ export default function IngredientsScreen({navigation}) {
                           <>
                             <View style={styleObjMarkeable}></View>
                             <View style={styleSelectableItemTextContainer}>
-                              <Text style={styleSelectableItemText}>
+                              <Text
+                                style={styleSelectableItemText}
+                                numberOfLines={1}>
                                 {item}
                               </Text>
                             </View>

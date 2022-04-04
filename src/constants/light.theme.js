@@ -2,11 +2,12 @@
 const DEFAULT_LIGHT_COLOR_THEME = {
   primary: '#FF7800',
   onPrimary: '#ffffff',
-  secondary: '#FFBC97',
+  secondary: '#fa004c',
   onSecondary: '#ffffff',
   highlight: '#FFE800',
   onHighlight: '#000000',
   surface: '#ffffff',
+  pageBgColor: '#EEEEEE',
   onSurface: '#303030',
   gray1: '#EAEFF2',
   gray2: '#E5DCC3',
@@ -40,9 +41,9 @@ export const DEFAULT_LIGHT_THEME_BOX = {
     shadowColor: DEFAULT_LIGHT_COLOR_THEME.gray3,
     backgroundColor: DEFAULT_LIGHT_COLOR_THEME.surface,
     shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.6,
-    shadowRadius: 2,
-    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 2,
   },
 };
 

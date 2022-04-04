@@ -6,17 +6,18 @@ import {useThemeAwareObject} from '../../../hooks/themeAwareObject';
 const createStyles = theme => {
   const styles = StyleSheet.create({
     card: {
-      borderRadius: 12,
+      borderRadius: 18,
       borderWidth: 1,
-      borderColor: theme.color.gray1,
+      borderColor: theme.color.surface,
       padding: theme.spacing[3],
       marginTop: theme.spacing[3],
+      marginBottom: theme.spacing[1],
       shadowColor: theme.color.gray3,
       backgroundColor: theme.color.surface,
       shadowOffset: {width: 0, height: 1},
-      shadowOpacity: 0.6,
-      shadowRadius: 2,
-      elevation: 5,
+      shadowOpacity: 0.1,
+      shadowRadius: 1,
+      elevation: 2,
     },
     cardText: {
       paddingTop: theme.spacing[3],
@@ -29,8 +30,8 @@ const createStyles = theme => {
     },
     imgContainer: {
       height: 124,
-      borderTopEndRadius: 12,
-      borderTopLeftRadius: 12,
+      borderTopEndRadius: 18,
+      borderTopLeftRadius: 18,
       overflow: 'hidden',
       marginLeft: theme.spacing[3] * -1,
       marginRight: theme.spacing[3] * -1,
@@ -54,7 +55,7 @@ export default function Card({
       onPress={() => {
         onCardPressed();
       }}
-      underlayColor="white">
+      underlayColor="transperent">
       <View style={Styles.card}>
         <View style={Styles.imgContainer}>
           {children}

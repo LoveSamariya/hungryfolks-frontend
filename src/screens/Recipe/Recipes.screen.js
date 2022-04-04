@@ -14,12 +14,18 @@ import Search from './components/Search';
 
 import IndianCategory from '../../assets/images/categories/indian-categories.jpg';
 import dummyRecipeData from '../../data/dummyRecipe.data';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faTable,
+  faTableList
+} from '@fortawesome/free-solid-svg-icons';
+
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.color.surface,
+      backgroundColor: theme.color.pageBgColor,
       color: theme.color.onSurface,
       padding: theme.spacing[5],
       fontFamily: 'RobotoCondensed-Bold',
@@ -45,6 +51,8 @@ const createStyles = theme => {
     },
     headingGap: {
       display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
       marginTop: theme.spacing[7],
       marginBottom: theme.spacing[3],
     },
@@ -52,6 +60,12 @@ const createStyles = theme => {
       maxWidth: '100%',
       height: '100%',
     },
+    onSurface: {
+      color: theme.color.onSurface,
+    },
+    headingIcon: {
+      marginRight: theme.spacing[2]
+    }
   });
   return styles;
 };
@@ -68,14 +82,24 @@ export default function RecipeScreen({navigation}) {
 
   return (
     <SafeAreaView style={Styles.container}>
-      <ScrollView>
-        <View style={Styles.bottomGap}>
-          <SafeAreaView>
-            <Search placeholder="Search Recipes (e.g. Pizza, Burger, Noodles etc...)" />
-          </SafeAreaView>
+      <View style={Styles.bottomGap}>
+        <View style={{paddingBottom:8}}>
+        <SafeAreaView>
+          <Search placeholder="Search Recipes (e.g. Pizza, Burger, etc...)" />
+        </SafeAreaView>
+        </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
           <View style={Styles.headingGap}>
+             <FontAwesomeIcon
+                icon={faTableList}
+                size={24}
+                style={{...Styles.onSurface,...Styles.headingIcon}}
+              /> 
             <Heading1>Main categories</Heading1>
           </View>
+
           <View style={Styles.row}>
             {dummyRecipeData.map(({name, id, img}) => {
               // const imgSrc = `../../${img}`;
@@ -90,8 +114,8 @@ export default function RecipeScreen({navigation}) {
               );
             })}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

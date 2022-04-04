@@ -29,8 +29,10 @@ const Stack = createNativeStackNavigator();
 const screenOptions = {
   headerShown: false,
   tabBarStyle: {
-    backgroundColor: '#efefef',
+    backgroundColor: '#ffffff',
     borderWidth: 0,
+    borderTopWidth: 0,
+    elevation: 0,
     color: 'red',
     // borderColor: 'red',
     // borderWidth: 1,/
@@ -43,8 +45,8 @@ const screenOptions = {
     borderRadius: 10,
     color: 'red',
   },
-  tabBarActiveTintColor: 'tomato',
-  tabBarInactiveTintColor: 'gray',
+  tabBarActiveTintColor: '#fa004c',
+  tabBarInactiveTintColor: '#AAA492',
 };
 
 function MyTabs() {
@@ -59,7 +61,7 @@ function MyTabs() {
               <FontAwesomeIcon
                 icon={faBowlRice}
                 size={24}
-                color={focused ? 'red' : 'gray'}
+                color={focused ? '#fa004c' : '#AAA492'}
               />
             );
           },
@@ -74,7 +76,7 @@ function MyTabs() {
               <FontAwesomeIcon
                 icon={faPuzzlePiece}
                 size={24}
-                color={focused ? 'red' : 'gray'}
+                color={focused ? '#fa004c' : '#AAA492'}
               />
             );
           },
@@ -88,7 +90,7 @@ export default function App() {
   return (
     <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
       <NavigationContainer>
-        <StatusBar barStyle="light-content" backgroundColor="#FFBC97" />
+        <StatusBar barStyle="light-content" backgroundColor="#fa004c" />
 
         <Stack.Navigator initialRouteName="Home">
           <>
