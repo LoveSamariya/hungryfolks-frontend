@@ -19,6 +19,7 @@ import {
   faTable,
   faTableList
 } from '@fortawesome/free-solid-svg-icons';
+import { useGetMainCategoryQuery } from './recipes.services';
 
 
 const createStyles = theme => {
@@ -72,6 +73,8 @@ const createStyles = theme => {
 
 export default function RecipeScreen({navigation}) {
   const Styles = useThemeAwareObject(createStyles);
+  
+  const { data, error, isLoading } = useGetMainCategoryQuery('');
 
   const onCardPressed = (id, name) => {
     navigation.navigate('RecipeDetailedList', {
