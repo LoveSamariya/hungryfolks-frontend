@@ -5,11 +5,10 @@ import {Image, StatusBar} from 'react-native';
 import {DEFAULT_LIGHT_THEME} from './src/constants/light.theme.js';
 import {ThemeProvider, useTheme} from './src/context/thme.context.js';
 import {
-  IngredientsScreen,
-  RecipeScreen,
-  RecipeDetailedListsScreen,
-  RecipeSubDetailsListScreen,
-  RecipeDetails,
+  DishRecipeDetails,
+  DishRecipesScreen,
+  IngredientsScreen, MainCategoryScreen, SubCategoryScreen,
+  
 } from './src/screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -54,7 +53,7 @@ function MyTabs() {
     <Tab.Navigator {...{screenOptions}}>
       <Tab.Screen
         name="Recipes"
-        component={RecipeScreen}
+        component={MainCategoryScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => {
             return (
@@ -99,22 +98,22 @@ export default function App() {
               component={MyTabs}
               options={{headerShown: false}}
             />
-            <Stack.Screen name="Recipe" component={RecipeScreen} />
+            <Stack.Screen name="Recipe" component={MainCategoryScreen} />
             <Stack.Screen name="Ingredients" component={IngredientsScreen} />
             <Stack.Screen
               options={{headerShown: false}}
               name="RecipeDetailedList"
-              component={RecipeDetailedListsScreen}
+              component={SubCategoryScreen}
             />
             <Stack.Screen
               options={{headerShown: false}}
               name="RecipeSubDetailsList"
-              component={RecipeSubDetailsListScreen}
+              component={DishRecipesScreen}
             />
             <Stack.Screen
               options={{headerShown: false}}
               name="RecipeDetails"
-              component={RecipeDetails}
+              component={DishRecipeDetails}
             />
           </>
         </Stack.Navigator>

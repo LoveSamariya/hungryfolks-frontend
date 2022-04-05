@@ -41,7 +41,7 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function RecipeDetailedListsScreen({navigation, route}) {
+export default function SubCategoryScreen({navigation, route}) {
   const {id, name} = route.params;
 
   const Styles = useThemeAwareObject(createStyles);

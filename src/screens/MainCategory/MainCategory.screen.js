@@ -71,7 +71,7 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function RecipeScreen({navigation}) {
+export default function MainCategoryScreen({navigation}) {
   const Styles = useThemeAwareObject(createStyles);
   
   const { data, error, isLoading } = useGetMainCategoryQuery('');

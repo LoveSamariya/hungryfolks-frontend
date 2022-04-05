@@ -13,7 +13,7 @@ import dummyRecipeData from '../../data/dummyRecipe.data';
 import recipeList from '../../data/recipeList';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
 import CardInfo from '../../shared/UI/Card/CardInfo';
-import Search from '../Recipe/components/Search';
+import Search from '../MainCategory/components/Search';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -154,7 +154,7 @@ function Chips({Styles, title}) {
   );
 }
 
-export default function RecipeSubDetailsListScreen({navigation, route}) {
+export default function DishRecipesScreen({navigation, route}) {
   const Styles = useThemeAwareObject(createStyles);
 
   const {id, name, subtitle, customTitle} = route.params || {};

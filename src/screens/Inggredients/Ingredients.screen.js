@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {Text, View, StyleSheet, TouchableHighlight} from 'react-native';
 import {useState} from 'react';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
-import Search from '../Recipe/components/Search';
 import {vegetables, fruits} from './data.vegetables';
 import {dFlex, vhCenter, w50} from '../../constants/common';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -14,6 +13,7 @@ import {
   faListCheck,
   faTableList
 } from '@fortawesome/free-solid-svg-icons';
+import Search from '../MainCategory/components/Search';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({

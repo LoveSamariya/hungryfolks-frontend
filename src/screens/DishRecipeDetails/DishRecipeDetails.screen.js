@@ -66,7 +66,7 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function RecipeDetails({route}) {
+export default function DishRecipeDetails({route}) {
   const {id, name, subtitle, itemName} = route.params;
   const Styles = useThemeAwareObject(createStyles);
 
