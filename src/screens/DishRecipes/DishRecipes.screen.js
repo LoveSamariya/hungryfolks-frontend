@@ -14,6 +14,8 @@ import recipeList from '../../data/recipeList';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
 import CardInfo from '../../shared/UI/Card/CardInfo';
 import Search from '../MainCategory/components/Search';
+import {useGetDishRecipeQuery} from './DishRecipes.services';
+import qs from 'qs';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -30,7 +32,7 @@ const createStyles = theme => {
     headerAsBreadCrumsTitle: {
       fontSize: 24,
       fontFamily: theme.fontFamily.primaryBold,
-      color:'#ffffff',
+      color: '#ffffff',
       textAlign: 'center',
     },
     cardOne: {
@@ -121,6 +123,7 @@ const createStyles = theme => {
     img: {
       maxWidth: '100%',
       height: '100%',
+      minWidth: 124,
       borderRadius: 12,
     },
   });
@@ -157,14 +160,20 @@ function Chips({Styles, title}) {
 export default function DishRecipesScreen({navigation, route}) {
   const Styles = useThemeAwareObject(createStyles);
 
-  const {id, name, subtitle, customTitle} = route.params || {};
+  const {id, MainCategory, SubCategory} = route.params || {};
 
-  const onCardPressed = itemName => {
-    navigation.navigate('RecipeDetails', {
+  const {data, error, isLoading} = useGetDishRecipeQuery(
+    qs.stringify({MainCategory, SubCategory}),
+  );
+
+  const {dishRecipes} = data || {};
+
+  const onCardPressed = code => {
+    navigation.navigate('DishRecipeDetails', {
       id,
-      name,
-      subtitle,
-      itemName,
+      code,
+      MainCategory,
+      SubCategory,
     });
   };
 
@@ -172,7 +181,7 @@ export default function DishRecipesScreen({navigation, route}) {
     <>
       <View style={Styles.headerAsBreadCrums}>
         <Text style={Styles.headerAsBreadCrumsTitle}>
-          {customTitle ? customTitle : `${name} / ${subtitle}`}
+          {/* {customTitle ? customTitle : `${name} / ${subtitle}`} */}
         </Text>
         <SafeAreaView style={Styles.searchWrapper}>
           <Search />
@@ -187,12 +196,14 @@ export default function DishRecipesScreen({navigation, route}) {
       <SafeAreaView>
         <ScrollView>
           <View style={Styles.cardListing}>
-            {recipeList.map(({name, img}) => {
+            {dishRecipes?.map(({name, img, rating, code}) => {
               return (
                 <CardInfo
+                  code={code}
                   key={name}
                   title={name}
-                  onCardPressed={() => onCardPressed(name)}>
+                  rating={rating}
+                  onCardPressed={() => onCardPressed(code)}>
                   <Image style={Styles.img} source={img} />
                 </CardInfo>
               );

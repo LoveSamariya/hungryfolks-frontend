@@ -43,7 +43,7 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function CardInfo({title, onCardPressed, children}) {
+export default function CardInfo({title, onCardPressed,rating, children}) {
   const Styles = useThemeAwareObject(createStyles);
 
   return (
@@ -72,7 +72,7 @@ export default function CardInfo({title, onCardPressed, children}) {
               imageSize={18}
               isDisabled
               readonly
-              startingValue={4.5}
+              startingValue={rating}
             />
           </View>
         </View>

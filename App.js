@@ -8,7 +8,6 @@ import {
   DishRecipeDetails,
   DishRecipesScreen,
   IngredientsScreen, MainCategoryScreen, SubCategoryScreen,
-  
 } from './src/screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -99,22 +98,22 @@ export default function App() {
               options={{headerShown: false}}
             />
             <Stack.Screen name="Recipe" component={MainCategoryScreen} />
-            <Stack.Screen name="Ingredients" component={IngredientsScreen} />
             <Stack.Screen
               options={{headerShown: false}}
-              name="RecipeDetailedList"
+              name="SubCategory"
               component={SubCategoryScreen}
             />
             <Stack.Screen
               options={{headerShown: false}}
-              name="RecipeSubDetailsList"
+              name="DishRecipe"
               component={DishRecipesScreen}
             />
             <Stack.Screen
               options={{headerShown: false}}
-              name="RecipeDetails"
+              name="DishRecipeDetails"
               component={DishRecipeDetails}
             />
+            <Stack.Screen name="Ingredients" component={IngredientsScreen} />
           </>
         </Stack.Navigator>
       </NavigationContainer>

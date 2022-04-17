@@ -1,26 +1,18 @@
+import { faTableList } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   View,
-  Image,
 } from 'react-native';
-import {useThemeAwareObject} from '../../hooks/themeAwareObject';
+import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
-import {Heading1} from '../../shared/UI/TypoGraphy/Typography';
+import { Heading1 } from '../../shared/UI/TypoGraphy/Typography';
 import Search from './components/Search';
-
-import IndianCategory from '../../assets/images/categories/indian-categories.jpg';
-import dummyRecipeData from '../../data/dummyRecipe.data';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faTable,
-  faTableList
-} from '@fortawesome/free-solid-svg-icons';
 import { useGetMainCategoryQuery } from './recipes.services';
-
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -65,19 +57,21 @@ const createStyles = theme => {
       color: theme.color.onSurface,
     },
     headingIcon: {
-      marginRight: theme.spacing[2]
-    }
+      marginRight: theme.spacing[2],
+    },
   });
   return styles;
 };
 
-export default function MainCategoryScreen({navigation}) {
+export default function MainCategoryScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
-  
+
   const { data, error, isLoading } = useGetMainCategoryQuery('');
 
+  const { mainCategories } = data || {};
+
   const onCardPressed = (id, name) => {
-    navigation.navigate('RecipeDetailedList', {
+    navigation.navigate('SubCategory', {
       id,
       name,
     });
@@ -86,26 +80,25 @@ export default function MainCategoryScreen({navigation}) {
   return (
     <SafeAreaView style={Styles.container}>
       <View style={Styles.bottomGap}>
-        <View style={{paddingBottom:8}}>
-        <SafeAreaView>
-          <Search placeholder="Search Recipes (e.g. Pizza, Burger, etc...)" />
-        </SafeAreaView>
+        <View style={{ paddingBottom: 8 }}>
+          <SafeAreaView>
+            <Search placeholder="Search Recipes (e.g. Pizza, Burger, etc...)" />
+          </SafeAreaView>
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
           <View style={Styles.headingGap}>
-             <FontAwesomeIcon
-                icon={faTableList}
-                size={24}
-                style={{...Styles.onSurface,...Styles.headingIcon}}
-              /> 
+            <FontAwesomeIcon
+              icon={faTableList}
+              size={24}
+              style={{ ...Styles.onSurface, ...Styles.headingIcon }}
+            />
             <Heading1>Main categories</Heading1>
           </View>
 
           <View style={Styles.row}>
-            {dummyRecipeData.map(({name, id, img}) => {
-              // const imgSrc = `../../${img}`;
+            {mainCategories?.map(({ name, id, img }) => {
               return (
                 <View style={Styles.col} key={name}>
                   <Card

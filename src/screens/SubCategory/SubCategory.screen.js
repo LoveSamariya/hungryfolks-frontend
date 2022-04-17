@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Text, View, StyleSheet, Image} from 'react-native';
 import dummyTimeTypeData from '../../data/timeType';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
+import { useGetSubCategoryQuery } from './subCategory.services';
+import qs from 'qs';
+import { useGetMainCategoryQuery } from '../MainCategory/recipes.services';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -44,13 +47,17 @@ const createStyles = theme => {
 export default function SubCategoryScreen({navigation, route}) {
   const {id, name} = route.params;
 
+  const {data, error, isLoading} = useGetSubCategoryQuery(qs.stringify({MainCategory : name}));
+
+  const {subCategories} = data || {};
+
   const Styles = useThemeAwareObject(createStyles);
 
-  const onCardPressed = subtitle => {
-    navigation.navigate('RecipeSubDetailsList', {
+  const onCardPressed = subCategory => {
+    navigation.navigate('DishRecipe', {
       id,
-      name,
-      subtitle,
+      MainCategory: name,
+      SubCategory: subCategory,
     });
   };
 
@@ -72,7 +79,7 @@ export default function SubCategoryScreen({navigation, route}) {
           </View>
         </View> */}
         <View style={Styles.row}>
-          {dummyTimeTypeData.map(({name, img}) => {
+          {subCategories?.map(({name, img}) => {
             return (
               <View style={Styles.col} key={name}>
                 <Card

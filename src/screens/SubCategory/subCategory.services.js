@@ -1,19 +1,19 @@
 // Need to use the React-specific entry point to import createApi
 import { API_URL } from "@env"
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { MAIN_CATEGORY } from '../../services/constants'
+import { MAIN_CATEGORY, SUB_CATEGORY } from '../../services/constants'
 
 // Define a service using a base URL and expected endpoints
-export const mainCategoryApi = createApi({
-  reducerPath: 'recipeApi',
+export const subCategoryApi = createApi({
+  reducerPath: 'subCategoryApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
-    getMainCategory: builder.query({
-      query: () => MAIN_CATEGORY,
+    getSubCategory: builder.query({
+      query: (query) => `${SUB_CATEGORY}?${query}`,
     }),
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetMainCategoryQuery } = mainCategoryApi
+export const { useGetSubCategoryQuery } = subCategoryApi

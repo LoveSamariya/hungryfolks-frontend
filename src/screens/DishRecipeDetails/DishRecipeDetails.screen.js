@@ -1,8 +1,11 @@
+import { faFaceGrinStars, faStarOfLife, faTableList } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 import {Rating} from 'react-native-ratings';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useThemeAwareObject} from '../../hooks/themeAwareObject';
+import { useGetDishRecipeFromCodeQuery } from './dishRecipeDetails.services';
 // import {WebView} from 'react-native';
 
 const createStyles = theme => {
@@ -67,7 +70,10 @@ const createStyles = theme => {
 };
 
 export default function DishRecipeDetails({route}) {
-  const {id, name, subtitle, itemName} = route.params;
+  const {id, name, subtitle, itemName, code} = route.params;
+
+  const {data, error, isLoading} = useGetDishRecipeFromCodeQuery(code);
+
   const Styles = useThemeAwareObject(createStyles);
 
   return (
@@ -84,7 +90,7 @@ export default function DishRecipeDetails({route}) {
             </View>
             <View style={Styles.container}>
               <Text style={{...Styles.onSurface, ...Styles.detailHeading}}>
-                {itemName}
+              <FontAwesomeIcon icon={faFaceGrinStars} /> {itemName}
               </Text>
               <Text style={Styles.onSurface}>
                 {name} / {subtitle}

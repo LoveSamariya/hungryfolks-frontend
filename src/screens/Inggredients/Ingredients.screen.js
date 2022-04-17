@@ -388,7 +388,7 @@ export default function IngredientsScreen({navigation}) {
             <TouchableHighlight
               underlayColor="transperent"
               onPress={() => {
-                navigation.navigate('RecipeSubDetailsList', {
+                navigation.navigate('DishRecipe', {
                   customTitle: 'From your Ingredients',
                 });
               }}
