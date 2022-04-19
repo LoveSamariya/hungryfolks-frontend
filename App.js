@@ -1,25 +1,19 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 import * as React from 'react';
-import {Image, StatusBar} from 'react-native';
-import {DEFAULT_LIGHT_THEME} from './src/constants/light.theme.js';
-import {ThemeProvider, useTheme} from './src/context/thme.context.js';
+import { Image, StatusBar } from 'react-native';
+import { DEFAULT_LIGHT_THEME } from './src/constants/light.theme.js';
+import { ThemeProvider, useTheme } from './src/context/thme.context.js';
 import {
   DishRecipeDetails,
   DishRecipesScreen,
-  IngredientsScreen, MainCategoryScreen, SubCategoryScreen,
+  IngredientsScreen,
+  MainCategoryScreen,
+  SubCategoryScreen,
 } from './src/screens';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faAngleRight,
-  faBowlFood,
-  faBowlRice,
-  faPuzzlePiece,
-} from '@fortawesome/free-solid-svg-icons';
-
-const TAB_ONE = require('./src/assets/images/cooking.png');
-const TAB_TWO = require('./src/assets/images/ing.png');
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,12 +26,6 @@ const screenOptions = {
     borderTopWidth: 0,
     elevation: 0,
     color: 'red',
-    // borderColor: 'red',
-    // borderWidth: 1,/
-    // marginTop: 4,
-    // width: '80%',
-    // marginLeft: '50%',
-    // marginRight: '50%',
   },
   tabBarItemStyle: {
     borderRadius: 10,
@@ -49,12 +37,12 @@ const screenOptions = {
 
 function MyTabs() {
   return (
-    <Tab.Navigator {...{screenOptions}}>
+    <Tab.Navigator {...{ screenOptions }}>
       <Tab.Screen
         name="Recipes"
         component={MainCategoryScreen}
         options={{
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({ focused, color, size }) => {
             return (
               <FontAwesomeIcon
                 icon={faBowlRice}
@@ -69,7 +57,7 @@ function MyTabs() {
         name="Ingredients"
         component={IngredientsScreen}
         options={{
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({ focused, color, size }) => {
             return (
               <FontAwesomeIcon
                 icon={faPuzzlePiece}
@@ -95,21 +83,21 @@ export default function App() {
             <Stack.Screen
               name="Home"
               component={MyTabs}
-              options={{headerShown: false}}
+              options={{ headerShown: false }}
             />
             <Stack.Screen name="Recipe" component={MainCategoryScreen} />
             <Stack.Screen
-              options={{headerShown: false}}
+              options={{ headerShown: false }}
               name="SubCategory"
               component={SubCategoryScreen}
             />
             <Stack.Screen
-              options={{headerShown: false}}
+              options={{ headerShown: false }}
               name="DishRecipe"
               component={DishRecipesScreen}
             />
             <Stack.Screen
-              options={{headerShown: false}}
+              options={{ headerShown: false }}
               name="DishRecipeDetails"
               component={DishRecipeDetails}
             />

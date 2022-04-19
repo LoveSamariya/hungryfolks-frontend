@@ -1,19 +1,19 @@
-import React, {useEffect} from 'react';
-import {Text, View, StyleSheet, TouchableHighlight} from 'react-native';
-import {useState} from 'react';
-import {useThemeAwareObject} from '../../hooks/themeAwareObject';
-import {vegetables, fruits} from './data.vegetables';
-import {dFlex, vhCenter, w50} from '../../constants/common';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleRight} from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect } from 'react';
+import { Text, View, StyleSheet, TouchableHighlight } from 'react-native';
+import { useState } from 'react';
+import { useThemeAwareObject } from '../../hooks/themeAwareObject';
+import { vegetables, fruits } from './data.vegetables';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import qs from 'qs';
 
-
-import {
-  faCheck,
-  faListCheck,
-  faTableList
-} from '@fortawesome/free-solid-svg-icons';
+import { faListCheck } from '@fortawesome/free-solid-svg-icons';
 import Search from '../MainCategory/components/Search';
+import {
+  useGetIngredientMainCategoryQuery,
+  useGetIngredientSubCategoryQuery,
+} from './Ingredients.services';
+import { vhCenter, w50 } from '../../constants/common';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -48,7 +48,7 @@ const createStyles = theme => {
       position: 'absolute',
       display: 'flex',
       flexDirection: 'column',
-      shadowOffset: {width: 0, height: 1},
+      shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.4,
       shadowRadius: 2,
       elevation: 4,
@@ -122,10 +122,8 @@ const createStyles = theme => {
       color: theme.color.onSurface,
       fontSize: 16,
       fontFamily: theme.fontFamily.secondaryMedium,
-      whiteSpace: 'nowrap',
     },
     selectableItemTextActive: {
-      // fontSize: 18,
       color: 'black',
       fontFamily: theme.fontFamily.secondaryBold,
     },
@@ -146,11 +144,10 @@ const createStyles = theme => {
       // opacity: 0,
       backgroundColor: '#028000',
     },
-    helperTextRow:{
+    helperTextRow: {
       backgroundColor: '#fa004c',
       flexDirection: 'row',
       padding: 16,
-
     },
     helperText: {
       color: theme.color.onSurface,
@@ -173,7 +170,7 @@ const createStyles = theme => {
       bottom: 200,
       zIndex: 2,
       right: 16,
-      shadowOffset: {width: 0, height: 1},
+      shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.6,
       shadowRadius: 2,
       elevation: 5,
@@ -185,23 +182,20 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function IngredientsScreen({navigation}) {
+export default function IngredientsScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
-  const [onIngPressed, setonIngPressed] = useState({
-    vegetables: {},
-    fruits: {},
-  });
-  const [selectedTab, setSelectedTab] = useState('Vegetables');
+  const [onIngPressed, setonIngPressed] = useState({});
+  const [selectedTab, setSelectedTab] = useState('');
 
-  const SelectableTab = ({name}) => {
+  const SelectableTab = ({ name }) => {
     const [styleTab, setStyleTab] = useState(Styles.tabItem);
 
     useEffect(() => {
       if (name == selectedTab) {
-        const styleObjTab = {...Styles.tabItem, ...Styles.activeTab};
+        const styleObjTab = { ...Styles.tabItem, ...Styles.activeTab };
         setStyleTab(styleObjTab);
       } else {
-        const styleObjTab = {...Styles.tabItem};
+        const styleObjTab = { ...Styles.tabItem };
         setStyleTab(styleObjTab);
       }
     }, [name]);
@@ -219,34 +213,56 @@ export default function IngredientsScreen({navigation}) {
     );
   };
 
+  const { data: dataIngMainCategory } = useGetIngredientMainCategoryQuery('');
+
+  const { data: dataSubCategory } = useGetIngredientSubCategoryQuery(
+    qs.stringify({ IngredientMainCategory: selectedTab }),
+  );
+
+  const { ingredientMainCategories } = dataIngMainCategory || {};
+  const { ingredientSubCategories } = dataSubCategory || {};
+
+  const [subCategory, setSubCategory] = useState([]);
+
+  useEffect(() => {
+    if (!ingredientMainCategories?.length) return;
+    setSelectedTab(ingredientMainCategories[0]?.name);
+  }, [ingredientMainCategories?.length]);
+
+  useEffect(() => {
+    if (selectedTab) {
+      const findSubCategory = ingredientMainCategories.find(
+        ({ name }) => name == selectedTab,
+      );
+    }
+  }, [selectedTab]);
+
   return (
     <>
-    <View style={{...Styles.helperTextRow, ...vhCenter}}>
-    <FontAwesomeIcon
-                color="white"
-                icon={faListCheck}
-                size={24}/>
-      <Text style={Styles.helperText}>    Select ingredients and get recipes</Text>
-    </View>
+      <View style={{ ...Styles.helperTextRow, ...vhCenter }}>
+        <FontAwesomeIcon color="white" icon={faListCheck} size={24} />
+        <Text style={Styles.helperText}>
+          {' '}
+          Select ingredients and get recipes
+        </Text>
+      </View>
       <View style={Styles.mainContainer}>
-        <View style={{...Styles.itemContainer}}>
-          <View style={{width: '100%'}}>
+        <View style={{ ...Styles.itemContainer }}>
+          <View style={{ width: '100%' }}>
             <View
               style={{
                 display: 'flex',
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-                // flexDirection: 'column',
-                // backgroundColor: 'blue',
               }}>
-              {selectedTab == 'Vegetables' &&
-                vegetables.map(item => {
+              {ingredientSubCategories &&
+                ingredientSubCategories?.map(({ name }) => {
                   let styleObj = {};
                   let styleObjMarkeable = {};
                   let styleSelectableItemTextContainer = {};
                   let styleSelectableItemText = {};
 
-                  styleObj = {...styleObj, ...Styles.selectebleChip};
+                  styleObj = { ...styleObj, ...Styles.selectebleChip };
                   styleObjMarkeable = {
                     ...styleObjMarkeable,
                     ...Styles.selectableIteMarkable,
@@ -260,8 +276,11 @@ export default function IngredientsScreen({navigation}) {
                     ...Styles.selectableItemText,
                   };
 
-                  if (onIngPressed.vegetables[item]) {
-                    styleObj = {...styleObj, ...Styles.selectebleChipActive};
+                  if (onIngPressed[selectedTab]?.[name]) {
+                    styleObj = {
+                      ...styleObj,
+                      ...Styles.selectebleChipActive,
+                    };
                     styleObjMarkeable = {
                       ...styleObjMarkeable,
                       ...Styles.selectableIteMarkableActive,
@@ -277,19 +296,22 @@ export default function IngredientsScreen({navigation}) {
                   }
 
                   return (
-                    <View style={Styles.w50} key={item}>
+                    <View style={Styles.w50} key={name}>
                       <TouchableHighlight
                         underlayColor="transperent"
                         onPress={() => {
                           let obj = {
-                            ...onIngPressed.vegetables,
+                            ...onIngPressed[selectedTab],
                           };
-                          if (obj[item]) {
-                            delete obj[item];
+                          if (obj[name]) {
+                            delete obj[name];
                           } else {
-                            obj = {...obj, [item]: !!item};
+                            obj = { ...obj, [name]: !!name };
                           }
-                          setonIngPressed({...onIngPressed, vegetables: obj});
+                          setonIngPressed({
+                            ...onIngPressed,
+                            [selectedTab]: obj,
+                          });
                         }}>
                         <View style={styleObj}>
                           <>
@@ -298,73 +320,7 @@ export default function IngredientsScreen({navigation}) {
                               <Text
                                 style={styleSelectableItemText}
                                 numberOfLines={1}>
-                                {item}
-                              </Text>
-                            </View>
-                          </>
-                        </View>
-                      </TouchableHighlight>
-                    </View>
-                  );
-                })}
-              {selectedTab == 'Fruits' &&
-                fruits.map(item => {
-                  let styleObj = {};
-                  let styleObjMarkeable = {};
-                  let styleSelectableItemTextContainer = {};
-                  let styleSelectableItemText = {};
-
-                  styleObj = {...styleObj, ...Styles.selectebleChip};
-                  styleObjMarkeable = {
-                    ...styleObjMarkeable,
-                    ...Styles.selectableIteMarkable,
-                  };
-                  styleSelectableItemTextContainer = {
-                    ...styleSelectableItemTextContainer,
-                    ...Styles.selectableItemTextContainer,
-                  };
-                  styleSelectableItemText = {
-                    ...styleSelectableItemText,
-                    ...Styles.selectableItemText,
-                  };
-
-                  if (onIngPressed.fruits[item]) {
-                    styleObj = {...styleObj, ...Styles.selectebleChipActive};
-                    styleObjMarkeable = {
-                      ...styleObjMarkeable,
-                      ...Styles.selectableIteMarkableActive,
-                    };
-                    styleSelectableItemTextContainer = {
-                      ...styleSelectableItemTextContainer,
-                      ...Styles.styleSelectableItemTextContainerActive,
-                    };
-                    styleSelectableItemText = {
-                      ...styleSelectableItemText,
-                      ...Styles.selectableItemTextActive,
-                    };
-                  }
-
-                  return (
-                    <View style={Styles.w50} key={item}>
-                      <TouchableHighlight
-                        underlayColor="transperent"
-                        onPress={() => {
-                          let obj = {
-                            ...onIngPressed.fruits,
-                          };
-                          if (obj[item]) {
-                            delete obj[item];
-                          } else {
-                            obj = {...obj, [item]: !!item};
-                          }
-                          setonIngPressed({...onIngPressed, fruits: obj});
-                        }}>
-                        <View style={styleObj}>
-                          <>
-                            <View style={styleObjMarkeable}></View>
-                            <View style={styleSelectableItemTextContainer}>
-                              <Text style={styleSelectableItemText}>
-                                {item}
+                                {name}
                               </Text>
                             </View>
                           </>
@@ -381,18 +337,32 @@ export default function IngredientsScreen({navigation}) {
             </Text>
           </View> */}
         </View>
-        {onIngPressed.vegetables &&
-          onIngPressed.fruits &&
-          (Object.keys(onIngPressed.vegetables).length > 0 ||
-            Object.keys(onIngPressed.fruits).length > 0) && (
+
+        {onIngPressed[selectedTab] &&
+          Object.values(onIngPressed) &&
+          Object.values(onIngPressed).find(obj => Object.keys(obj)?.length) && (
             <TouchableHighlight
-              underlayColor="transperent"
+              underlayColor="transparent"
               onPress={() => {
                 navigation.navigate('DishRecipe', {
                   customTitle: 'From your Ingredients',
+                  ingredient: {
+                    MainCategory: Object.keys(onIngPressed).reduce(
+                      (prev, current) => {
+                        return [...prev, current];
+                      },
+                      [],
+                    ),
+                    SubCategory: Object.keys(onIngPressed).reduce(
+                      (prev, current) => {
+                        return [...prev, ...Object.keys(onIngPressed[current])];
+                      },
+                      [],
+                    ),
+                  },
                 });
               }}
-              style={{...Styles.goNext}}>
+              style={{ ...Styles.goNext }}>
               <View>
                 <View
                   style={{
@@ -413,9 +383,10 @@ export default function IngredientsScreen({navigation}) {
 
         <View style={Styles.stickyContainer}>
           <Search placeholder={`Search ${selectedTab}`} />
-          <View style={{...Styles.flexRow, ...Styles.mt2}}>
-            <SelectableTab name="Vegetables" />
-            <SelectableTab name="Fruits" />
+          <View style={{ ...Styles.flexRow, ...Styles.mt2 }}>
+            {ingredientMainCategories?.map(({ name }) => {
+              return <SelectableTab name={name} key={name} />;
+            })}
           </View>
         </View>
         <View>

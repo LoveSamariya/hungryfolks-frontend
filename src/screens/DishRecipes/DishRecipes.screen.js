@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -7,14 +7,14 @@ import {
   ScrollView,
   TouchableHighlight,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTheme} from '../../context/thme.context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../../context/thme.context';
 import dummyRecipeData from '../../data/dummyRecipe.data';
 import recipeList from '../../data/recipeList';
-import {useThemeAwareObject} from '../../hooks/themeAwareObject';
+import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import CardInfo from '../../shared/UI/Card/CardInfo';
 import Search from '../MainCategory/components/Search';
-import {useGetDishRecipeQuery} from './DishRecipes.services';
+import { useGetDishRecipeQuery } from './DishRecipes.services';
 import qs from 'qs';
 
 const createStyles = theme => {
@@ -104,7 +104,7 @@ const createStyles = theme => {
     filterChips: {
       shadowColor: '#000',
       backgroundColor: '#fff',
-      shadowOffset: {width: 0, height: 1},
+      shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.8,
       shadowRadius: 2,
       elevation: 5,
@@ -130,8 +130,8 @@ const createStyles = theme => {
   return styles;
 };
 
-function Chips({Styles, title}) {
-  const {theme} = useTheme();
+function Chips({ Styles, title }) {
+  const { theme } = useTheme();
 
   const [isSelected, setIsSelected] = useState(false);
 
@@ -157,16 +157,22 @@ function Chips({Styles, title}) {
   );
 }
 
-export default function DishRecipesScreen({navigation, route}) {
+export default function DishRecipesScreen({ navigation, route }) {
   const Styles = useThemeAwareObject(createStyles);
 
-  const {id, MainCategory, SubCategory} = route.params || {};
+  const { id, MainCategory, SubCategory, customTitle, ingredient } =
+    route.params || {};
 
-  const {data, error, isLoading} = useGetDishRecipeQuery(
-    qs.stringify({MainCategory, SubCategory}),
+  const { data, error, isLoading } = useGetDishRecipeQuery(
+    qs.stringify(
+      ingredient?.SubCategory
+        ? { keywords: ingredient?.SubCategory }
+        : { MainCategory, SubCategory },
+      { indices: false },
+    ),
   );
 
-  const {dishRecipes} = data || {};
+  const { dishRecipes } = data || {};
 
   const onCardPressed = code => {
     navigation.navigate('DishRecipeDetails', {
@@ -188,7 +194,7 @@ export default function DishRecipesScreen({navigation, route}) {
         </SafeAreaView>
       </View>
       <SafeAreaView>
-        <View style={{...Styles.filterChipsContainer, ...Styles.listingBg}}>
+        <View style={{ ...Styles.filterChipsContainer, ...Styles.listingBg }}>
           <Chips Styles={Styles} title={'Veg'} />
           <Chips Styles={Styles} title={'Non veg'} />
         </View>
@@ -196,7 +202,7 @@ export default function DishRecipesScreen({navigation, route}) {
       <SafeAreaView>
         <ScrollView>
           <View style={Styles.cardListing}>
-            {dishRecipes?.map(({name, img, rating, code}) => {
+            {dishRecipes?.map(({ name, img, rating, code }) => {
               return (
                 <CardInfo
                   code={code}
