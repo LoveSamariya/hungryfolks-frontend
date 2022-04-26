@@ -5,6 +5,7 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   secondary: '#fa004c',
   onSecondary: '#ffffff',
   highlight: '#FFE800',
+  highlight1: '#fa004c',
   onHighlight: '#000000',
   surface: '#ffffff',
   pageBgColor: '#EEEEEE',
@@ -40,7 +41,7 @@ export const DEFAULT_LIGHT_THEME_BOX = {
   shadowProp: {
     shadowColor: DEFAULT_LIGHT_COLOR_THEME.gray3,
     backgroundColor: DEFAULT_LIGHT_COLOR_THEME.surface,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 2,

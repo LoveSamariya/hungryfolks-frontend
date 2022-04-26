@@ -4,6 +4,24 @@ export const dFlex = {
   },
 };
 
+export const flexColumn = {
+  flexColumn: {
+    flexDirection: 'column',
+  },
+};
+
+export const flexRow = {
+  flexRow: {
+    flexDirection: 'row',
+  },
+};
+
+export const flexWrap = {
+  flexWrap: {
+    flexWrap: 'wrap',
+  },
+};
+
 export const alignItemsCenter = {
   alignItemsCenter: {
     alignItems: 'center',
@@ -30,3 +48,14 @@ export const w50 = {
   },
 };
 
+export const w100 = {
+  w100: {
+    width: '100%',
+  },
+};
+
+export const textCenter = {
+  textCenter: {
+    textAlign: 'center',
+  },
+};

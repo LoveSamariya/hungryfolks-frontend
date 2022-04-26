@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/thme.context';
-import dummyRecipeData from '../../data/dummyRecipe.data';
-import recipeList from '../../data/recipeList';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import CardInfo from '../../shared/UI/Card/CardInfo';
 import Search from '../MainCategory/components/Search';
 import { useGetDishRecipeQuery } from './DishRecipes.services';
 import qs from 'qs';
+import { filtersEnum } from '../../constants/enum';
+import NoData from '../../shared/UI/NoData/NoData';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -26,7 +26,6 @@ const createStyles = theme => {
       height: 124,
       backgroundColor: theme.color.secondary,
       display: 'flex',
-      // alignItems: 'center',
       justifyContent: 'center',
     },
     headerAsBreadCrumsTitle: {
@@ -87,7 +86,8 @@ const createStyles = theme => {
       backgroundColor: theme.color.pageBgColor,
     },
     cardListing: {
-      paddingTop: theme.spacing[7],
+      height: '100%',
+      // backgroundColor: 'red',
       backgroundColor: theme.color.pageBgColor,
       paddingLeft: theme.spacing[3],
       paddingRight: theme.spacing[3],
@@ -130,26 +130,24 @@ const createStyles = theme => {
   return styles;
 };
 
-function Chips({ Styles, title }) {
+function Chips({ Styles, title, onPress, isSelected, value }) {
   const { theme } = useTheme();
-
-  const [isSelected, setIsSelected] = useState(false);
 
   return (
     <TouchableHighlight
+      underlayColor="transperent"
       onPress={() => {
-        // alert('ts');
-        setIsSelected(!isSelected);
+        onPress(value);
       }}
       style={{
         ...Styles.filterChips,
         backgroundColor: isSelected
-          ? theme.color.highlight
+          ? theme.color.highlight1
           : theme.color.surface,
       }}>
       <Text
         style={{
-          color: isSelected ? theme.color.onHighlight : theme.color.onSurface,
+          color: isSelected ? theme.color.surface : theme.color.onSurface,
         }}>
         {title}
       </Text>
@@ -163,14 +161,30 @@ export default function DishRecipesScreen({ navigation, route }) {
   const { id, MainCategory, SubCategory, customTitle, ingredient } =
     route.params || {};
 
+  const [searchValue, setSearchValue] = useState('');
+  const [selectedChips, setSelectedChips] = useState('');
+
   const { data, error, isLoading } = useGetDishRecipeQuery(
     qs.stringify(
       ingredient?.SubCategory
-        ? { keywords: ingredient?.SubCategory }
-        : { MainCategory, SubCategory },
+        ? {
+            keywords: ingredient?.SubCategory,
+            searchText: searchValue,
+            dishType: selectedChips,
+          }
+        : {
+            MainCategory,
+            SubCategory,
+            searchText: searchValue,
+            dishType: selectedChips,
+          },
       { indices: false },
     ),
   );
+
+  const onSearchValueChange = useCallback(val => {
+    setSearchValue(val);
+  }, []);
 
   const { dishRecipes } = data || {};
 
@@ -183,6 +197,11 @@ export default function DishRecipesScreen({ navigation, route }) {
     });
   };
 
+  const onChipsPressed = useCallback(value => {
+    setSelectedChips(value);
+    setSearchValue('');
+  }, []);
+
   return (
     <>
       <View style={Styles.headerAsBreadCrums}>
@@ -190,31 +209,57 @@ export default function DishRecipesScreen({ navigation, route }) {
           {/* {customTitle ? customTitle : `${name} / ${subtitle}`} */}
         </Text>
         <SafeAreaView style={Styles.searchWrapper}>
-          <Search />
+          <Search
+            onSearchValueChange={onSearchValueChange}
+            controlledInput
+            value={searchValue}
+            onClosePressed={() => setSearchValue('')}
+          />
         </SafeAreaView>
       </View>
       <SafeAreaView>
-        <View style={{ ...Styles.filterChipsContainer, ...Styles.listingBg }}>
-          <Chips Styles={Styles} title={'Veg'} />
-          <Chips Styles={Styles} title={'Non veg'} />
-        </View>
-      </SafeAreaView>
-      <SafeAreaView>
-        <ScrollView>
-          <View style={Styles.cardListing}>
-            {dishRecipes?.map(({ name, img, rating, code }) => {
+        <ScrollView
+          horizontal={true}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          <View style={{ ...Styles.filterChipsContainer, ...Styles.listingBg }}>
+            <Chips
+              Styles={Styles}
+              title={'All'}
+              value={''}
+              onPress={onChipsPressed}
+              isSelected={selectedChips == ''}
+            />
+            {Object.keys(filtersEnum).map(keyName => {
               return (
-                <CardInfo
-                  code={code}
-                  key={name}
-                  title={name}
-                  rating={rating}
-                  onCardPressed={() => onCardPressed(code)}>
-                  <Image style={Styles.img} source={img} />
-                </CardInfo>
+                <Chips
+                  Styles={Styles}
+                  title={filtersEnum[keyName]}
+                  value={keyName}
+                  key={keyName}
+                  onPress={onChipsPressed}
+                  isSelected={selectedChips == keyName}
+                />
               );
             })}
           </View>
+        </ScrollView>
+      </SafeAreaView>
+      <SafeAreaView style={Styles.cardListing}>
+        <ScrollView>
+          {dishRecipes?.map(({ name, image, rating, code }) => {
+            return (
+              <CardInfo
+                code={code}
+                key={code}
+                title={name}
+                rating={rating}
+                onCardPressed={() => onCardPressed(code)}>
+                <Image style={Styles.img} source={{ uri: image }} />
+              </CardInfo>
+            );
+          })}
+          {!dishRecipes?.length && !isLoading && <NoData />}
         </ScrollView>
       </SafeAreaView>
     </>

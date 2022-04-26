@@ -1,6 +1,6 @@
 import { faTableList } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Image,
   SafeAreaView,
@@ -13,6 +13,8 @@ import Card from '../../shared/UI/Card/Card';
 import { Heading1 } from '../../shared/UI/TypoGraphy/Typography';
 import Search from './components/Search';
 import { useGetMainCategoryQuery } from './recipes.services';
+import qs from 'qs';
+import NoData from '../../shared/UI/NoData/NoData';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -65,8 +67,11 @@ const createStyles = theme => {
 
 export default function MainCategoryScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
+  const [searchValue, setSearchValue] = useState('');
 
-  const { data, error, isLoading } = useGetMainCategoryQuery('');
+  const { data, error, isLoading } = useGetMainCategoryQuery(
+    qs.stringify({ searchText: searchValue }),
+  );
 
   const { mainCategories } = data || {};
 
@@ -77,12 +82,19 @@ export default function MainCategoryScreen({ navigation }) {
     });
   };
 
+  const onSearchValueChange = useCallback(val => {
+    setSearchValue(val);
+  }, []);
+
   return (
     <SafeAreaView style={Styles.container}>
       <View style={Styles.bottomGap}>
         <View style={{ paddingBottom: 8 }}>
           <SafeAreaView>
-            <Search placeholder="Search Recipes (e.g. Pizza, Burger, etc...)" />
+            <Search
+              placeholder="Search categories"
+              onSearchValueChange={onSearchValueChange}
+            />
           </SafeAreaView>
         </View>
         <ScrollView
@@ -98,19 +110,20 @@ export default function MainCategoryScreen({ navigation }) {
           </View>
 
           <View style={Styles.row}>
-            {mainCategories?.map(({ name, id, img }) => {
+            {mainCategories?.map(({ name, id, image }) => {
               return (
                 <View style={Styles.col} key={name}>
                   <Card
                     title={name}
                     onCardPressed={() => onCardPressed(id, name)}>
-                    <Image style={Styles.img} source={img} />
+                    <Image style={Styles.img} source={{ uri: image }} />
                   </Card>
                 </View>
               );
             })}
           </View>
         </ScrollView>
+        {!mainCategories?.length && !isLoading && <NoData />}
       </View>
     </SafeAreaView>
   );

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import {Text, View, StyleSheet, Image} from 'react-native';
-import dummyTimeTypeData from '../../data/timeType';
-import {useThemeAwareObject} from '../../hooks/themeAwareObject';
+import { Text, View, StyleSheet, Image } from 'react-native';
+import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
 import { useGetSubCategoryQuery } from './subCategory.services';
 import qs from 'qs';
@@ -26,7 +25,7 @@ const createStyles = theme => {
     headerAsBreadCrumsTitle: {
       fontSize: 24,
       fontFamily: theme.fontFamily.primaryBold,
-      color:'#ffffff'
+      color: '#ffffff',
     },
     row: {
       display: 'flex',
@@ -44,12 +43,14 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function SubCategoryScreen({navigation, route}) {
-  const {id, name} = route.params;
+export default function SubCategoryScreen({ navigation, route }) {
+  const { id, name } = route.params;
 
-  const {data, error, isLoading} = useGetSubCategoryQuery(qs.stringify({MainCategory : name}));
+  const { data, error, isLoading } = useGetSubCategoryQuery(
+    qs.stringify({ MainCategory: name }),
+  );
 
-  const {subCategories} = data || {};
+  const { subCategories } = data || {};
 
   const Styles = useThemeAwareObject(createStyles);
 
@@ -79,14 +80,17 @@ export default function SubCategoryScreen({navigation, route}) {
           </View>
         </View> */}
         <View style={Styles.row}>
-          {subCategories?.map(({name, img}) => {
+          {subCategories?.map(({ name, image }) => {
             return (
               <View style={Styles.col} key={name}>
                 <Card
                   key={name}
                   title={name}
                   onCardPressed={() => onCardPressed(name)}>
-                  <Image source={img} style={{height: '100%', width: '100%'}} />
+                  <Image
+                    source={{ uri: image }}
+                    style={{ height: '100%', width: '100%' }}
+                  />
                 </Card>
               </View>
             );

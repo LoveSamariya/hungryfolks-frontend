@@ -1,8 +1,14 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {THEME_TYPOGRAPHY} from '../../../constants/typography';
-import {useThemeAwareObject} from '../../../hooks/themeAwareObject';
-import {Rating, AirbnbRating} from 'react-native-ratings';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
+import { THEME_TYPOGRAPHY } from '../../../constants/typography';
+import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
+import { Rating, AirbnbRating } from 'react-native-ratings';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -11,7 +17,8 @@ const createStyles = theme => {
       flexDirection: 'row',
       borderRadius: 12,
       padding: theme.spacing[3],
-      marginBottom: theme.spacing[8],
+      marginBottom: theme.spacing[4],
+      marginTop: theme.spacing[4],
       backgroundColor: theme.color.surface,
       // ...theme.box.shadowProp,
     },
@@ -43,7 +50,13 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function CardInfo({title, onCardPressed,rating, children}) {
+export default function CardInfo({
+  title,
+  onCardPressed,
+  rating,
+  children,
+  image,
+}) {
   const Styles = useThemeAwareObject(createStyles);
 
   return (
@@ -51,19 +64,20 @@ export default function CardInfo({title, onCardPressed,rating, children}) {
       onPress={() => {
         onCardPressed();
       }}
-      underlayColor="white">
+      underlayColor="transperent">
       <View style={Styles.card}>
         <View style={Styles.cardImgContainer}>
           {children}
-          {/* <Image
-            style={Styles.img}
-            source={require('../../../assets/images/categories/indian-categories.jpg')}
-          /> */}
+          <Image style={Styles.img} source={{ uri: image }} />
         </View>
-        <View style={{display: 'flex', flexDirection: 'column'}}>
+        <View style={{ display: 'flex', flexDirection: 'column' }}>
           <Text style={Styles.cardText}>{title}</Text>
           <View
-            style={{display: 'flex', alignSelf: 'flex-start', paddingLeft: 16}}>
+            style={{
+              display: 'flex',
+              alignSelf: 'flex-start',
+              paddingLeft: 16,
+            }}>
             <Rating
               ratingColor="#3498db"
               ratingBackgroundColor="#c8c7c8"

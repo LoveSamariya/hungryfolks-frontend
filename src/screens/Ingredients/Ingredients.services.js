@@ -15,7 +15,9 @@ export const ingredientsApi = createApi({
       query: () => INGREDIENT_MAIN_CATEGORY,
     }),
     getIngredientSubCategory: builder.query({
-      query: query => `${INGREDIENT_SUB_CATEGORY}?${query}`,
+      query: query => {
+        return `${INGREDIENT_SUB_CATEGORY}?${query}`;
+      },
     }),
   }),
 });
