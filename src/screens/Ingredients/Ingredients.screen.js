@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import { vegetables, fruits } from './data.vegetables';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faClose } from '@fortawesome/free-solid-svg-icons';
 import qs from 'qs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -67,25 +67,26 @@ function SelectableIngredient({
       ...Styles.selectableItemTextActive,
     };
   }
+  const onIngredientPressed = () => {
+    let obj = {
+      ...onIngPressed[selectedTab],
+    };
+    if (obj[name]) {
+      delete obj[name];
+    } else {
+      obj = { ...obj, [name]: !!name };
+    }
+    setonIngPressed({
+      ...onIngPressed,
+      [selectedTab]: obj,
+    });
+  };
 
   return (
     <View style={Styles.w50} key={name}>
       <TouchableHighlight
         underlayColor="transperent"
-        onPress={() => {
-          let obj = {
-            ...onIngPressed[selectedTab],
-          };
-          if (obj[name]) {
-            delete obj[name];
-          } else {
-            obj = { ...obj, [name]: !!name };
-          }
-          setonIngPressed({
-            ...onIngPressed,
-            [selectedTab]: obj,
-          });
-        }}>
+        onPress={onIngredientPressed}>
         <View style={styleObj}>
           <>
             <View style={styleObjMarkeable}></View>
@@ -102,21 +103,22 @@ function SelectableIngredient({
 }
 
 const SelectableTab = ({ name, Styles, setSelectedTab, isSelected }) => {
+  const onSelectedTabPressed = () => {
+    setSelectedTab(name);
+  };
   return (
-    <View
-      style={
-        isSelected
-          ? { ...Styles.tabItem, ...Styles.activeTab }
-          : { ...Styles.tabItem }
-      }>
-      <TouchableHighlight
-        underlayColor="transperent"
-        onPress={() => {
-          setSelectedTab(name);
-        }}>
+    <TouchableHighlight
+      underlayColor="transperent"
+      onPress={onSelectedTabPressed}>
+      <View
+        style={
+          isSelected
+            ? { ...Styles.tabItem, ...Styles.activeTab }
+            : { ...Styles.tabItem }
+        }>
         <Text style={Styles.tabItemText}>{name}</Text>
-      </TouchableHighlight>
-    </View>
+      </View>
+    </TouchableHighlight>
   );
 };
 
@@ -130,13 +132,11 @@ const createStyles = theme => {
     itemContainer: {
       // display: 'flex',
       // flexDirection: 'row',
-      paddingVertical: theme.spacing[3],
       paddingHorizontal: theme.spacing[2],
       // flexWrap: 'wrap',
       // justifyContent: 'space-between',
       height: '100%',
       // backgroundColor: theme.color.gray1,
-      marginVertical: 16,
       marginHorizontal: 8,
     },
     stickyContainer: {
@@ -207,30 +207,30 @@ const createStyles = theme => {
     },
     selectableItemTextContainer: {
       height: 46,
-      paddingHorizontal: 16,
+      paddingRight: 7,
       // display: 'flex',
       // alignItems: 'flex-start',
       justifyContent: 'center',
-      paddingLeft: 46,
+      paddingLeft: 30,
       textAlign: 'start',
       borderWidth: 0,
     },
     styleSelectableItemTextContainerActive: {
       // paddingLeft: 8,
-      paddingRight: 42,
+      // paddingRight: 42,
     },
     selectableItemText: {
       color: theme.color.onSurface,
       fontSize: 16,
-      fontFamily: theme.fontFamily.secondaryMedium,
+      fontFamily: theme.fontFamily.primaryRegular,
     },
     selectableItemTextActive: {
       color: 'black',
-      fontFamily: theme.fontFamily.secondaryBold,
+      fontFamily: theme.fontFamily.primaryRegular,
     },
     selectableIteMarkable: {
-      width: 36,
-      height: 36,
+      width: 24,
+      height: 24,
       borderWidth: 2,
       borderColor: '#f2f3f4',
       backgroundColor: theme.color.gray1,
@@ -276,6 +276,24 @@ const createStyles = theme => {
       shadowRadius: 2,
       elevation: 5,
     },
+    clearIngredientsContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 8,
+      marginLeft: 8,
+    },
+    clearIngredientsIconContainer: {
+      backgroundColor: '#fff',
+      borderRadius: 84 / 2,
+      padding: 4,
+      zIndex: 1,
+    },
+    clearIngredientsText: {
+      marginLeft: 6,
+      borderRadius: 12,
+      color: theme.color.gray3,
+    },
     ...w50,
     ...vhCenter,
   });
@@ -287,6 +305,7 @@ export default function IngredientsScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
   const [onIngPressed, setonIngPressed] = useState({});
   const [selectedTab, setSelectedTab] = useState('');
+  const [selectedTabName, setSelectedTabName] = useState('');
   const [searchVal, setSearchValue] = useState('');
 
   const { data: dataIngMainCategory } = useGetIngredientMainCategoryQuery('');
@@ -305,12 +324,19 @@ export default function IngredientsScreen({ navigation }) {
 
   useEffect(() => {
     if (!ingredientMainCategories?.length) return;
+    setSelectedTabName(ingredientMainCategories[0]?.name);
     setSelectedTab(ingredientMainCategories[0]?.name);
   }, [ingredientMainCategories?.length]);
 
   useEffect(() => {
     setSearchValue('');
   }, [selectedTab]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSelectedTab(selectedTabName);
+    });
+  }, [selectedTabName]);
 
   const onSearchValueChange = useCallback(val => {
     setSearchValue(val);
@@ -320,6 +346,13 @@ export default function IngredientsScreen({ navigation }) {
     setSearchValue('');
   });
 
+  const clearAllSelectedIngredients = useCallback(() => {
+    setonIngPressed({});
+  });
+
+  const isIngredientSelected = Object.values(onIngPressed).find(
+    obj => Object.keys(obj)?.length,
+  );
   return (
     <>
       <View style={{ ...Styles.helperTextRow, ...vhCenter }}>
@@ -331,39 +364,59 @@ export default function IngredientsScreen({ navigation }) {
       </View>
 
       <View style={Styles.mainContainer}>
-        <View style={{ ...Styles.itemContainer }}>
-          <View style={{ width: '100%' }}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-              }}>
-              {ingredientSubCategories &&
-                ingredientSubCategories?.map(({ name }) => {
-                  return (
-                    <SelectableIngredient
-                      key={name}
-                      Styles={Styles}
-                      selectedTab={selectedTab}
-                      onIngPressed={onIngPressed}
-                      setonIngPressed={setonIngPressed}
-                      name={name}
-                    />
-                  );
-                })}
-            </View>
-            {!ingredientSubCategories?.length && !isLoading && <NoData />}
-          </View>
+        {isIngredientSelected && (
+          <TouchableHighlight
+            style={Styles.clearIngredientsContainer}
+            underlayColor="transperent"
+            onPress={clearAllSelectedIngredients}>
+            <>
+              <View style={Styles.clearIngredientsIconContainer}>
+                <FontAwesomeIcon icon={faClose} size={24} color={'#878787'} />
+              </View>
+              <Text style={Styles.clearIngredientsText}>
+                Clear All Selected Ingredients
+              </Text>
+            </>
+          </TouchableHighlight>
+        )}
+        <SafeAreaView>
+          <ScrollView>
+            <View style={{ ...Styles.itemContainer }}>
+              <View style={{ width: '100%' }}>
+                {!ingredientSubCategories?.length && !isLoading && <NoData />}
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    marginTop: 16,
+                    marginBottom: 140,
+                  }}>
+                  {ingredientSubCategories &&
+                    ingredientSubCategories?.map(({ name }) => {
+                      return (
+                        <SelectableIngredient
+                          key={name}
+                          Styles={Styles}
+                          selectedTab={selectedTab}
+                          onIngPressed={onIngPressed}
+                          setonIngPressed={setonIngPressed}
+                          name={name}
+                        />
+                      );
+                    })}
+                </View>
+              </View>
 
-          {/* <View style={Styles.mtAuto}>
+              {/* <View style={Styles.mtAuto}>
             <Text style={Styles.helperText}>
               Select ingredients and get recipes...
             </Text>
           </View> */}
-        </View>
-
-        {Object.values(onIngPressed).find(obj => Object.keys(obj)?.length) && (
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+        {isIngredientSelected && (
           <TouchableHighlight
             onPress={() => {
               navigation.navigate('DishRecipe', {
@@ -408,23 +461,36 @@ export default function IngredientsScreen({ navigation }) {
               onClosePressed={onClosePressed}
               controlledInput
             />
-            <View style={{ ...Styles.flexRow, ...Styles.mt2 }}>
+            <View
+              style={{
+                ...Styles.flexRow,
+                ...Styles.mt2,
+                marginHorizontal: -16,
+              }}>
               <ScrollView
                 horizontal={true}
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}>
-                {ingredientMainCategories?.map(({ name }) => {
-                  return (
-                    <SelectableTab
-                      name={name}
-                      key={name}
-                      selectedTab={selectedTab}
-                      Styles={Styles}
-                      setSelectedTab={setSelectedTab}
-                      isSelected={name == selectedTab}
-                    />
-                  );
-                })}
+                <View
+                  style={{
+                    paddingHorizontal: 16,
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                  }}>
+                  {ingredientMainCategories?.map(({ name }) => {
+                    return (
+                      <SelectableTab
+                        name={name}
+                        key={name}
+                        selectedTab={selectedTabName}
+                        Styles={Styles}
+                        setSelectedTab={setSelectedTabName}
+                        isSelected={name == selectedTabName}
+                      />
+                    );
+                  })}
+                </View>
               </ScrollView>
             </View>
           </View>

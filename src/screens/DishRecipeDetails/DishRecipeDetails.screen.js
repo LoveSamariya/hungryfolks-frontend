@@ -17,8 +17,8 @@ import {
 } from '../../constants/common';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import { useGetDishRecipeFromCodeQuery } from './dishRecipeDetails.services';
-import RenderHtml from 'react-native-render-html';
-
+import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
+import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 // import {WebView} from 'react-native';
 
 function TableListData({ styles: Styles, title, info, icon }) {
@@ -221,6 +221,7 @@ const createStyles = theme => {
   });
   return styles;
 };
+const systemFonts = [...defaultSystemFonts, 'serif'];
 
 export default function DishRecipeDetails({ route }) {
   const { code } = route.params;
@@ -249,294 +250,309 @@ export default function DishRecipeDetails({ route }) {
   } = data || {};
 
   const Styles = useThemeAwareObject(createStyles);
-
+  const renderHtmlElementStyle = {
+    color: '#000000',
+    marginBottom: 24,
+    paddingLeft: 16,
+    fontFamily: "'Roboto Condensed', sans-serif",
+    fontSize: 16,
+    fontWeight: '500',
+  };
+  const renderHtmlStyle = {
+    li: renderHtmlElementStyle,
+    p: renderHtmlElementStyle,
+    h1: renderHtmlElementStyle,
+    h2: renderHtmlElementStyle,
+    h3: renderHtmlElementStyle,
+    h4: renderHtmlElementStyle,
+    h5: renderHtmlElementStyle,
+    h6: renderHtmlElementStyle,
+    span: renderHtmlElementStyle,
+    div: renderHtmlElementStyle,
+  };
   return (
     <>
       <SafeAreaView style={Styles.pageBgColor}>
-        <ScrollView>
+        <ScrollView style={{ height: '100%' }}>
           <View style={Styles.headerAsBreadCrums}></View>
           <View>
-            <View style={Styles.detailImageContainer}>
-              <Image style={Styles.detailedImage} source={{ uri: image }} />
-            </View>
-            <View style={Styles.container}>
-              <Text style={{ ...Styles.onSurface, ...Styles.detailHeading }}>
-                {name}
-              </Text>
-              {/* <Text style={Styles.onSurface}>
+            <LoaderLayout isLoading={isLoading}>
+              <View>
+                <View style={Styles.detailImageContainer}>
+                  <Image style={Styles.detailedImage} source={{ uri: image }} />
+                </View>
+                <View style={Styles.container}>
+                  <Text
+                    style={{ ...Styles.onSurface, ...Styles.detailHeading }}>
+                    {name}
+                  </Text>
+                  {/* <Text style={Styles.onSurface}>
                 {mainCategory} / {subCategory}
               </Text> */}
-              <Text
-                style={{
-                  ...Styles.onSurface,
-                  ...Styles.mbDetail,
-                  ...Styles.infoTextFontFamily,
-                }}>
-                {description}
-              </Text>
+                  <Text
+                    style={{
+                      ...Styles.onSurface,
+                      ...Styles.mbDetail,
+                      ...Styles.infoTextFontFamily,
+                    }}>
+                    {description}
+                  </Text>
 
-              {keywords?.length > 0 && (
-                <View
-                  style={{
-                    ...Styles.dFlex,
-                    ...Styles.flexRow,
-                    ...Styles.flexWrap,
-                  }}>
-                  {keywords.map(nameOfKeywords => {
-                    return (
+                  {keywords?.length > 0 && (
+                    <View
+                      style={{
+                        ...Styles.dFlex,
+                        ...Styles.flexRow,
+                        ...Styles.flexWrap,
+                      }}>
+                      {keywords.map(nameOfKeywords => {
+                        return (
+                          <View
+                            key={nameOfKeywords}
+                            style={{
+                              ...Styles.chips,
+                            }}>
+                            <View style={Styles.selectebleChip}>
+                              <Text
+                                style={{
+                                  ...Styles.onSurface,
+                                  ...Styles.keywordsText,
+                                }}>
+                                {nameOfKeywords}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  )}
+
+                  <View style={{ ...Styles.box, ...Styles.mtHeadingTiny }}>
+                    <View style={Styles.infoTable}>
+                      {subCategory && (
+                        <View style={Styles.infoTableColumn}>
+                          <TableListData
+                            styles={Styles}
+                            title={'Course'}
+                            info={subCategory}
+                          />
+                        </View>
+                      )}
+                      {mainCategory && (
+                        <View style={Styles.infoTableColumn}>
+                          <TableListData
+                            styles={Styles}
+                            title={'Cuisine'}
+                            info={mainCategory}
+                          />
+                        </View>
+                      )}
+
+                      {subCategory && mainCategory && (
+                        <View
+                          style={{
+                            ...Styles.w100,
+                          }}>
+                          <View
+                            style={{
+                              ...Styles.divider,
+                              ...Styles.mxN3,
+                            }}></View>
+                        </View>
+                      )}
+
+                      {dishType && (
+                        <View style={Styles.infoTableColumn}>
+                          <TableListData
+                            styles={Styles}
+                            title={'Dish type'}
+                            info={dishType}
+                          />
+                        </View>
+                      )}
+
+                      {calories && (
+                        <View style={Styles.infoTableColumn}>
+                          <TableListData
+                            styles={Styles}
+                            title={'Calories'}
+                            info={calories}
+                          />
+                        </View>
+                      )}
+
+                      {calories && dishType && (
+                        <View
+                          style={{
+                            ...Styles.w100,
+                          }}>
+                          <View
+                            style={{
+                              ...Styles.divider,
+                              ...Styles.mxN3,
+                            }}></View>
+                        </View>
+                      )}
+
+                      {cookingTime && (
+                        <View style={Styles.infoTableColumn}>
+                          <TableListData
+                            styles={Styles}
+                            title={'Cooking time'}
+                            info={cookingTime}
+                          />
+                        </View>
+                      )}
+
+                      {restingTime && (
+                        <View style={Styles.infoTableColumn}>
+                          <TableListData
+                            styles={Styles}
+                            title={'Resting time'}
+                            info={restingTime}
+                          />
+                        </View>
+                      )}
+                    </View>
+                  </View>
+
+                  {ingredients && (
+                    <>
+                      <Text
+                        style={{
+                          ...Styles.onSurface,
+                          ...Styles.detailsListHeading,
+                        }}>
+                        Ingredients
+                      </Text>
+                      {console.log(ingredients)}
+                      <View style={Styles.box}>
+                        <RenderHtml
+                          contentWidth={width}
+                          systemFonts={systemFonts}
+                          source={{ html: ingredients }}
+                          tagsStyles={renderHtmlStyle}
+                        />
+                      </View>
+                    </>
+                  )}
+
+                  {instructions && (
+                    <>
+                      <Text
+                        style={{
+                          ...Styles.onSurface,
+                          ...Styles.detailsListHeading,
+                        }}>
+                        Instructions
+                      </Text>
+                      <View style={Styles.box}>
+                        <RenderHtml
+                          contentWidth={width}
+                          systemFonts={systemFonts}
+                          tagsStyles={renderHtmlStyle}
+                          source={{ html: instructions }}
+                        />
+                      </View>
+                    </>
+                  )}
+
+                  {notes && (
+                    <>
+                      <Text
+                        style={{
+                          ...Styles.onSurface,
+                          ...Styles.detailsListHeading,
+                        }}>
+                        Notes
+                      </Text>
+                      <View style={Styles.box}>
+                        <RenderHtml
+                          contentWidth={width}
+                          systemFonts={systemFonts}
+                          tagsStyles={renderHtmlStyle}
+                          source={{ html: notes }}
+                        />
+                      </View>
+                    </>
+                  )}
+                  {(carbohydrates || fat || protein || sugar) && (
+                    <>
+                      <Text
+                        style={{
+                          ...Styles.onSurface,
+                          ...Styles.detailsListHeading,
+                        }}>
+                        Nutrition
+                      </Text>
+
                       <View
                         style={{
-                          ...Styles.chips,
+                          ...Styles.box,
+                          ...Styles.dFlex,
+                          ...Styles.flexRow,
+                          ...Styles.flexWrap,
                         }}>
-                        <View style={Styles.selectebleChip}>
-                          <Text
-                            style={{
-                              ...Styles.onSurface,
-                              ...Styles.keywordsText,
-                            }}>
-                            {nameOfKeywords}
-                          </Text>
+                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
+                          {carbohydrates && (
+                            <Text style={Styles.onSurface}>
+                              <Text style={Styles.greyText}>
+                                {' '}
+                                Carbohydrates
+                              </Text>{' '}
+                              - {carbohydrates}
+                            </Text>
+                          )}
+                        </View>
+                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
+                          {fat && (
+                            <Text style={Styles.onSurface}>
+                              <Text style={Styles.greyText}> fat</Text> - {fat}
+                            </Text>
+                          )}
+                        </View>
+                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
+                          {protein && (
+                            <Text style={Styles.onSurface}>
+                              <Text style={Styles.greyText}> protein</Text> -{' '}
+                              {protein}
+                            </Text>
+                          )}
+                        </View>
+                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
+                          {sugar && (
+                            <Text style={Styles.onSurface}>
+                              <Text style={Styles.greyText}> sugar</Text> -{' '}
+                              {sugar}
+                            </Text>
+                          )}
                         </View>
                       </View>
-                    );
-                  })}
-                </View>
-              )}
-
-              <View style={{ ...Styles.box, ...Styles.mtHeadingTiny }}>
-                <View style={Styles.infoTable}>
-                  {subCategory && (
-                    <View style={Styles.infoTableColumn}>
-                      <TableListData
-                        styles={Styles}
-                        title={'Course'}
-                        info={subCategory}
-                      />
-                    </View>
-                  )}
-                  {mainCategory && (
-                    <View style={Styles.infoTableColumn}>
-                      <TableListData
-                        styles={Styles}
-                        title={'Cuisine'}
-                        info={mainCategory}
-                      />
-                    </View>
+                    </>
                   )}
 
-                  {subCategory && mainCategory && (
-                    <View
-                      style={{
-                        ...Styles.w100,
-                      }}>
-                      <View
-                        style={{ ...Styles.divider, ...Styles.mxN3 }}></View>
-                    </View>
-                  )}
-
-                  {dishType && (
-                    <View style={Styles.infoTableColumn}>
-                      <TableListData
-                        styles={Styles}
-                        title={'Dish type'}
-                        info={dishType}
-                      />
-                    </View>
-                  )}
-
-                  {calories && (
-                    <View style={Styles.infoTableColumn}>
-                      <TableListData
-                        styles={Styles}
-                        title={'Calories'}
-                        info={calories}
-                      />
-                    </View>
-                  )}
-
-                  {calories && dishType && (
-                    <View
-                      style={{
-                        ...Styles.w100,
-                      }}>
-                      <View
-                        style={{ ...Styles.divider, ...Styles.mxN3 }}></View>
-                    </View>
-                  )}
-
-                  {cookingTime && (
-                    <View style={Styles.infoTableColumn}>
-                      <TableListData
-                        styles={Styles}
-                        title={'Cooking time'}
-                        info={cookingTime}
-                      />
-                    </View>
-                  )}
-
-                  {restingTime && (
-                    <View style={Styles.infoTableColumn}>
-                      <TableListData
-                        styles={Styles}
-                        title={'Resting time'}
-                        info={restingTime}
-                      />
-                    </View>
-                  )}
+                  <Text
+                    style={{
+                      ...Styles.headerAsBreadCrumsTitle,
+                      ...Styles.onSurface,
+                      ...Styles.ratingGap,
+                    }}>
+                    Rate Recipe
+                  </Text>
+                  <View>
+                    <Rating
+                      type="custom"
+                      defaultRating={1}
+                      ratingCount={5}
+                      startingValue={0}
+                      starContainerStyle={{ backgroundColor: 'red' }}
+                      ratingContainerStyle={{ backgroundColor: 'red' }}
+                      tintColor={'#f5f5f5'}
+                    />
+                  </View>
                 </View>
               </View>
-
-              {ingredients && (
-                <>
-                  <Text
-                    style={{
-                      ...Styles.onSurface,
-                      ...Styles.detailsListHeading,
-                    }}>
-                    Ingredients
-                  </Text>
-                  <View style={Styles.box}>
-                    <RenderHtml
-                      contentWidth={width}
-                      tagsStyles={{
-                        li: {
-                          color: '#000000',
-                          marginBottom: 24,
-                          paddingLeft: 16,
-                          fontFamily: `serif`,
-                          fontSize: 16,
-                        },
-                      }}
-                      source={{ html: ingredients }}
-                    />
-                  </View>
-                </>
-              )}
-
-              {instructions && (
-                <>
-                  <Text
-                    style={{
-                      ...Styles.onSurface,
-                      ...Styles.detailsListHeading,
-                    }}>
-                    Instructions
-                  </Text>
-                  <View style={Styles.box}>
-                    <RenderHtml
-                      contentWidth={width}
-                      tagsStyles={{
-                        li: {
-                          color: '#000000',
-                          marginBottom: 24,
-                          paddingLeft: 16,
-                          fontFamily: `'RobotoCondensed-Regular', serif`,
-                          fontSize: 16,
-                        },
-                      }}
-                      source={{ html: instructions }}
-                    />
-                  </View>
-                </>
-              )}
-
-              {notes && (
-                <>
-                  <Text
-                    style={{
-                      ...Styles.onSurface,
-                      ...Styles.detailsListHeading,
-                    }}>
-                    Notes
-                  </Text>
-                  <View style={Styles.box}>
-                    <RenderHtml
-                      contentWidth={width}
-                      tagsStyles={{
-                        li: {
-                          color: '#000000',
-                          marginBottom: 24,
-                          paddingLeft: 16,
-                          fontFamily: `'RobotoCondensed-Regular', serif`,
-                          fontSize: 16,
-                        },
-                      }}
-                      source={{ html: notes }}
-                    />
-                  </View>
-                </>
-              )}
-              {(carbohydrates || fat || protein || sugar) && (
-                <>
-                  <Text
-                    style={{
-                      ...Styles.onSurface,
-                      ...Styles.detailsListHeading,
-                    }}>
-                    Nutrition
-                  </Text>
-
-                  <View
-                    style={{
-                      ...Styles.box,
-                      ...Styles.dFlex,
-                      ...Styles.flexRow,
-                      ...Styles.flexWrap,
-                    }}>
-                    <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                      {carbohydrates && (
-                        <Text style={Styles.onSurface}>
-                          <Text style={Styles.greyText}> Carbohydrates</Text> -{' '}
-                          {carbohydrates}
-                        </Text>
-                      )}
-                    </View>
-                    <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                      {fat && (
-                        <Text style={Styles.onSurface}>
-                          <Text style={Styles.greyText}> fat</Text> - {fat}
-                        </Text>
-                      )}
-                    </View>
-                    <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                      {protein && (
-                        <Text style={Styles.onSurface}>
-                          <Text style={Styles.greyText}> protein</Text> -{' '}
-                          {protein}
-                        </Text>
-                      )}
-                    </View>
-                    <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                      {sugar && (
-                        <Text style={Styles.onSurface}>
-                          <Text style={Styles.greyText}> sugar</Text> - {sugar}
-                        </Text>
-                      )}
-                    </View>
-                  </View>
-                </>
-              )}
-
-              <Text
-                style={{
-                  ...Styles.headerAsBreadCrumsTitle,
-                  ...Styles.onSurface,
-                  ...Styles.ratingGap,
-                }}>
-                Rate Recipe
-              </Text>
-              <View>
-                <Rating
-                  type="custom"
-                  defaultRating={1}
-                  ratingCount={5}
-                  startingValue={0}
-                  starContainerStyle={{ backgroundColor: 'red' }}
-                  ratingContainerStyle={{ backgroundColor: 'red' }}
-                  tintColor={'#f5f5f5'}
-                />
-              </View>
-            </View>
+            </LoaderLayout>
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -16,7 +16,7 @@ import { useGetDishRecipeQuery } from './DishRecipes.services';
 import qs from 'qs';
 import { filtersEnum } from '../../constants/enum';
 import NoData from '../../shared/UI/NoData/NoData';
-
+import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 const createStyles = theme => {
   const styles = StyleSheet.create({
     containerDetailsListing: {
@@ -246,21 +246,23 @@ export default function DishRecipesScreen({ navigation, route }) {
         </ScrollView>
       </SafeAreaView>
       <SafeAreaView style={Styles.cardListing}>
-        <ScrollView>
-          {dishRecipes?.map(({ name, image, rating, code }) => {
-            return (
-              <CardInfo
-                code={code}
-                key={code}
-                title={name}
-                rating={rating}
-                onCardPressed={() => onCardPressed(code)}>
-                <Image style={Styles.img} source={{ uri: image }} />
-              </CardInfo>
-            );
-          })}
-          {!dishRecipes?.length && !isLoading && <NoData />}
-        </ScrollView>
+        <LoaderLayout isLoading={isLoading}>
+          <ScrollView>
+            {dishRecipes?.map(({ name, image, rating, code }) => {
+              return (
+                <CardInfo
+                  code={code}
+                  key={code}
+                  title={name}
+                  rating={rating}
+                  onCardPressed={() => onCardPressed(code)}>
+                  <Image style={Styles.img} source={{ uri: image }} />
+                </CardInfo>
+              );
+            })}
+            {!dishRecipes?.length && !isLoading && <NoData />}
+          </ScrollView>
+        </LoaderLayout>
       </SafeAreaView>
     </>
   );
