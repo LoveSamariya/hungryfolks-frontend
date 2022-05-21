@@ -5,6 +5,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
@@ -87,44 +88,48 @@ export default function MainCategoryScreen({ navigation }) {
   }, []);
 
   return (
-    <SafeAreaView style={Styles.container}>
-      <View style={Styles.bottomGap}>
-        <View style={{ paddingBottom: 8 }}>
-          <SafeAreaView>
-            <Search
-              placeholder="Search categories"
-              onSearchValueChange={onSearchValueChange}
-            />
-          </SafeAreaView>
-        </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
-          <View style={Styles.headingGap}>
-            <FontAwesomeIcon
-              icon={faTableList}
-              size={24}
-              style={{ ...Styles.onSurface, ...Styles.headingIcon }}
-            />
-            <Heading1>Main categories</Heading1>
-          </View>
+    <>
+      <StatusBar barStyle="light-content" backgroundColor="#fa004c" />
 
-          <View style={Styles.row}>
-            {mainCategories?.map(({ name, id, image }) => {
-              return (
-                <View style={Styles.col} key={name}>
-                  <Card
-                    title={name}
-                    onCardPressed={() => onCardPressed(id, name)}>
-                    <Image style={Styles.img} source={{ uri: image }} />
-                  </Card>
-                </View>
-              );
-            })}
+      <SafeAreaView style={Styles.container}>
+        <View style={Styles.bottomGap}>
+          <View style={{ paddingBottom: 8 }}>
+            <SafeAreaView>
+              <Search
+                placeholder="Search categories"
+                onSearchValueChange={onSearchValueChange}
+              />
+            </SafeAreaView>
           </View>
-        </ScrollView>
-        {!mainCategories?.length && !isLoading && <NoData />}
-      </View>
-    </SafeAreaView>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}>
+            <View style={Styles.headingGap}>
+              <FontAwesomeIcon
+                icon={faTableList}
+                size={24}
+                style={{ ...Styles.onSurface, ...Styles.headingIcon }}
+              />
+              <Heading1>Main categories</Heading1>
+            </View>
+
+            <View style={Styles.row}>
+              {mainCategories?.map(({ name, id, image }) => {
+                return (
+                  <View style={Styles.col} key={name}>
+                    <Card
+                      title={name}
+                      onCardPressed={() => onCardPressed(id, name)}>
+                      <Image style={Styles.img} source={{ uri: image }} />
+                    </Card>
+                  </View>
+                );
+              })}
+            </View>
+          </ScrollView>
+          {!mainCategories?.length && !isLoading && <NoData />}
+        </View>
+      </SafeAreaView>
+    </>
   );
 }

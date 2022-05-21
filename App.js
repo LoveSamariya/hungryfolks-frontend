@@ -10,6 +10,7 @@ import {
   IngredientsScreen,
   MainCategoryScreen,
   SubCategoryScreen,
+  WelcomeScreen,
 } from './src/screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -76,10 +77,13 @@ export default function App() {
   return (
     <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
       <NavigationContainer>
-        <StatusBar barStyle="light-content" backgroundColor="#fa004c" />
-
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Welcome">
           <>
+            <Stack.Screen
+              name="Welcome"
+              component={WelcomeScreen}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="Home"
               component={MyTabs}
