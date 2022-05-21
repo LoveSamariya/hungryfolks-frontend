@@ -4,6 +4,9 @@ import * as React from 'react';
 import { Image, StatusBar } from 'react-native';
 import { DEFAULT_LIGHT_THEME } from './src/constants/light.theme.js';
 import { ThemeProvider, useTheme } from './src/context/thme.context.js';
+
+import { AuthProviderGoogle } from './src/context/auth.google.context';
+
 import {
   DishRecipeDetails,
   DishRecipesScreen,
@@ -75,40 +78,42 @@ function MyTabs() {
 
 export default function App() {
   return (
-    <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
-          <>
-            <Stack.Screen
-              name="Welcome"
-              component={WelcomeScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Home"
-              component={MyTabs}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="Recipe" component={MainCategoryScreen} />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="SubCategory"
-              component={SubCategoryScreen}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="DishRecipe"
-              component={DishRecipesScreen}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="DishRecipeDetails"
-              component={DishRecipeDetails}
-            />
-            <Stack.Screen name="Ingredients" component={IngredientsScreen} />
-          </>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ThemeProvider>
+    <AuthProviderGoogle>
+      <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Welcome">
+            <>
+              <Stack.Screen
+                name="Welcome"
+                component={WelcomeScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Home"
+                component={MyTabs}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="Recipe" component={MainCategoryScreen} />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="SubCategory"
+                component={SubCategoryScreen}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="DishRecipe"
+                component={DishRecipesScreen}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="DishRecipeDetails"
+                component={DishRecipeDetails}
+              />
+              <Stack.Screen name="Ingredients" component={IngredientsScreen} />
+            </>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
+    </AuthProviderGoogle>
   );
 }

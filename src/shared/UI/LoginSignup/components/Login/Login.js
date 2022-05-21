@@ -11,6 +11,7 @@ import {
 import { useThemeAwareObject } from '../../../../../hooks/themeAwareObject';
 import { createStylesForm } from '../../../../styles/form.style';
 import { useController, useForm } from 'react-hook-form';
+import CustomButton from '../../../CustomButton/CustomButton';
 
 function FormField({ label, children }) {
   const Styles = useThemeAwareObject(createStylesForm);
@@ -96,7 +97,11 @@ export default function Login() {
       <FormField label={formNames.repeatPassword.label}>
         <HookFormInput control={control} name={formNames.repeatPassword.name} />
       </FormField>
-      <Button title="Create an account" onPress={handleSubmit(onSubmit)} />
+      <CustomButton
+        text="Create an Account"
+        style={{ marginTop: 18 }}
+        onPress={handleSubmit(onSubmit)}
+      />
     </>
   );
 }
