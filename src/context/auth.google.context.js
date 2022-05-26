@@ -32,6 +32,7 @@ export const AuthProviderGoogle = ({ initial, children }) => {
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         // play services not available or outdated
       } else {
+        console.log(error, 'error');
         // some other error happened
       }
     }
