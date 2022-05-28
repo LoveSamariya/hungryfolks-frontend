@@ -11,16 +11,29 @@ export default function CustomButton({
 }) {
   const Styles = useThemeAwareObject(createStyles);
   const btnVariantStyle = Styles[`btn${variant}`] || Styles.btnPrimary;
-  const btnVariantTextStyle =
-    Styles[`btnText${variant}`] || Styles.btnTextPrimary;
+  const btnVariantLabelStyle =
+    Styles[`btnLabel${variant}`] || Styles.btnTextPrimary;
+
+  // for manage Text Variant
+  let textButtonStyle = {};
+  if (variant.search('Text') > -1) {
+    textButtonStyle = {
+      paddingHorizontal: 12,
+    };
+  }
   return (
     <TouchableHighlight
       underlayColor="transperent"
       onPress={() => {
         onPress && onPress();
       }}
-      style={{ ...Styles.btnBase, ...btnVariantStyle, ...style }}>
-      <Text style={{ ...Styles.btnTextBase, ...btnVariantTextStyle }}>
+      style={{
+        ...Styles.btnBase,
+        ...textButtonStyle,
+        ...btnVariantStyle,
+        ...style,
+      }}>
+      <Text style={{ ...Styles.btnTextBase, ...btnVariantLabelStyle }}>
         {text}
       </Text>
     </TouchableHighlight>
