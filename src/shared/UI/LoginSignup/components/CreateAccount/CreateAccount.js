@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useForm } from 'react-hook-form';
-import { EMAIL_REGEX } from '../../../../regex';
+import { EMAIL_REGEX, NUMBER_REGEX } from '../../../../regex';
 import CustomButton from '../../../CustomButton/CustomButton';
 import { FormField, HookFormInput } from '../../../Form/Form';
 
@@ -71,6 +71,7 @@ export default function CreateAccount({ onCreateAccountPressed }) {
             },
           }}
           required
+          keyboardType={'email-address'}
         />
       </FormField>
       <FormField label={formNames.age.label}>
@@ -80,10 +81,11 @@ export default function CreateAccount({ onCreateAccountPressed }) {
           required
           rules={{
             pattern: {
-              value: /^(0|[1-9]\d*)(\.\d+)?$/,
+              value: NUMBER_REGEX,
               message: 'Please enter valid age.',
             },
           }}
+          keyboardType={'numeric'}
         />
       </FormField>
       <FormField label={formNames.password.label}>
@@ -91,6 +93,7 @@ export default function CreateAccount({ onCreateAccountPressed }) {
           control={control}
           name={formNames.password.name}
           required
+          secureTextEntry={true}
         />
       </FormField>
       <FormField label={formNames.repeatPassword.label}>
@@ -99,6 +102,7 @@ export default function CreateAccount({ onCreateAccountPressed }) {
           name={formNames.repeatPassword.name}
           onChange={() => setError(formNames.repeatPassword.name, '')}
           required
+          secureTextEntry={true}
         />
       </FormField>
       <CustomButton

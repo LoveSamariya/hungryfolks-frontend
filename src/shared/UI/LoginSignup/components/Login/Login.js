@@ -48,6 +48,7 @@ export default function Login({ onLoginPressed, loginError }) {
               message: 'Please enter a valid email address.',
             },
           }}
+          keyboardType={'email-address'}
         />
       </FormField>
 
@@ -56,6 +57,7 @@ export default function Login({ onLoginPressed, loginError }) {
           control={control}
           name={formNames.password.name}
           required
+          secureTextEntry={true}
         />
       </FormField>
       <View>

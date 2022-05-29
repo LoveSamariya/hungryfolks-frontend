@@ -30,6 +30,7 @@ export function HookFormInput({
   required = false,
   rules,
   onChange,
+  ...rest
 }) {
   const Styles = useThemeAwareObject(createStylesForm);
   const controllerRules = {
@@ -56,6 +57,7 @@ export function HookFormInput({
 
           field.onChange(val);
         }}
+        {...rest}
       />
       {invalid && <Text style={Styles.errorMessage}> {error.message}</Text>}
     </>
