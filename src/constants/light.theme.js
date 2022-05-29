@@ -14,6 +14,7 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   gray2: '#E5DCC3',
   gray3: '#878787',
   gray4: '#f5f5f5',
+  danger: '#ff0000',
 };
 
 const defaultSpacingFactor = 16;

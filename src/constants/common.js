@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 export const dFlex = {
   dFlex: {
     display: 'flex',
@@ -58,4 +60,13 @@ export const textCenter = {
   textCenter: {
     textAlign: 'center',
   },
+};
+
+export const commonCreateStyle = theme => {
+  const styles = StyleSheet.create({
+    textDanger: {
+      color: theme.color.danger,
+    },
+  });
+  return styles;
 };

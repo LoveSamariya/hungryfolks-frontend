@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
 import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
-import { CreateAccount, Login } from './components';
+import { CreateAccount, Login, OtpVerification } from './components';
 import { createStyles } from './LoginSignup.style';
 import { GoogleSigninButtonContainer } from '../../../shared';
 import CustomButton from '../CustomButton/CustomButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetLoginError } from '../../../services/auth/auth.slice';
 
-export default function LoginSignup() {
+export default function LoginSignup({
+  onLoginPressed,
+  onCreateAccountPressed,
+  onOtpVerificationPressed,
+  showFormOfThis,
+  setShowFormOfThis,
+  loginError,
+}) {
   const Styles = useThemeAwareObject(createStyles);
-  const [showFormOfThis, setShowFormOfThis] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(resetLoginError(null));
+  }, [showFormOfThis]);
 
   return (
     <SafeAreaView style={{ flex: 1, height: '100%' }}>
@@ -41,7 +54,7 @@ export default function LoginSignup() {
             <Text style={Styles.heading} underlayColor>
               Login
             </Text>
-            <Login />
+            <Login onLoginPressed={onLoginPressed} loginError={loginError} />
             <View
               style={{
                 display: 'flex',
@@ -65,7 +78,7 @@ export default function LoginSignup() {
             <Text style={Styles.heading} underlayColor>
               Create an account
             </Text>
-            <CreateAccount />
+            <CreateAccount onCreateAccountPressed={onCreateAccountPressed} />
             <View
               style={{
                 display: 'flex',
@@ -84,6 +97,20 @@ export default function LoginSignup() {
                 />
               </View>
             </View>
+          </View>
+        )}
+        {showFormOfThis == 'otp' && (
+          <View style={Styles.formBox}>
+            <Text style={Styles.heading} underlayColor>
+              OTP Verification
+            </Text>
+            <Text style={Styles.textGrey1}>
+              An otp has been sent to your email address. Please enter otp to
+              verify.
+            </Text>
+            <OtpVerification
+              onOtpVerificationPressed={onOtpVerificationPressed}
+            />
           </View>
         )}
         <View

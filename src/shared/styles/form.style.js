@@ -17,6 +17,14 @@ export const createStylesForm = theme => {
       color: theme.color.onSurface,
       marginBottom: 4,
     },
+    inputInvalid: {
+      color: theme.color.danger,
+      borderColor: theme.color.danger,
+    },
+    errorMessage: {
+      color: theme.color.danger,
+      marginTop: 4,
+    },
   });
   return styles;
 };

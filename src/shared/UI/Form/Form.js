@@ -24,20 +24,40 @@ export function FormField({ label, children }) {
   );
 }
 
-export function HookFormInput({ control, name }) {
+export function HookFormInput({
+  control,
+  name,
+  required = false,
+  rules,
+  onChange,
+}) {
   const Styles = useThemeAwareObject(createStylesForm);
-
+  const controllerRules = {
+    required: required ? `${name} is required` : false,
+    ...rules,
+  };
   const {
     field,
-    fieldState: { invalid, isTouched, isDirty },
+    fieldState: { invalid, isTouched, isDirty, error },
     formState: { touchedFields, dirtyFields },
   } = useController({
     name,
     control,
-    rules: { required: true },
+    rules: controllerRules,
   });
-
+  const errorStatusStyle = invalid ? Styles.inputInvalid : {};
   return (
-    <TextInput style={Styles.input} {...field} onChangeText={field.onChange} />
+    <>
+      <TextInput
+        style={{ ...Styles.input, ...errorStatusStyle }}
+        {...field}
+        onChangeText={val => {
+          if (onChange) onChange(val);
+
+          field.onChange(val);
+        }}
+      />
+      {invalid && <Text style={Styles.errorMessage}> {error.message}</Text>}
+    </>
   );
 }

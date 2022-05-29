@@ -9,8 +9,11 @@ import {
   ingredientsApi,
 } from '../src/screens';
 
+import { authSlice } from '../src/services/auth/auth.slice';
+
 export const store = configureStore({
   reducer: {
+    auth: authSlice.reducer,
     [mainCategoryApi.reducerPath]: mainCategoryApi.reducer,
     [subCategoryApi.reducerPath]: subCategoryApi.reducer,
     [dishRecipes.reducerPath]: dishRecipes.reducer,

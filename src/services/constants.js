@@ -1,3 +1,6 @@
+export const CREATE_ACCOUNT = '/Create-Account';
+export const LOGIN = '/Login';
+
 export const MAIN_CATEGORY = '/MainCategory';
 export const SUB_CATEGORY = '/SubCategory';
 export const DISH_RECIPE = '/DishRecipe';
