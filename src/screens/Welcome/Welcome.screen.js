@@ -6,6 +6,7 @@ import {
   createAccount,
   createAccountReq,
   loginReq,
+  otpVerifyReq,
   selectLoginError,
   useCreateAccountMutation,
   useLoginMutation,
@@ -25,7 +26,7 @@ const createStyles = theme => {
   return styles;
 };
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
   const { signOut } = useGoogleAuth();
   const dispatch = useDispatch();
   const Styles = useThemeAwareObject(createStyles);
@@ -33,10 +34,12 @@ export default function WelcomeScreen() {
 
   const loginError = useSelector(selectLoginError);
 
-  const onCreateAccountPressed = async userInfo => {
-    const k = await dispatch(createAccountReq(userInfo));
-    console.log(k);
+  const onCreateAccountProceed = () => {
     setShowFormOfThis('otp');
+  };
+
+  const onCreateAccountPressed = async userInfo => {
+    dispatch(createAccountReq({ userInfo, onCreateAccountProceed }));
   };
 
   const onLoginPressed = async userInfo => {
@@ -45,7 +48,13 @@ export default function WelcomeScreen() {
 
   const onOtpVerificationPressed = async otpCode => {
     console.log(otpCode);
+    dispatch(otpVerifyReq({ otpCode, onOtpVerified }));
   };
+
+  const onOtpVerified = () => {
+    navigation.navigate('Home');
+  };
+
   return (
     <View style={{ flex: 1, height: '100%' }}>
       <View>

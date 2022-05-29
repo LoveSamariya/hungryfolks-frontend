@@ -113,14 +113,16 @@ export default function LoginSignup({
             />
           </View>
         )}
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <GoogleSigninButtonContainer />
-        </View>
+        {showFormOfThis != 'otp' && (
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <GoogleSigninButtonContainer />
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

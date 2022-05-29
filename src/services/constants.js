@@ -1,5 +1,6 @@
 export const CREATE_ACCOUNT = '/Create-Account';
 export const LOGIN = '/Login';
+export const VERIFY_OTP = '/Verify-otp';
 
 export const MAIN_CATEGORY = '/MainCategory';
 export const SUB_CATEGORY = '/SubCategory';

@@ -26,7 +26,11 @@ export default function Login({ onOtpVerificationPressed }) {
     <>
       <View style={{ marginTop: 12 }}>
         <FormField label={formNames.otp.label}>
-          <HookFormInput control={control} name={formNames.otp.name} />
+          <HookFormInput
+            control={control}
+            name={formNames.otp.name}
+            keyboardType={'numeric'}
+          />
         </FormField>
       </View>
       <CustomButton
