@@ -1,11 +1,13 @@
+import * as React from 'react';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import * as React from 'react';
-import { Image, StatusBar } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { DEFAULT_LIGHT_THEME } from './src/constants/light.theme.js';
-import { ThemeProvider, useTheme } from './src/context/thme.context.js';
 
 import { AuthProviderGoogle } from './src/context/auth.google.context';
+import { ThemeProvider, useTheme } from './src/context/thme.context';
 
 import {
   DishRecipeDetails,
@@ -14,32 +16,38 @@ import {
   MainCategoryScreen,
   SubCategoryScreen,
   WelcomeScreen,
+  CreateAccountScreen,
+  OtpScreen,
+  LoginScreen,
+  ProfileScreen,
+  CreditsScreen,
 } from './src/screens';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { useCommonStyle } from './src/hooks/commonStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const screenOptions = {
-  headerShown: false,
-  tabBarStyle: {
-    backgroundColor: '#ffffff',
-    borderWidth: 0,
-    borderTopWidth: 0,
-    elevation: 0,
-    color: 'red',
-  },
-  tabBarItemStyle: {
-    borderRadius: 10,
-    color: 'red',
-  },
-  tabBarActiveTintColor: '#fa004c',
-  tabBarInactiveTintColor: '#AAA492',
-};
-
 function MyTabs() {
+  const { theme } = useTheme();
+  const screenOptions = {
+    headerShown: false,
+    tabBarStyle: {
+      backgroundColor: '#ffffff',
+      borderWidth: 0,
+      borderTopWidth: 0,
+      elevation: 0,
+      color: 'red',
+    },
+    tabBarItemStyle: {
+      borderRadius: 10,
+      color: 'red',
+    },
+    tabBarActiveTintColor: theme.color.highlight1,
+    tabBarInactiveTintColor: theme.color.gray5,
+  };
   return (
     <Tab.Navigator {...{ screenOptions }}>
       <Tab.Screen
@@ -51,7 +59,7 @@ function MyTabs() {
               <FontAwesomeIcon
                 icon={faBowlRice}
                 size={24}
-                color={focused ? '#fa004c' : '#AAA492'}
+                color={focused ? theme.color.highlight1 : theme.color.gray5}
               />
             );
           },
@@ -66,7 +74,7 @@ function MyTabs() {
               <FontAwesomeIcon
                 icon={faPuzzlePiece}
                 size={24}
-                color={focused ? '#fa004c' : '#AAA492'}
+                color={focused ? theme.color.highlight1 : theme.color.gray5}
               />
             );
           },
@@ -86,6 +94,31 @@ export default function App() {
               <Stack.Screen
                 name="Welcome"
                 component={WelcomeScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CreateAccount"
+                component={CreateAccountScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Otp"
+                component={OtpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Credits"
+                component={CreditsScreen}
                 options={{ headerShown: false }}
               />
               <Stack.Screen

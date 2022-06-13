@@ -6,11 +6,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const loginReq = createAsyncThunk(
   `auth/login`,
-  async (userInfo, { rejectWithValue }) => {
+  async ({ userInfo, onLoginSuccess }, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}${LOGIN}`, userInfo);
       return response.data;
     } catch (err) {
+      onLoginSuccess();
       return rejectWithValue(err.response.data);
     }
   },
@@ -24,7 +25,6 @@ export const createAccountReq = createAsyncThunk(
       return response.data;
     } catch (err) {
       onCreateAccountProceed();
-
       return rejectWithValue(err.response.data);
     }
   },
@@ -48,6 +48,9 @@ export const authSlice = createSlice({
   initialState: {
     loginError: null,
     otpVerifyError: null,
+    isLoginLoading: false,
+    isCreateAccountLoading: false,
+    isOtpLoading: false,
   },
   reducers: {
     resetLoginError(state) {
@@ -57,26 +60,39 @@ export const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      .addCase(createAccountReq.pending, (state, action) => {
+        state.isCreateAccountLoading = true;
+      })
       .addCase(createAccountReq.fulfilled, (state, action) => {
         console.log(action.payload);
       })
       .addCase(createAccountReq.rejected, (state, action) => {
         console.log(action.payload, 'asd');
+        state.isCreateAccountLoading = false;
       });
 
     builder
+      .addCase(loginReq.pending, (state, action) => {
+        state.isLoginLoading = true;
+      })
       .addCase(loginReq.fulfilled, (state, action) => {
         console.log(action.payload);
       })
       .addCase(loginReq.rejected, (state, action) => {
+        state.isLoginLoading = false;
         state.loginError = action.payload;
       });
 
     builder
+      .addCase(otpVerifyReq.pending, (state, action) => {
+        state.isOtpLoading = true;
+      })
       .addCase(otpVerifyReq.fulfilled, (state, action) => {
         console.log(action.payload);
       })
       .addCase(otpVerifyReq.rejected, (state, action) => {
+        state.isOtpLoading = false;
+
         state.otpVerifyError = action.payload;
       });
   },
@@ -85,3 +101,7 @@ export const authSlice = createSlice({
 export const { resetLoginError } = authSlice.actions;
 
 export const selectLoginError = state => state.auth.loginError;
+export const selectLoginLoadingState = state => state.auth.isLoginLoading;
+export const selectCreateAccountLoadingState = state =>
+  state.auth.isCreateAccountLoading;
+export const selectOtpLoadingState = state => state.auth.isOtpLoading;

@@ -6,10 +6,10 @@ export const createStylesForm = theme => {
       marginBottom: 16,
     },
     input: {
-      backgroundColor: theme.color.gray1,
+      backgroundColor: theme.color.gray2,
       color: theme.color.onSurface,
       borderBottomWidth: 2,
-      borderColor: theme.color.gray2,
+      borderColor: theme.color.gray3,
       fontSize: 20,
     },
     input_label: {

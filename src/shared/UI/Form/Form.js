@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import { Text, View, TextInput } from 'react-native';
 
 import { useController } from 'react-hook-form';
 
@@ -29,12 +22,13 @@ export function HookFormInput({
   name,
   required = false,
   rules,
+  label,
   onChange,
   ...rest
 }) {
   const Styles = useThemeAwareObject(createStylesForm);
   const controllerRules = {
-    required: required ? `${name} is required` : false,
+    required: required ? `${label || name} is required` : false,
     ...rules,
   };
   const {

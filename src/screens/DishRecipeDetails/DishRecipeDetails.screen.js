@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useWindowDimensions } from 'react-native';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import { useGetDishRecipeFromCodeQuery } from './dishRecipeDetails.services';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
+import { BackButton, AuthModal, CustomButton, TopBar } from '../../shared';
 // import {WebView} from 'react-native';
 
 function TableListData({ styles: Styles, title, info, icon }) {
@@ -88,10 +89,9 @@ const createStyles = theme => {
     },
     headerAsBreadCrums: {
       height: 124,
-      backgroundColor: theme.color.secondary,
+      backgroundColor: theme.color.highlight1,
       display: 'flex',
       // alignItems: 'center',
-      justifyContent: 'center',
     },
     headerAsBreadCrumsTitle: {
       fontSize: 24,
@@ -223,19 +223,21 @@ const createStyles = theme => {
 };
 const systemFonts = [...defaultSystemFonts, 'serif'];
 
-export default function DishRecipeDetails({ route }) {
+export default function DishRecipeDetails({ route, navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const { code } = route.params;
 
   const { data, error, isLoading } = useGetDishRecipeFromCodeQuery(code);
   const { width } = useWindowDimensions();
-
+  console.log(data);
   const {
     name,
     description,
     mainCategory,
     subCategory,
     calories,
-    cookingTime,
+    preparationTime,
     instructions,
     carbohydrates,
     fat,
@@ -250,16 +252,23 @@ export default function DishRecipeDetails({ route }) {
   } = data || {};
 
   const Styles = useThemeAwareObject(createStyles);
+
   const renderHtmlElementStyle = {
     color: '#000000',
     marginBottom: 24,
-    paddingLeft: 16,
     fontFamily: "'Roboto Condensed', sans-serif",
     fontSize: 16,
     fontWeight: '500',
   };
   const renderHtmlStyle = {
-    li: renderHtmlElementStyle,
+    ul: {
+      ...renderHtmlElementStyle,
+      paddingLeft: 18,
+      marginTop: 0,
+      marginBottom: 0,
+    },
+    ol: { ...renderHtmlElementStyle, paddingLeft: 18 },
+    li: { ...renderHtmlElementStyle, paddingLeft: 8 },
     p: renderHtmlElementStyle,
     h1: renderHtmlElementStyle,
     h2: renderHtmlElementStyle,
@@ -272,8 +281,12 @@ export default function DishRecipeDetails({ route }) {
   };
   return (
     <>
+      <TopBar navigation={navigation} />
       <SafeAreaView style={Styles.pageBgColor}>
-        <ScrollView style={{ height: '100%' }}>
+        <ScrollView
+          style={{ height: '100%' }}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
           <View style={Styles.headerAsBreadCrums}></View>
           <View>
             <LoaderLayout isLoading={isLoading}>
@@ -289,14 +302,16 @@ export default function DishRecipeDetails({ route }) {
                   {/* <Text style={Styles.onSurface}>
                 {mainCategory} / {subCategory}
               </Text> */}
-                  <Text
-                    style={{
-                      ...Styles.onSurface,
-                      ...Styles.mbDetail,
-                      ...Styles.infoTextFontFamily,
-                    }}>
-                    {description}
-                  </Text>
+                  {!!description && (
+                    <Text
+                      style={{
+                        ...Styles.onSurface,
+                        ...Styles.mbDetail,
+                        ...Styles.infoTextFontFamily,
+                      }}>
+                      {description}
+                    </Text>
+                  )}
 
                   {keywords?.length > 0 && (
                     <View
@@ -326,10 +341,14 @@ export default function DishRecipeDetails({ route }) {
                       })}
                     </View>
                   )}
+                  {/* <CustomButton
+                    text="Open"
+                    onPress={() => setModalVisible(true)}
+                  /> */}
 
                   <View style={{ ...Styles.box, ...Styles.mtHeadingTiny }}>
                     <View style={Styles.infoTable}>
-                      {subCategory && (
+                      {!!subCategory && (
                         <View style={Styles.infoTableColumn}>
                           <TableListData
                             styles={Styles}
@@ -338,7 +357,7 @@ export default function DishRecipeDetails({ route }) {
                           />
                         </View>
                       )}
-                      {mainCategory && (
+                      {!!mainCategory && (
                         <View style={Styles.infoTableColumn}>
                           <TableListData
                             styles={Styles}
@@ -348,7 +367,7 @@ export default function DishRecipeDetails({ route }) {
                         </View>
                       )}
 
-                      {subCategory && mainCategory && (
+                      {!!subCategory && !!mainCategory && (
                         <View
                           style={{
                             ...Styles.w100,
@@ -361,17 +380,17 @@ export default function DishRecipeDetails({ route }) {
                         </View>
                       )}
 
-                      {dishType && (
+                      {!!preparationTime && (
                         <View style={Styles.infoTableColumn}>
                           <TableListData
                             styles={Styles}
-                            title={'Dish type'}
-                            info={dishType}
+                            title={'Preparation time'}
+                            info={preparationTime}
                           />
                         </View>
                       )}
 
-                      {calories && (
+                      {!!calories && (
                         <View style={Styles.infoTableColumn}>
                           <TableListData
                             styles={Styles}
@@ -381,7 +400,7 @@ export default function DishRecipeDetails({ route }) {
                         </View>
                       )}
 
-                      {calories && dishType && (
+                      {!!(calories && preparationTime && restingTime) && (
                         <View
                           style={{
                             ...Styles.w100,
@@ -394,17 +413,7 @@ export default function DishRecipeDetails({ route }) {
                         </View>
                       )}
 
-                      {cookingTime && (
-                        <View style={Styles.infoTableColumn}>
-                          <TableListData
-                            styles={Styles}
-                            title={'Cooking time'}
-                            info={cookingTime}
-                          />
-                        </View>
-                      )}
-
-                      {restingTime && (
+                      {!!restingTime && (
                         <View style={Styles.infoTableColumn}>
                           <TableListData
                             styles={Styles}
@@ -416,7 +425,7 @@ export default function DishRecipeDetails({ route }) {
                     </View>
                   </View>
 
-                  {ingredients && (
+                  {!!ingredients && (
                     <>
                       <Text
                         style={{
@@ -437,7 +446,7 @@ export default function DishRecipeDetails({ route }) {
                     </>
                   )}
 
-                  {instructions && (
+                  {!!instructions && (
                     <>
                       <Text
                         style={{
@@ -457,7 +466,7 @@ export default function DishRecipeDetails({ route }) {
                     </>
                   )}
 
-                  {notes && (
+                  {!!notes && (
                     <>
                       <Text
                         style={{
@@ -476,7 +485,7 @@ export default function DishRecipeDetails({ route }) {
                       </View>
                     </>
                   )}
-                  {(carbohydrates || fat || protein || sugar) && (
+                  {!!(carbohydrates || fat || protein || sugar) && (
                     <>
                       <Text
                         style={{
@@ -494,7 +503,7 @@ export default function DishRecipeDetails({ route }) {
                           ...Styles.flexWrap,
                         }}>
                         <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {carbohydrates && (
+                          {!!carbohydrates && (
                             <Text style={Styles.onSurface}>
                               <Text style={Styles.greyText}>
                                 {' '}
@@ -505,14 +514,14 @@ export default function DishRecipeDetails({ route }) {
                           )}
                         </View>
                         <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {fat && (
+                          {!!fat && (
                             <Text style={Styles.onSurface}>
                               <Text style={Styles.greyText}> fat</Text> - {fat}
                             </Text>
                           )}
                         </View>
                         <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {protein && (
+                          {!!protein && (
                             <Text style={Styles.onSurface}>
                               <Text style={Styles.greyText}> protein</Text> -{' '}
                               {protein}
@@ -520,7 +529,7 @@ export default function DishRecipeDetails({ route }) {
                           )}
                         </View>
                         <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {sugar && (
+                          {!!sugar && (
                             <Text style={Styles.onSurface}>
                               <Text style={Styles.greyText}> sugar</Text> -{' '}
                               {sugar}
@@ -554,6 +563,11 @@ export default function DishRecipeDetails({ route }) {
               </View>
             </LoaderLayout>
           </View>
+          <AuthModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            navigation={navigation}
+          />
         </ScrollView>
       </SafeAreaView>
     </>

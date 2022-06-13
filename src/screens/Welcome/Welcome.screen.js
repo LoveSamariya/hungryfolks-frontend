@@ -1,76 +1,51 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, View, Button, Text } from 'react-native';
-import { useGoogleAuth } from '../../context/auth.google.context';
-import { useThemeAwareObject } from '../../hooks/themeAwareObject';
+import React from 'react';
 import {
-  createAccount,
-  createAccountReq,
-  loginReq,
-  otpVerifyReq,
-  selectLoginError,
-  useCreateAccountMutation,
-  useLoginMutation,
-} from '../../services/auth/auth.slice';
-import { LoginSignup } from '../../shared';
-import CustomButton from '../../shared/UI/CustomButton/CustomButton';
-import { useDispatch, useSelector } from 'react-redux';
+  Image,
+  View,
+  Text,
+  TouchableHighlight,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 
-const createStyles = theme => {
-  const styles = StyleSheet.create({
-    logo: {
-      maxWidth: '100%',
-      height: 250,
-      display: 'flex',
-    },
-  });
-  return styles;
-};
+import createStyles from './Welcome.style';
+import { useThemeAwareObject } from '../../hooks/themeAwareObject';
+
+import { AuthMethods, CustomStatusBar } from '../../shared';
 
 export default function WelcomeScreen({ navigation }) {
-  const { signOut } = useGoogleAuth();
-  const dispatch = useDispatch();
   const Styles = useThemeAwareObject(createStyles);
-  const [showFormOfThis, setShowFormOfThis] = useState('');
-
-  const loginError = useSelector(selectLoginError);
-
-  const onCreateAccountProceed = () => {
-    setShowFormOfThis('otp');
-  };
-
-  const onCreateAccountPressed = async userInfo => {
-    dispatch(createAccountReq({ userInfo, onCreateAccountProceed }));
-  };
-
-  const onLoginPressed = async userInfo => {
-    dispatch(loginReq(userInfo));
-  };
-
-  const onOtpVerificationPressed = async otpCode => {
-    console.log(otpCode);
-    dispatch(otpVerifyReq({ otpCode, onOtpVerified }));
-  };
-
-  const onOtpVerified = () => {
-    navigation.navigate('Home');
-  };
 
   return (
-    <View style={{ flex: 1, height: '100%' }}>
-      <View>
-        <Image
-          style={Styles.logo}
-          source={require('../../assets/images/logo/logo.png')}
-        />
-      </View>
-      <LoginSignup
-        showFormOfThis={showFormOfThis}
-        setShowFormOfThis={setShowFormOfThis}
-        onLoginPressed={onLoginPressed}
-        onCreateAccountPressed={onCreateAccountPressed}
-        onOtpVerificationPressed={onOtpVerificationPressed}
-        loginError={loginError}
-      />
+    <View style={{ ...Styles.pageBgColor, flex: 1, height: '100%' }}>
+      <CustomStatusBar variant="secondary" />
+
+      <SafeAreaView style={{ flex: 1, height: '100%', display: 'flex' }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={Styles.logoContainer}>
+            <Image
+              style={Styles.logo}
+              source={require('../../assets/images/logo/logo.png')}
+            />
+          </View>
+          <View style={Styles.authArea}>
+            <AuthMethods navigation={navigation} />
+            <TouchableHighlight
+              underlayColor="transperent"
+              onPress={() => {
+                navigation.navigate('Home');
+              }}>
+              <Text style={{ marginTop: 12, textDecorationLine: 'underline' }}>
+                Continue as guest
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }

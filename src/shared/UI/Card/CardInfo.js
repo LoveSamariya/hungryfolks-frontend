@@ -70,7 +70,7 @@ export default function CardInfo({
           {children}
           <Image style={Styles.img} source={{ uri: image }} />
         </View>
-        <View style={{ display: 'flex', flexDirection: 'column' }}>
+        <View style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           <Text style={Styles.cardText}>{title}</Text>
           <View
             style={{

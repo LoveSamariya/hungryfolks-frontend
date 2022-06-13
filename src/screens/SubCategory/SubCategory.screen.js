@@ -1,7 +1,16 @@
-import React, { useEffect } from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import React from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
+import { CustomStatusBar, TopBar, LoaderLayout } from '../../shared';
+
 import { useGetSubCategoryQuery } from './subCategory.services';
 import qs from 'qs';
 import { useGetMainCategoryQuery } from '../MainCategory/recipes.services';
@@ -10,6 +19,7 @@ const createStyles = theme => {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: theme.color.pageBgColor,
+      height: '100%',
       color: theme.color.onSurface,
       flex: 1,
       padding: theme.spacing[5],
@@ -17,15 +27,15 @@ const createStyles = theme => {
     },
     headerAsBreadCrums: {
       height: 124,
-      backgroundColor: theme.color.secondary,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      backgroundColor: theme.color.highlight1,
     },
     headerAsBreadCrumsTitle: {
       fontSize: 24,
       fontFamily: theme.fontFamily.primaryBold,
       color: '#ffffff',
+      textAlign: 'center',
+      marginTop: 'auto',
+      marginBottom: 32,
     },
     row: {
       display: 'flex',
@@ -64,11 +74,31 @@ export default function SubCategoryScreen({ navigation, route }) {
 
   return (
     <>
-      <View style={Styles.headerAsBreadCrums}>
-        <Text style={Styles.headerAsBreadCrumsTitle}> {name}</Text>
-      </View>
-      <View style={Styles.container}>
-        {/* <View style={Styles.cardOne}>
+      <CustomStatusBar variant="primary" />
+      <TopBar navigation={navigation} />
+
+      <SafeAreaView
+        style={{
+          flex: 1,
+          height: '100%',
+          display: 'flex',
+        }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          style={{ display: 'flex' }}
+          contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={Styles.headerAsBreadCrums}>
+            <Text style={Styles.headerAsBreadCrumsTitle}>{name}</Text>
+          </View>
+          <View
+            style={{
+              ...Styles.container,
+              flex: 1,
+              height: '100%',
+            }}>
+            {/* <View style={Styles.cardOne}>
           <View style={Styles.cardOneImgContainer}>
             <Image
               style={Styles.cardOneImg}
@@ -79,24 +109,28 @@ export default function SubCategoryScreen({ navigation, route }) {
             </View>
           </View>
         </View> */}
-        <View style={Styles.row}>
-          {subCategories?.map(({ name, image }) => {
-            return (
-              <View style={Styles.col} key={name}>
-                <Card
-                  key={name}
-                  title={name}
-                  onCardPressed={() => onCardPressed(name)}>
-                  <Image
-                    source={{ uri: image }}
-                    style={{ height: '100%', width: '100%' }}
-                  />
-                </Card>
+            <LoaderLayout isLoading={isLoading}>
+              <View style={{ ...Styles.row }}>
+                {subCategories?.map(({ name, image }) => {
+                  return (
+                    <View style={{ ...Styles.col }} key={name}>
+                      <Card
+                        key={name}
+                        title={name}
+                        onCardPressed={() => onCardPressed(name)}>
+                        <Image
+                          source={{ uri: image }}
+                          style={{ height: '100%', width: '100%' }}
+                        />
+                      </Card>
+                    </View>
+                  );
+                })}
               </View>
-            );
-          })}
-        </View>
-      </View>
+            </LoaderLayout>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </>
   );
 }

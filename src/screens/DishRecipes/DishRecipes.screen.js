@@ -17,6 +17,8 @@ import qs from 'qs';
 import { filtersEnum } from '../../constants/enum';
 import NoData from '../../shared/UI/NoData/NoData';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
+import { BackButton, TopBar } from '../../shared';
+
 const createStyles = theme => {
   const styles = StyleSheet.create({
     containerDetailsListing: {
@@ -24,7 +26,7 @@ const createStyles = theme => {
     },
     headerAsBreadCrums: {
       height: 124,
-      backgroundColor: theme.color.secondary,
+      backgroundColor: theme.color.highlight1,
       display: 'flex',
       justifyContent: 'center',
     },
@@ -78,7 +80,7 @@ const createStyles = theme => {
       paddingRight: theme.spacing[1],
     },
     searchWrapper: {
-      marginTop: theme.spacing[1],
+      marginTop: theme.spacing[9],
       paddingLeft: theme.spacing[3],
       paddingRight: theme.spacing[3],
     },
@@ -204,10 +206,8 @@ export default function DishRecipesScreen({ navigation, route }) {
 
   return (
     <>
+      <TopBar navigation={navigation} />
       <View style={Styles.headerAsBreadCrums}>
-        <Text style={Styles.headerAsBreadCrumsTitle}>
-          {/* {customTitle ? customTitle : `${name} / ${subtitle}`} */}
-        </Text>
         <SafeAreaView style={Styles.searchWrapper}>
           <Search
             onSearchValueChange={onSearchValueChange}
@@ -221,7 +221,8 @@ export default function DishRecipesScreen({ navigation, route }) {
         <ScrollView
           horizontal={true}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <View style={{ ...Styles.filterChipsContainer, ...Styles.listingBg }}>
             <Chips
               Styles={Styles}
@@ -247,7 +248,10 @@ export default function DishRecipesScreen({ navigation, route }) {
       </SafeAreaView>
       <SafeAreaView style={Styles.cardListing}>
         <LoaderLayout isLoading={isLoading}>
-          <ScrollView>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled">
             {dishRecipes?.map(({ name, image, rating, code }) => {
               return (
                 <CardInfo

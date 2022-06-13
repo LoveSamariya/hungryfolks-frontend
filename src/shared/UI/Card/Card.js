@@ -1,10 +1,19 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {useTheme} from '../../../context/thme.context';
-import {useThemeAwareObject} from '../../../hooks/themeAwareObject';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
+import { useTheme } from '../../../context/thme.context';
+import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
+    cardContainer: {
+      flex: 1,
+    },
     card: {
       borderRadius: 18,
       borderWidth: 1,
@@ -14,13 +23,14 @@ const createStyles = theme => {
       marginBottom: theme.spacing[1],
       shadowColor: theme.color.gray3,
       backgroundColor: theme.color.surface,
-      shadowOffset: {width: 0, height: 1},
+      shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.1,
       shadowRadius: 1,
       elevation: 2,
+      flex: 1,
     },
     cardText: {
-      paddingTop: theme.spacing[3],
+      marginTop: theme.spacing[3],
       color: theme.color.onSurface,
       fontFamily: theme.fontFamily.secondaryBlack,
     },
@@ -47,11 +57,11 @@ export default function Card({
   onCardPressed,
   children,
 }) {
-  const {theme} = useTheme();
   const Styles = useThemeAwareObject(createStyles);
 
   return (
     <TouchableHighlight
+      style={Styles.cardContainer}
       onPress={() => {
         onCardPressed();
       }}

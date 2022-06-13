@@ -5,7 +5,8 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   secondary: '#fa004c',
   onSecondary: '#ffffff',
   highlight: '#FFE800',
-  highlight1: '#fa004c',
+  highlight1: '#EB4F16',
+  lightHighlight1: '#f07f56',
   onHighlight: '#000000',
   surface: '#ffffff',
   pageBgColor: '#EEEEEE',
@@ -14,6 +15,7 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   gray2: '#E5DCC3',
   gray3: '#878787',
   gray4: '#f5f5f5',
+  gray5: '#AAA492',
   danger: '#ff0000',
 };
 

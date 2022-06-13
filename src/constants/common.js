@@ -67,6 +67,13 @@ export const commonCreateStyle = theme => {
     textDanger: {
       color: theme.color.danger,
     },
+    textGray3: {
+      color: theme.color.gray3,
+    },
+
+    textGray5: {
+      color: theme.color.gray5,
+    },
   });
   return styles;
 };

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   ScrollView,
+  // AsyncStorage,
 } from 'react-native';
 import { useState } from 'react';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
@@ -246,7 +247,7 @@ const createStyles = theme => {
       backgroundColor: '#028000',
     },
     helperTextRow: {
-      backgroundColor: '#fa004c',
+      backgroundColor: theme.color.highlight1,
       flexDirection: 'row',
       padding: 16,
     },
@@ -256,7 +257,6 @@ const createStyles = theme => {
       fontSize: 18,
       // opacity: 0.5,
       // marginBottom: 15,
-      backgroundColor: '#fa004c',
       color: 'white',
       display: 'flex',
       alignItems: 'center',
@@ -265,7 +265,7 @@ const createStyles = theme => {
     goNext: {
       width: 64,
       height: 64,
-      backgroundColor: '#fa004c',
+      backgroundColor: theme.color.highlight1,
       borderRadius: 64 / 2,
       position: 'absolute',
       bottom: 200,
@@ -327,10 +327,40 @@ export default function IngredientsScreen({ navigation }) {
     setSelectedTabName(ingredientMainCategories[0]?.name);
     setSelectedTab(ingredientMainCategories[0]?.name);
   }, [ingredientMainCategories?.length]);
-
+  // const localStorage = {
+  //   async getItem(key) {
+  //     try {
+  //       const value = await AsyncStorage.getItem(key);
+  //       if (value !== null) {
+  //         // We have data!!
+  //         return value;
+  //       }
+  //     } catch (error) {
+  //       // Error retrieving data
+  //     }
+  //   },
+  //   async setItem(key, value) {
+  //     try {
+  //       const data = await AsyncStorage.setItem(key, value);
+  //     } catch (error) {
+  //       throw error;
+  //     }
+  //   },
+  // };
   useEffect(() => {
     setSearchValue('');
   }, [selectedTab]);
+  // const saveIngredient = () => {
+  //   console.log(onIngPressed, 'SAVED');
+  //   localStorage.setItem('selectedIng', JSON.stringify(onIngPressed));
+  // };
+  // useEffect(() => {
+  //   localStorage.getItem('selectedIng').then(val => {
+  //     console.log(JSON.parse(val), 'LOADERD');
+  //     if (val) setonIngPressed(JSON.parse(val));
+  //   });
+  //   return () => {};
+  // }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -380,7 +410,7 @@ export default function IngredientsScreen({ navigation }) {
           </TouchableHighlight>
         )}
         <SafeAreaView>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps="handled">
             <View style={{ ...Styles.itemContainer }}>
               <View style={{ width: '100%' }}>
                 {!ingredientSubCategories?.length && !isLoading && <NoData />}
@@ -400,7 +430,10 @@ export default function IngredientsScreen({ navigation }) {
                           Styles={Styles}
                           selectedTab={selectedTab}
                           onIngPressed={onIngPressed}
-                          setonIngPressed={setonIngPressed}
+                          setonIngPressed={arg => {
+                            setonIngPressed(arg);
+                            // saveIngredient(arg);
+                          }}
                           name={name}
                         />
                       );
@@ -470,7 +503,8 @@ export default function IngredientsScreen({ navigation }) {
               <ScrollView
                 horizontal={true}
                 showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}>
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled">
                 <View
                   style={{
                     paddingHorizontal: 16,

@@ -11,7 +11,10 @@ const formNames = {
   },
 };
 
-export default function Login({ onOtpVerificationPressed }) {
+export default function OtpVerification({
+  onOtpVerificationPressed,
+  isLoading,
+}) {
   const { handleSubmit, control } = useForm({
     defaultValues: {},
     mode: 'onChange',
@@ -30,6 +33,7 @@ export default function Login({ onOtpVerificationPressed }) {
             control={control}
             name={formNames.otp.name}
             keyboardType={'numeric'}
+            required
           />
         </FormField>
       </View>
@@ -37,6 +41,7 @@ export default function Login({ onOtpVerificationPressed }) {
         text="Verify"
         style={{ marginTop: 18 }}
         onPress={handleSubmit(onSubmit)}
+        isLoading={isLoading}
       />
     </>
   );

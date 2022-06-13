@@ -26,6 +26,7 @@ function Search({
   value,
   controlledInput,
   onClosePressed,
+  style,
 }) {
   const [inputValue, onInputValueChange] = React.useState('');
 
@@ -38,7 +39,7 @@ function Search({
   }, [inputValue]);
 
   return (
-    <View style={{ position: 'relative' }}>
+    <View style={{ position: 'relative', ...style }}>
       <FontAwesomeIcon
         icon={faSearch}
         size={24}

@@ -1,13 +1,13 @@
-import { faTableList } from '@fortawesome/free-solid-svg-icons';
+import { faTableList, faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useCallback, useState } from 'react';
 import {
   Image,
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   View,
+  TouchableHighlight,
 } from 'react-native';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
@@ -16,7 +16,8 @@ import Search from './components/Search';
 import { useGetMainCategoryQuery } from './recipes.services';
 import qs from 'qs';
 import NoData from '../../shared/UI/NoData/NoData';
-
+import { CustomStatusBar, LoaderLayout } from '../../shared';
+import { useTheme } from '../../context/thme.context';
 const createStyles = theme => {
   const styles = StyleSheet.create({
     container: {
@@ -27,7 +28,7 @@ const createStyles = theme => {
       fontFamily: 'RobotoCondensed-Bold',
     },
     bottomGap: {
-      marginBottom: theme.spacing[5],
+      marginBottom: 42,
     },
     row: {
       display: 'flex',
@@ -68,6 +69,7 @@ const createStyles = theme => {
 
 export default function MainCategoryScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
+  const { theme } = useTheme();
   const [searchValue, setSearchValue] = useState('');
 
   const { data, error, isLoading } = useGetMainCategoryQuery(
@@ -89,42 +91,67 @@ export default function MainCategoryScreen({ navigation }) {
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#fa004c" />
+      <CustomStatusBar variant="primary" />
 
       <SafeAreaView style={Styles.container}>
         <View style={Styles.bottomGap}>
           <View style={{ paddingBottom: 8 }}>
-            <SafeAreaView>
-              <Search
-                placeholder="Search categories"
-                onSearchValueChange={onSearchValueChange}
-              />
+            <SafeAreaView
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <View style={{ flex: 1 }}>
+                <Search
+                  placeholder="Search categories"
+                  onSearchValueChange={onSearchValueChange}
+                />
+              </View>
+              <View style={{ marginLeft: 8 }}>
+                <TouchableHighlight
+                  underlayColor="transperent"
+                  onPress={() => {
+                    navigation.navigate('Profile');
+                  }}>
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    fill={theme.color.highlight1}
+                    size={24}
+                  />
+                </TouchableHighlight>
+              </View>
             </SafeAreaView>
           </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}>
-            <View style={Styles.headingGap}>
-              <FontAwesomeIcon
-                icon={faTableList}
-                size={24}
-                style={{ ...Styles.onSurface, ...Styles.headingIcon }}
-              />
-              <Heading1>Main categories</Heading1>
-            </View>
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled">
+            <View style={{ paddingBottom: 64 }}>
+              <LoaderLayout isLoading={isLoading}>
+                <View style={Styles.headingGap}>
+                  <FontAwesomeIcon
+                    icon={faTableList}
+                    size={24}
+                    style={{ ...Styles.onSurface, ...Styles.headingIcon }}
+                  />
+                  <Heading1>Main categories</Heading1>
+                </View>
 
-            <View style={Styles.row}>
-              {mainCategories?.map(({ name, id, image }) => {
-                return (
-                  <View style={Styles.col} key={name}>
-                    <Card
-                      title={name}
-                      onCardPressed={() => onCardPressed(id, name)}>
-                      <Image style={Styles.img} source={{ uri: image }} />
-                    </Card>
-                  </View>
-                );
-              })}
+                <View style={Styles.row}>
+                  {mainCategories?.map(({ name, id, image }) => {
+                    return (
+                      <View style={Styles.col} key={name}>
+                        <Card
+                          title={name}
+                          onCardPressed={() => onCardPressed(id, name)}>
+                          <Image style={Styles.img} source={{ uri: image }} />
+                        </Card>
+                      </View>
+                    );
+                  })}
+                </View>
+              </LoaderLayout>
             </View>
           </ScrollView>
           {!mainCategories?.length && !isLoading && <NoData />}
