@@ -16,6 +16,7 @@ import {
   GoogleSigninButtonContainer,
   BackButton,
   CustomStatusBar,
+  CustomPasswordInput,
 } from '../../shared';
 
 import {
@@ -28,18 +29,18 @@ import createStyles from './Login.style';
 
 const formNames = {
   email: {
-    name: 'Email',
+    name: 'email',
     label: 'Email address',
   },
   password: {
-    name: 'Password',
+    name: 'password',
     label: 'Password',
   },
 };
 
 const testData = {
-  Email: 'test123456@gmail.com',
-  Password: 'test@123456Test',
+  email: 'iamharshad.prajapati@gmail.com',
+  password: 'Admin@123',
 };
 
 export default function LoginScreen({ onLoginPressed, navigation }) {
@@ -59,6 +60,7 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
   const isLoading = useSelector(selectLoginLoadingState);
 
   const onLoginSuccess = () => {
+    navigation.popToTop();
     navigation.navigate('Home');
   };
 
@@ -102,12 +104,11 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
               />
             </FormField>
             <FormField label={formNames.password.label}>
-              <HookFormInput
+              <CustomPasswordInput
                 control={control}
                 name={formNames.password.name}
                 label={formNames.password.label}
                 required
-                secureTextEntry={true}
               />
             </FormField>
             <View>

@@ -14,6 +14,7 @@ import { OtpVerification } from '../../shared/UI/LoginSignup/components';
 
 import {
   otpVerifyReq,
+  resendOtpReq,
   selectOtpLoadingState,
 } from '../../services/auth/auth.slice';
 
@@ -34,10 +35,18 @@ export default function OtpScreen({ navigation }) {
     navigation.popToTop();
     navigation.navigate('Home');
   };
-  const onOtpVerificationPressed = otpCode => {
-    dispatch(otpVerifyReq({ otpCode, onOtpVerified }));
+  const onOtpVerificationPressed = otpData => {
+    dispatch(
+      otpVerifyReq({
+        verificationCode: otpData.verificationCode,
+        onOtpVerified,
+      }),
+    );
   };
 
+  const onResendOtpPressed = onResendOtpSuccess => {
+    dispatch(resendOtpReq({ onResendOtpSuccess }));
+  };
   return (
     <View style={Styles.page}>
       <CustomStatusBar variant="secondary" />
@@ -49,7 +58,8 @@ export default function OtpScreen({ navigation }) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}>
           <View style={{ marginBottom: 12 }}>
             <Image
               style={Styles.logo}
@@ -64,6 +74,7 @@ export default function OtpScreen({ navigation }) {
             </Text>
             <OtpVerification
               onOtpVerificationPressed={onOtpVerificationPressed}
+              onResendOtpPressed={onResendOtpPressed}
               isLoading={isLoading}
             />
           </View>

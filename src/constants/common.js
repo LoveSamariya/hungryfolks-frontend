@@ -70,7 +70,6 @@ export const commonCreateStyle = theme => {
     textGray3: {
       color: theme.color.gray3,
     },
-
     textGray5: {
       color: theme.color.gray5,
     },

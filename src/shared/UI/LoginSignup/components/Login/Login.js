@@ -9,11 +9,11 @@ import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
 
 const formNames = {
   email: {
-    name: 'Email',
+    name: 'email',
     label: 'Email',
   },
   password: {
-    name: 'Password',
+    name: 'password',
     label: 'Password',
   },
 };

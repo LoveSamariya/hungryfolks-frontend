@@ -21,11 +21,13 @@ import {
   LoginScreen,
   ProfileScreen,
   CreditsScreen,
+  ResetPasswordScreen,
 } from './src/screens';
 
 import { useCommonStyle } from './src/hooks/commonStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
+import { useUserInfoHook } from './src/hooks/userInfoHook';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -85,11 +87,14 @@ function MyTabs() {
 }
 
 export default function App() {
+  const user = useUserInfoHook();
+  const isLoggedIn = !!Object.keys(user).length;
+  const initialRouteName = isLoggedIn ? 'Home' : 'Welcome';
   return (
     <AuthProviderGoogle>
       <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Welcome">
+          <Stack.Navigator initialRouteName={initialRouteName}>
             <>
               <Stack.Screen
                 name="Welcome"
@@ -114,6 +119,11 @@ export default function App() {
               <Stack.Screen
                 name="Profile"
                 component={ProfileScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ResetPassword"
+                component={ResetPasswordScreen}
                 options={{ headerShown: false }}
               />
               <Stack.Screen

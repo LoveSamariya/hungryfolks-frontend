@@ -15,6 +15,7 @@ import {
   EMAIL_REGEX,
   NUMBER_REGEX,
   CustomStatusBar,
+  CustomPasswordInput,
 } from '../../shared';
 
 import createStyles from './CreateAccount.style';
@@ -28,33 +29,33 @@ import {
 
 const formNames = {
   name: {
-    name: 'Name',
+    name: 'name',
     label: 'Name',
   },
   email: {
-    name: 'Email',
+    name: 'email',
     label: 'Email',
   },
   age: {
-    name: 'Age',
+    name: 'age',
     label: 'Age',
   },
   password: {
-    name: 'Password',
+    name: 'password',
     label: 'Password',
   },
-  repeatPassword: {
-    name: 'repeatPassword',
+  confirmPassword: {
+    name: 'confirmPassword',
     label: 'Confirm Password',
   },
 };
 
 const testData = {
-  Name: 'Maximilian',
-  Email: 'max@gmail.com',
-  Age: '30',
-  Password: '123456',
-  repeatPassword: '123456',
+  name: 'Harshad prajapati',
+  email: 'iamharshad.prajapati+2@gmail.com',
+  age: '28',
+  password: 'Admin@123',
+  confirmPassword: 'Admin@123',
 };
 
 export default function CreateAccountScreen({ navigation }) {
@@ -72,7 +73,7 @@ export default function CreateAccountScreen({ navigation }) {
 
   const isLoading = useSelector(selectCreateAccountLoadingState);
   const passwordValue = watch(formNames.password.name);
-  const repeatPasswordValue = watch(formNames.repeatPassword.name);
+  const repeatPasswordValue = watch(formNames.confirmPassword.name);
   const Styles = useThemeAwareObject(createStyles);
 
   const onCreateAccountProceed = () => {
@@ -82,7 +83,7 @@ export default function CreateAccountScreen({ navigation }) {
   const onSubmit = userInfo => {
     console.log(userInfo, passwordValue, repeatPasswordValue);
     if (passwordValue != repeatPasswordValue) {
-      setError(formNames.repeatPassword.name, {
+      setError(formNames.confirmPassword.name, {
         type: 'custom',
         message: 'Password does not match',
       });
@@ -148,22 +149,20 @@ export default function CreateAccountScreen({ navigation }) {
               />
             </FormField>
             <FormField label={formNames.password.label}>
-              <HookFormInput
+              <CustomPasswordInput
                 control={control}
                 name={formNames.password.name}
                 label={formNames.password.label}
                 required
-                secureTextEntry={true}
               />
             </FormField>
-            <FormField label={formNames.repeatPassword.label}>
-              <HookFormInput
+            <FormField label={formNames.confirmPassword.label}>
+              <CustomPasswordInput
                 control={control}
-                name={formNames.repeatPassword.name}
-                label={formNames.repeatPassword.label}
-                onChange={() => setError(formNames.repeatPassword.name, '')}
+                name={formNames.confirmPassword.name}
+                label={formNames.confirmPassword.label}
+                onChange={() => setError(formNames.confirmPassword.name, '')}
                 required
-                secureTextEntry={true}
               />
             </FormField>
             <CustomButton

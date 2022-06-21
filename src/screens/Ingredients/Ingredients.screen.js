@@ -23,6 +23,7 @@ import {
 } from './Ingredients.services';
 import { vhCenter, w50 } from '../../constants/common';
 import NoData from '../../shared/UI/NoData/NoData';
+import { LoaderLayout } from '../../shared';
 
 function SelectableIngredient({
   Styles,
@@ -308,15 +309,25 @@ export default function IngredientsScreen({ navigation }) {
   const [selectedTabName, setSelectedTabName] = useState('');
   const [searchVal, setSearchValue] = useState('');
 
-  const { data: dataIngMainCategory } = useGetIngredientMainCategoryQuery('');
+  const {
+    data: dataIngMainCategory,
+    isFetching: isFetchingMainCategory,
+    isLoading: isLoadingMainCategory,
+  } = useGetIngredientMainCategoryQuery('');
 
-  const { data: dataSubCategory, isLoading } = useGetIngredientSubCategoryQuery(
+  const {
+    data: dataSubCategory,
+    isFetching: isFetchingSubCategory,
+    isLoading: isLoadingSubCategory,
+  } = useGetIngredientSubCategoryQuery(
     qs.stringify({
       IngredientMainCategory: selectedTab,
       searchText: searchVal,
     }),
+    {
+      skip: !selectedTab,
+    },
   );
-
   const { ingredientMainCategories } = dataIngMainCategory || {};
   const { ingredientSubCategories } = dataSubCategory || {};
 
@@ -363,6 +374,7 @@ export default function IngredientsScreen({ navigation }) {
   // }, []);
 
   useEffect(() => {
+    if (!selectedTabName) return;
     setTimeout(() => {
       setSelectedTab(selectedTabName);
     });
@@ -413,32 +425,38 @@ export default function IngredientsScreen({ navigation }) {
           <ScrollView keyboardShouldPersistTaps="handled">
             <View style={{ ...Styles.itemContainer }}>
               <View style={{ width: '100%' }}>
-                {!ingredientSubCategories?.length && !isLoading && <NoData />}
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    marginTop: 16,
-                    marginBottom: 140,
-                  }}>
-                  {ingredientSubCategories &&
-                    ingredientSubCategories?.map(({ name }) => {
-                      return (
-                        <SelectableIngredient
-                          key={name}
-                          Styles={Styles}
-                          selectedTab={selectedTab}
-                          onIngPressed={onIngPressed}
-                          setonIngPressed={arg => {
-                            setonIngPressed(arg);
-                            // saveIngredient(arg);
-                          }}
-                          name={name}
-                        />
-                      );
-                    })}
-                </View>
+                {console.log({ selectedTab, isFetchingSubCategory })}
+                <LoaderLayout
+                  isLoading={isFetchingSubCategory || selectedTab == null}>
+                  {!ingredientSubCategories?.length &&
+                    !isFetchingSubCategory &&
+                    !!selectedTab && <NoData />}
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      marginTop: 16,
+                      marginBottom: 140,
+                    }}>
+                    {ingredientSubCategories &&
+                      ingredientSubCategories?.map(({ name }) => {
+                        return (
+                          <SelectableIngredient
+                            key={name}
+                            Styles={Styles}
+                            selectedTab={selectedTab}
+                            onIngPressed={onIngPressed}
+                            setonIngPressed={arg => {
+                              setonIngPressed(arg);
+                              // saveIngredient(arg);
+                            }}
+                            name={name}
+                          />
+                        );
+                      })}
+                  </View>
+                </LoaderLayout>
               </View>
 
               {/* <View style={Styles.mtAuto}>

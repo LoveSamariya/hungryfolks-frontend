@@ -15,6 +15,8 @@ export * from './UI/CustomStatusBar';
 export * from './UI/Link';
 export * from './UI/AuthMethods';
 export * from './UI/TopBar';
+export * from './UI/CustomPasswordInput';
+export * from './UI/ResetpasswordForm';
 
 //Regex exports
 export * from './regex';

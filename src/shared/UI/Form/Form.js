@@ -24,6 +24,9 @@ export function HookFormInput({
   rules,
   label,
   onChange,
+  children,
+  style,
+  inputStyle,
   ...rest
 }) {
   const Styles = useThemeAwareObject(createStylesForm);
@@ -43,16 +46,19 @@ export function HookFormInput({
   const errorStatusStyle = invalid ? Styles.inputInvalid : {};
   return (
     <>
-      <TextInput
-        style={{ ...Styles.input, ...errorStatusStyle }}
-        {...field}
-        onChangeText={val => {
-          if (onChange) onChange(val);
+      <View style={style}>
+        <TextInput
+          style={{ ...Styles.input, ...errorStatusStyle, ...inputStyle }}
+          {...field}
+          onChangeText={val => {
+            if (onChange) onChange(val);
 
-          field.onChange(val);
-        }}
-        {...rest}
-      />
+            field.onChange(val);
+          }}
+          {...rest}
+        />
+        {children}
+      </View>
       {invalid && <Text style={Styles.errorMessage}> {error.message}</Text>}
     </>
   );

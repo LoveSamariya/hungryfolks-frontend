@@ -22,21 +22,25 @@ import {
   UserAvatar,
   CustomStatusBar,
   TopBar,
+  CustomButton,
 } from '../../shared';
-
+import { useUserInfoHook } from '../../hooks/userInfoHook';
 const guestUserData = {
   name: 'Guest Account',
 };
 
 function ProfileScreen({ navigation }) {
+  // const user = useUserInfoHook();
   const Styles = useThemeAwareObject(createStyles);
   const CommonStyles = useCommonStyle();
   const user = {
-    name: 'Harshad prajapati',
-    email: 'iamharshad.prajapati@gmail.com',
+    profile: {
+      name: 'Harshad prajapati',
+      email: 'iamharshad.prajapati@gmail.com',
+    },
   };
-  const isLoggedIn = false;
-  const username = isLoggedIn ? user.name : guestUserData.name;
+  const isLoggedIn = !!Object.keys(user).length;
+  const username = isLoggedIn ? user?.profile?.name : guestUserData.name;
 
   const handleLogOut = () => {};
   return (
@@ -83,14 +87,22 @@ function ProfileScreen({ navigation }) {
               <UserAvatar name={username} />
               <Text style={{ ...Styles.heading }}>{username}</Text>
               {isLoggedIn && (
-                <Text style={{ ...CommonStyles.textGray5 }}>{user.email}</Text>
+                <Text style={{ ...CommonStyles.textGray5 }}>
+                  {user?.profile?.email}
+                </Text>
               )}
               {!isLoggedIn && (
                 <View style={{ ...Styles.authMethodsContainer }}>
                   <AuthMethods navigation={navigation} />
                 </View>
               )}
-
+              <CustomButton
+                text="Reset password"
+                style={{ marginTop: 18 }}
+                onPress={() => {
+                  navigation.navigate('ResetPassword');
+                }}
+              />
               <View style={{ marginTop: 'auto', display: 'flex' }}>
                 <TouchableOpacity
                   style={{

@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import {
   dishRecipeDetailsApi,
+  dishRecipeDetailsSlice,
   dishRecipes,
   mainCategoryApi,
   recipeSlice,
@@ -14,6 +15,7 @@ import { authSlice } from '../src/services/auth/auth.slice';
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
+    dishRecipeDetails: dishRecipeDetailsSlice.reducer,
     [mainCategoryApi.reducerPath]: mainCategoryApi.reducer,
     [subCategoryApi.reducerPath]: subCategoryApi.reducer,
     [dishRecipes.reducerPath]: dishRecipes.reducer,

@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useWindowDimensions } from 'react-native';
+import { TouchableOpacity, useWindowDimensions } from 'react-native';
 
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,7 +17,10 @@ import {
   w100,
 } from '../../constants/common';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
-import { useGetDishRecipeFromCodeQuery } from './dishRecipeDetails.services';
+import {
+  useGetDishRecipeFromCodeQuery,
+  updateRatingsReq,
+} from './dishRecipeDetails.services';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 import { BackButton, AuthModal, CustomButton, TopBar } from '../../shared';
@@ -135,6 +139,11 @@ const createStyles = theme => {
       fontFamily: theme.fontFamily.secondaryBold,
       fontSize: 36,
     },
+    infoRatingContainer: {
+      display: 'flex',
+      alignSelf: 'flex-start',
+      marginBottom: 16,
+    },
     mtHeadingTiny: {
       marginTop: theme.spacing[3],
     },
@@ -145,7 +154,7 @@ const createStyles = theme => {
       marginTop: theme.spacing[6],
     },
     mbDetail: {
-      marginBottom: theme.spacing[6],
+      marginBottom: theme.spacing[1],
     },
     ratingGap: {
       marginTop: theme.spacing[12],
@@ -224,13 +233,15 @@ const createStyles = theme => {
 const systemFonts = [...defaultSystemFonts, 'serif'];
 
 export default function DishRecipeDetails({ route, navigation }) {
+  const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [isRatingsDirty, setIsRatingsDirty] = useState(false);
+  const [ratings, setRatings] = useState(0);
   const { code } = route.params;
 
   const { data, error, isLoading } = useGetDishRecipeFromCodeQuery(code);
   const { width } = useWindowDimensions();
-  console.log(data);
+  // console.log(data);
   const {
     name,
     description,
@@ -249,6 +260,8 @@ export default function DishRecipeDetails({ route, navigation }) {
     ingredients,
     notes,
     keywords,
+    rating,
+    id,
   } = data || {};
 
   const Styles = useThemeAwareObject(createStyles);
@@ -268,7 +281,7 @@ export default function DishRecipeDetails({ route, navigation }) {
       marginBottom: 0,
     },
     ol: { ...renderHtmlElementStyle, paddingLeft: 18 },
-    li: { ...renderHtmlElementStyle, paddingLeft: 8 },
+    li: { ...renderHtmlElementStyle, paddingLeft: 8, marginTop: -2 },
     p: renderHtmlElementStyle,
     h1: renderHtmlElementStyle,
     h2: renderHtmlElementStyle,
@@ -279,6 +292,27 @@ export default function DishRecipeDetails({ route, navigation }) {
     span: renderHtmlElementStyle,
     div: renderHtmlElementStyle,
   };
+
+  const handleRatingsChange = ratings => {
+    setRatings(ratings);
+    setIsRatingsDirty(true);
+  };
+
+  const onUpdateRatingsSuccess = () => {
+    setIsRatingsDirty(false);
+  };
+
+  const onSubmitReview = () => {
+    console.log('sdflksdflksdjflk');
+    dispatch(
+      updateRatingsReq({
+        recipeId: id,
+        ratingsValue: ratings,
+        onUpdateRatingsSuccess,
+      }),
+    );
+  };
+
   return (
     <>
       <TopBar navigation={navigation} />
@@ -312,7 +346,19 @@ export default function DishRecipeDetails({ route, navigation }) {
                       {description}
                     </Text>
                   )}
-
+                  <View style={Styles.infoRatingContainer}>
+                    <Rating
+                      type="custom"
+                      defaultRating={1}
+                      ratingCount={5}
+                      startingValue={rating || 0}
+                      imageSize={24}
+                      starContainerStyle={{ backgroundColor: 'red' }}
+                      ratingContainerStyle={{ backgroundColor: 'red' }}
+                      tintColor={'#f5f5f5'}
+                      readonly
+                    />
+                  </View>
                   {keywords?.length > 0 && (
                     <View
                       style={{
@@ -434,7 +480,7 @@ export default function DishRecipeDetails({ route, navigation }) {
                         }}>
                         Ingredients
                       </Text>
-                      {console.log(ingredients)}
+                      {/* {console.log(ingredients)} */}
                       <View style={Styles.box}>
                         <RenderHtml
                           contentWidth={width}
@@ -445,7 +491,7 @@ export default function DishRecipeDetails({ route, navigation }) {
                       </View>
                     </>
                   )}
-
+                  {/* {console.log(instructions)} */}
                   {!!instructions && (
                     <>
                       <Text
@@ -548,7 +594,12 @@ export default function DishRecipeDetails({ route, navigation }) {
                     }}>
                     Rate Recipe
                   </Text>
-                  <View>
+                  <View
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginTop: 4,
+                    }}>
                     <Rating
                       type="custom"
                       defaultRating={1}
@@ -557,7 +608,15 @@ export default function DishRecipeDetails({ route, navigation }) {
                       starContainerStyle={{ backgroundColor: 'red' }}
                       ratingContainerStyle={{ backgroundColor: 'red' }}
                       tintColor={'#f5f5f5'}
+                      onFinishRating={handleRatingsChange}
                     />
+                    {isRatingsDirty && (
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={onSubmitReview}>
+                        <Text style={{ marginTop: 8 }}>Save review</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               </View>
