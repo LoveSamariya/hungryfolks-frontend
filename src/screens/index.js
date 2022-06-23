@@ -1,3 +1,4 @@
+export * from './AppInit';
 export * from './MainCategory';
 export * from './SubCategory';
 export * from './DishRecipeDetails';

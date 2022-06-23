@@ -54,7 +54,7 @@ export const AuthProviderGoogle = ({ initial, children }) => {
       signOut,
     };
     return value;
-  }, []);
+  }, [userInfo]);
 
   return <Context.Provider value={MemoizedValue}>{children}</Context.Provider>;
 };

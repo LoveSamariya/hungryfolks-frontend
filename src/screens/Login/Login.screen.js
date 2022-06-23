@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
@@ -26,6 +33,9 @@ import {
 } from '../../services/auth/auth.slice';
 
 import createStyles from './Login.style';
+import { useCallBackSessionNavigation } from '../../hooks/callbackSessionNavigation';
+import useButtonStyle from '../../shared/styles/button.style';
+import { useCommonStyle } from '../../hooks/commonStyle';
 
 const formNames = {
   email: {
@@ -38,17 +48,14 @@ const formNames = {
   },
 };
 
+// TODO
 const testData = {
   email: 'iamharshad.prajapati@gmail.com',
   password: 'Admin@123',
 };
 
 export default function LoginScreen({ onLoginPressed, navigation }) {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
+  const { handleSubmit, control, formState } = useForm({
     defaultValues: { ...testData },
     mode: 'onChange',
   });
@@ -56,23 +63,23 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
   const dispatch = useDispatch();
   const CommonStyle = useThemeAwareObject(commonCreateStyle);
   const Styles = useThemeAwareObject(createStyles);
+  const buttonStyle = useButtonStyle();
+  const commonStyle = useCommonStyle();
   const loginError = useSelector(selectLoginError);
   const isLoading = useSelector(selectLoginLoadingState);
+  const { sessionAwareNavigate } = useCallBackSessionNavigation(navigation);
 
   const onLoginSuccess = () => {
-    navigation.popToTop();
-    navigation.navigate('Home');
+    sessionAwareNavigate('Home');
   };
 
   const onSubmit = userInfo => {
-    console.log(userInfo);
     dispatch(loginReq({ userInfo, onLoginSuccess }));
   };
 
   return (
     <View style={Styles.page}>
       <CustomStatusBar variant="secondary" />
-
       <View style={{ ...Styles.backButtonAlignment }}>
         <BackButton navigation={navigation} />
       </View>
@@ -87,7 +94,6 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
               source={require('../../assets/images/logo/logo.png')}
             />
             <Text style={{ ...Styles.screenHeading }}>Login</Text>
-
             <FormField label={formNames.email.label}>
               <HookFormInput
                 control={control}
@@ -120,6 +126,21 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
               onPress={handleSubmit(onSubmit)}
               isLoading={isLoading}
             />
+            <TouchableOpacity
+              onPress={() => {
+                // console.log('THIS');
+              }}>
+              <Text
+                style={{
+                  ...buttonStyle.text,
+                  ...buttonStyle.spacing,
+                  ...Styles.textCenter,
+                  ...commonStyle.mt4,
+                }}>
+                {' '}
+                Forget password ?{' '}
+              </Text>
+            </TouchableOpacity>
             <LineDivider text="Or" style={{ marginTop: 56 }} />
             <GoogleSigninButtonContainer style={{ marginTop: 32 }} />
           </View>

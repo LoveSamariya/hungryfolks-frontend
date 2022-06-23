@@ -11,7 +11,7 @@ import {
 function AuthModal({ modalVisible, setModalVisible, navigation, ...props }) {
   const Styles = useThemeAwareObject(createStyles);
   const handleNavigate = screen => {
-    navigation.navigate(screen);
+    navigation.replace(screen);
     setModalVisible(false);
   };
   return (

@@ -1,4 +1,10 @@
 import { StyleSheet } from 'react-native';
+import {
+  alignItemsCenter,
+  dFlex,
+  flexRow,
+  vhCenter,
+} from '../../constants/common';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -47,7 +53,11 @@ const createStyles = theme => {
     },
     textBlack: {
       color: theme.color.gray3,
-    }
+    },
+    ...dFlex,
+    ...vhCenter,
+    ...flexRow,
+    ...alignItemsCenter,
   });
   return styles;
 };

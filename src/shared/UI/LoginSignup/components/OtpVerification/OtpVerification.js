@@ -41,7 +41,7 @@ export default function OtpVerification({
 
   const onSubmit = data => {
     console.log(data);
-    // onOtpVerificationPressed(data);
+    onOtpVerificationPressed(data);
   };
 
   const onResendOtpSuccess = () => {

@@ -73,6 +73,9 @@ export const commonCreateStyle = theme => {
     textGray5: {
       color: theme.color.gray5,
     },
+    mt4: {
+      marginTop: 24,
+    },
   });
   return styles;
 };

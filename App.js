@@ -10,6 +10,7 @@ import { AuthProviderGoogle } from './src/context/auth.google.context';
 import { ThemeProvider, useTheme } from './src/context/thme.context';
 
 import {
+  AppInitScreen,
   DishRecipeDetails,
   DishRecipesScreen,
   IngredientsScreen,
@@ -27,7 +28,6 @@ import {
 import { useCommonStyle } from './src/hooks/commonStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
-import { useUserInfoHook } from './src/hooks/userInfoHook';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -50,6 +50,7 @@ function MyTabs() {
     tabBarActiveTintColor: theme.color.highlight1,
     tabBarInactiveTintColor: theme.color.gray5,
   };
+
   return (
     <Tab.Navigator {...{ screenOptions }}>
       <Tab.Screen
@@ -87,15 +88,18 @@ function MyTabs() {
 }
 
 export default function App() {
-  const user = useUserInfoHook();
-  const isLoggedIn = !!Object.keys(user).length;
-  const initialRouteName = isLoggedIn ? 'Home' : 'Welcome';
+  const initialRouteName = 'AppInit';
   return (
     <AuthProviderGoogle>
       <ThemeProvider initial={DEFAULT_LIGHT_THEME}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName={initialRouteName}>
             <>
+              <Stack.Screen
+                name="AppInit"
+                component={AppInitScreen}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen
                 name="Welcome"
                 component={WelcomeScreen}

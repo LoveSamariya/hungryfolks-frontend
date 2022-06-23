@@ -1,30 +1,33 @@
 import React from 'react';
-
+import qs from 'qs';
 import config from './googleConfig';
 
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { useGoogleAuth } from '../../../context/auth.google.context';
 import { CustomGoogleSigninButton } from '../CustomGoogleSigninButton';
+import { useDispatch } from 'react-redux';
+import { externalLogin } from '../../../services/auth/auth.slice';
 
 GoogleSignin.configure(config);
 
 export default function GoogleSigninButtonContainer({ ...props }) {
-  const { signIn } = useGoogleAuth();
+  const dispatch = useDispatch();
+  const { signIn, userInfo } = useGoogleAuth();
 
-  return (
-    <CustomGoogleSigninButton onPress={signIn} {...props} />
-    // <GoogleSigninButton
-    //   style={{
-    //     width: '100%',
-    //     border: 0,
-    //     elevation: 0,
-    //     shadowOpacity: 0,
-    //   }}
-    //   size={GoogleSigninButton.Size.Wide}
-    //   color={GoogleSigninButton.Color.Light}
-    //   onPress={signIn}
-    //   disabled={false}
-    // />
-  );
+  const userInfoObj = userInfo || {};
+  console.log(userInfoObj, 'userInfoObj---------------------');
+  const onExternalLoginSuccess = () => {
+    console.log('success');
+  };
+  React.useEffect(() => {
+    if (!Object.keys(userInfoObj)?.length) {
+      return;
+    }
+    dispatch(
+      externalLogin({ idToken: userInfoObj.idToken, onExternalLoginSuccess }),
+    );
+  }, [qs.stringify(userInfoObj)]);
+
+  return <CustomGoogleSigninButton onPress={signIn} {...props} />;
 }

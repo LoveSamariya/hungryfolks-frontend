@@ -19,7 +19,7 @@ export const updateRatingsReq = createAsyncThunk(
   ) => {
     console.log(5456, `${API_URL}${UPDATE_RATINGS(recipeId)}`);
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${API_URL}${UPDATE_RATINGS(recipeId)}`,
         ratingsValue,
       );
@@ -27,7 +27,7 @@ export const updateRatingsReq = createAsyncThunk(
       onUpdateRatingsSuccess();
       return response.data;
     } catch (err) {
-      console.log(err.response.data);
+      console.log(err.response);
       return rejectWithValue(err.response.data);
     }
   },

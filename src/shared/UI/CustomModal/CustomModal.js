@@ -24,12 +24,14 @@ function CustomModal({
   barProps = {},
   barColor = 'black',
   barStyle = '',
+  onModalClosed,
   ...props
 }) {
   const Styles = useThemeAwareObject(createStyles);
 
   const closeModal = () => {
     setModalVisible(false);
+    onModalClosed && onModalClosed();
   };
 
   return (

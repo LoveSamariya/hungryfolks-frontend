@@ -1,7 +1,9 @@
+// endpoints
 export const REGISTRATION = '/Registration';
 export const LOGIN = '/Account/Login';
 export const VERIFY_OTP = '/Registration/Confirm';
 export const RESEND_OTP = '/Registration/Resend-Confirm';
+export const EXTERNAL_LOGIN = '/Account/External-Login';
 
 export const MAIN_CATEGORY = '/MainCategory';
 export const SUB_CATEGORY = '/SubCategory';
@@ -11,3 +13,7 @@ export const UPDATE_RATINGS = id => `/DishRecipe/${id}/Update-Rating`;
 
 export const INGREDIENT_MAIN_CATEGORY = '/IngredientMainCategory';
 export const INGREDIENT_SUB_CATEGORY = '/IngredientSubCategory';
+
+// client storage keys
+// TODO Improvements
+export const USER_PROFILE = 'USER_PROFILE';

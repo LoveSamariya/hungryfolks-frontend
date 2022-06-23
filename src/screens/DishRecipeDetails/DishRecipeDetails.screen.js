@@ -17,10 +17,12 @@ import {
   w100,
 } from '../../constants/common';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
+import { useUserInfoHook } from '../../hooks/userInfoHook';
 import {
   useGetDishRecipeFromCodeQuery,
   updateRatingsReq,
 } from './dishRecipeDetails.services';
+import { setCallbackSession } from '../../services/auth/auth.slice';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 import { BackButton, AuthModal, CustomButton, TopBar } from '../../shared';
@@ -234,11 +236,12 @@ const systemFonts = [...defaultSystemFonts, 'serif'];
 
 export default function DishRecipeDetails({ route, navigation }) {
   const dispatch = useDispatch();
+  const user = useUserInfoHook();
+  const isLoggedIn = !!Object.keys(user).length;
   const [modalVisible, setModalVisible] = useState(false);
   const [isRatingsDirty, setIsRatingsDirty] = useState(false);
   const [ratings, setRatings] = useState(0);
-  const { code } = route.params;
-
+  const { code, ratings: ratingsFromParams } = route.params;
   const { data, error, isLoading } = useGetDishRecipeFromCodeQuery(code);
   const { width } = useWindowDimensions();
   // console.log(data);
@@ -303,7 +306,19 @@ export default function DishRecipeDetails({ route, navigation }) {
   };
 
   const onSubmitReview = () => {
-    console.log('sdflksdflksdjflk');
+    if (!isLoggedIn) {
+      setModalVisible(true);
+      dispatch(
+        setCallbackSession({
+          path: 'DishRecipeDetails',
+          params: {
+            code,
+            ratings,
+          },
+        }),
+      );
+      return;
+    }
     dispatch(
       updateRatingsReq({
         recipeId: id,
@@ -311,6 +326,10 @@ export default function DishRecipeDetails({ route, navigation }) {
         onUpdateRatingsSuccess,
       }),
     );
+  };
+
+  const onAuthModalClosed = () => {
+    dispatch(setCallbackSession({}));
   };
 
   return (
@@ -604,13 +623,13 @@ export default function DishRecipeDetails({ route, navigation }) {
                       type="custom"
                       defaultRating={1}
                       ratingCount={5}
-                      startingValue={0}
+                      startingValue={ratingsFromParams || 0}
                       starContainerStyle={{ backgroundColor: 'red' }}
                       ratingContainerStyle={{ backgroundColor: 'red' }}
                       tintColor={'#f5f5f5'}
                       onFinishRating={handleRatingsChange}
                     />
-                    {isRatingsDirty && (
+                    {(isRatingsDirty || ratingsFromParams) && (
                       <TouchableOpacity
                         activeOpacity={1}
                         onPress={onSubmitReview}>
@@ -626,6 +645,7 @@ export default function DishRecipeDetails({ route, navigation }) {
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
             navigation={navigation}
+            onModalClosed={onAuthModalClosed}
           />
         </ScrollView>
       </SafeAreaView>

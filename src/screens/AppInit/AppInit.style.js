@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { textCenter } from '../../constants/common';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -12,25 +11,11 @@ const createStyles = theme => {
     },
     logo: {
       maxWidth: '100%',
-      height: 200,
       display: 'flex',
+      height: 500,
       resizeMode: 'contain',
+      justifyContent: 'center',
     },
-    screenHeading: {
-      fontFamily: theme.fontFamily.primaryBold,
-      marginBottom: 14,
-      fontSize: 32,
-      color: 'black',
-    },
-    backButtonAlignment: {
-      position: 'absolute',
-      top: 10,
-      left: 10,
-      zIndex: 99,
-      backgroundColor: '#f5eedc',
-      borderRadius: 100,
-    },
-    ...textCenter,
   });
   return styles;
 };

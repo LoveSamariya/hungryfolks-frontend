@@ -11,10 +11,15 @@ import {
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUserCircle,
+  faArrowRightFromBracket,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { useCommonStyle } from '../../hooks/commonStyle';
 import createStyles from './Profile.style';
+
+import { logoutReq } from '../../services/auth/auth.slice';
 
 import {
   AuthMethods,
@@ -25,24 +30,31 @@ import {
   CustomButton,
 } from '../../shared';
 import { useUserInfoHook } from '../../hooks/userInfoHook';
+import { useDispatch } from 'react-redux';
+import { alignItemsCenter } from '../../constants/common';
 const guestUserData = {
   name: 'Guest Account',
 };
 
 function ProfileScreen({ navigation }) {
-  // const user = useUserInfoHook();
+  const user = useUserInfoHook();
   const Styles = useThemeAwareObject(createStyles);
   const CommonStyles = useCommonStyle();
-  const user = {
-    profile: {
-      name: 'Harshad prajapati',
-      email: 'iamharshad.prajapati@gmail.com',
-    },
-  };
+  const dispatch = useDispatch();
+  // const user = {
+  //   profile: {
+  //     name: 'Harshad prajapati',
+  //     email: 'iamharshad.prajapati@gmail.com',
+  //   },
+  // };
   const isLoggedIn = !!Object.keys(user).length;
   const username = isLoggedIn ? user?.profile?.name : guestUserData.name;
-
-  const handleLogOut = () => {};
+  const onLogoutSuccess = function () {
+    navigation.replace('Welcome');
+  };
+  const handleLogOut = () => {
+    dispatch(logoutReq({ onLogoutSuccess }));
+  };
   return (
     <>
       <CustomStatusBar variant="primary" />
@@ -85,7 +97,20 @@ function ProfileScreen({ navigation }) {
                 ...Styles.profilePageContent,
               }}>
               <UserAvatar name={username} />
-              <Text style={{ ...Styles.heading }}>{username}</Text>
+              <View
+                style={{
+                  ...Styles.dFlex,
+                  ...Styles.alignItemsCenter,
+                  ...Styles.flexRow,
+                }}>
+                {/* <FontAwesomeIcon
+                  icon={faUserCircle}
+                  style={{ marginRight: 4 }}
+                  size={32}
+                  color={'#000000'}
+                /> */}
+                <Text style={{ ...Styles.heading }}>{username}</Text>
+              </View>
               {isLoggedIn && (
                 <Text style={{ ...CommonStyles.textGray5 }}>
                   {user?.profile?.email}
@@ -96,13 +121,14 @@ function ProfileScreen({ navigation }) {
                   <AuthMethods navigation={navigation} />
                 </View>
               )}
-              <CustomButton
+              {/* TODO */}
+              {/* <CustomButton
                 text="Reset password"
                 style={{ marginTop: 18 }}
                 onPress={() => {
                   navigation.navigate('ResetPassword');
                 }}
-              />
+              /> */}
               <View style={{ marginTop: 'auto', display: 'flex' }}>
                 <TouchableOpacity
                   style={{

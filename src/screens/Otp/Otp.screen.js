@@ -17,6 +17,7 @@ import {
   resendOtpReq,
   selectOtpLoadingState,
 } from '../../services/auth/auth.slice';
+import { useCallBackSessionNavigation } from '../../hooks/callbackSessionNavigation';
 
 export default function OtpScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -31,9 +32,10 @@ export default function OtpScreen({ navigation }) {
   const isLoading = useSelector(selectOtpLoadingState);
   const CommonStyle = useThemeAwareObject(commonCreateStyle);
   const Styles = useThemeAwareObject(createStyles);
+  const { sessionAwareNavigate } = useCallBackSessionNavigation(navigation);
+
   const onOtpVerified = () => {
-    navigation.popToTop();
-    navigation.navigate('Home');
+    sessionAwareNavigate('Home');
   };
   const onOtpVerificationPressed = otpData => {
     dispatch(
