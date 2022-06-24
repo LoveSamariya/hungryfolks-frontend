@@ -7,15 +7,27 @@ import {
   LOGIN,
   VERIFY_OTP,
   RESEND_OTP,
-  USER_PROFILE,
   EXTERNAL_LOGIN,
 } from '../constants';
+import { USER_PROFILE, PASSED_AUTH } from '../../constants/storageKeys';
+
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function setAxiosAuthorizationToken(auth_token) {
-  console.log(auth_token);
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + auth_token;
+}
+
+export async function clearAsyncStorage() {
+  try {
+    await AsyncStorage.clear();
+  } catch (e) {
+    // clear error
+  }
+}
+
+export async function setAppInitiated(appInitiated) {
+  await AsyncStorage.setItem(PASSED_AUTH, appInitiated);
 }
 
 async function setEmailTokenClientSide(data) {
@@ -50,9 +62,7 @@ async function setUsernameIDClientSide(data) {
   } = { ...data };
   try {
     const jsonValue = JSON.stringify({ id, name });
-    console.log(await AsyncStorage.setItem(USER_PROFILE, jsonValue), 'rrr');
-    const value = await AsyncStorage.getItem(USER_PROFILE);
-    console.log('from async storage', value);
+    await AsyncStorage.setItem(USER_PROFILE, jsonValue);
   } catch (e) {
     console.log(e, 'sdfjk');
     // saving error
@@ -79,8 +89,8 @@ export const loginReq = createAsyncThunk(
       await Promise.all([
         setEmailTokenClientSide(response.data),
         setUsernameIDClientSide(response.data),
+        setAppInitiated('true'),
       ]);
-
       onLoginSuccess();
       return response.data;
     } catch (err) {
@@ -96,8 +106,10 @@ export const logoutReq = createAsyncThunk(
       await Promise.all([
         resetEmailTokenClientSide(),
         resetUsernameIDClientSide(),
+        setAppInitiated(''),
       ]);
       setAxiosAuthorizationToken(null);
+      clearAsyncStorage();
       onLogoutSuccess();
       return true;
     } catch (err) {
@@ -141,6 +153,7 @@ export const otpVerifyReq = createAsyncThunk(
       setAxiosAuthorizationToken(response.data.accessToken);
       setEmailTokenClientSide(response.data);
       setUsernameIDClientSide(response.data);
+      setAppInitiated('true');
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);

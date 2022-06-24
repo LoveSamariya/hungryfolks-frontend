@@ -16,7 +16,7 @@ import { CustomStatusBar } from '../../shared';
 
 import createStyles from './AppInit.style';
 import { useUserInfoHook } from '../../hooks/userInfoHook';
-import { USER_PROFILE } from '../../services/constants';
+import { PASSED_AUTH, USER_PROFILE } from '../../constants/storageKeys';
 
 const getCredentialFromClientStorage = async () => {
   try {
@@ -48,16 +48,19 @@ const getUserProfileDataFromClientStorage = async () => {
   }
 };
 
+const getPassedAuth = async () => {
+  try {
+    const value = await AsyncStorage.getItem(PASSED_AUTH);
+    return !!value;
+  } catch (e) {
+    console.log(e, 'error while getting profile data');
+  }
+};
+
 export default function AppInitScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useUserInfoHook();
   const Styles = useThemeAwareObject(createStyles);
-
-  React.useEffect(() => {
-    if (user && Object.keys(user).length) {
-      navigation.replace('Home');
-    }
-  }, [user]);
 
   React.useEffect(() => {
     const handleSetUserProfileCredentials = usr => {
@@ -80,9 +83,14 @@ export default function AppInitScreen({ navigation }) {
             accessToken: userCredentials.accessToken,
           });
           setAxiosAuthorizationToken(userCredentials.accessToken);
-        } else {
-          navigation.replace('Welcome');
         }
+        getPassedAuth().then(passedAuth => {
+          if (passedAuth) {
+            navigation.replace('Home');
+            return;
+          }
+          navigation.replace('Welcome');
+        });
       })
       .catch(e => {
         console.log(e);

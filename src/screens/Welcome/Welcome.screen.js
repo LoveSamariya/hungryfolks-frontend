@@ -12,6 +12,7 @@ import createStyles from './Welcome.style';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 
 import { AuthMethods, CustomStatusBar } from '../../shared';
+import { setAppInitiated } from '../../services/auth/auth.slice';
 
 export default function WelcomeScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
@@ -37,7 +38,8 @@ export default function WelcomeScreen({ navigation }) {
             <TouchableHighlight
               underlayColor="transperent"
               onPress={() => {
-                navigation.navigate('Home');
+                setAppInitiated('true');
+                navigation.replace('Home');
               }}>
               <Text style={{ marginTop: 12, textDecorationLine: 'underline' }}>
                 Continue as guest

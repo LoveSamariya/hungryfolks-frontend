@@ -50,7 +50,10 @@ function ProfileScreen({ navigation }) {
   const isLoggedIn = !!Object.keys(user).length;
   const username = isLoggedIn ? user?.profile?.name : guestUserData.name;
   const onLogoutSuccess = function () {
-    navigation.replace('Welcome');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Welcome' }],
+    });
   };
   const handleLogOut = () => {
     dispatch(logoutReq({ onLogoutSuccess }));

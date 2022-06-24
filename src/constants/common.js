@@ -67,6 +67,9 @@ export const commonCreateStyle = theme => {
     textDanger: {
       color: theme.color.danger,
     },
+    textWhite: {
+      color: 'white',
+    },
     textGray3: {
       color: theme.color.gray3,
     },
@@ -75,6 +78,12 @@ export const commonCreateStyle = theme => {
     },
     mt4: {
       marginTop: 24,
+    },
+    mlAuto: {
+      marginLeft: 'auto',
+    },
+    ml1: {
+      marginLeft: 4,
     },
   });
   return styles;

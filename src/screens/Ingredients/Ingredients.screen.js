@@ -5,25 +5,30 @@ import {
   StyleSheet,
   TouchableHighlight,
   ScrollView,
-  // AsyncStorage,
+  TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
-import { vegetables, fruits } from './data.vegetables';
+import Toast from 'react-native-simple-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleRight, faClose } from '@fortawesome/free-solid-svg-icons';
 import qs from 'qs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { faListCheck, faSave } from '@fortawesome/free-solid-svg-icons';
 import Search from '../MainCategory/components/Search';
 import {
   useGetIngredientMainCategoryQuery,
   useGetIngredientSubCategoryQuery,
 } from './Ingredients.services';
-import { vhCenter, w50 } from '../../constants/common';
+import { dFlex, flexRow, vhCenter, w50 } from '../../constants/common';
 import NoData from '../../shared/UI/NoData/NoData';
-import { LoaderLayout } from '../../shared';
+import { AuthModal, LoaderLayout } from '../../shared';
+import { useCommonStyle } from '../../hooks/commonStyle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUserInfoHook } from '../../hooks/userInfoHook';
+import { setCallbackSession } from '../../services/auth/auth.slice';
+import { useDispatch } from 'react-redux';
 
 function SelectableIngredient({
   Styles,
@@ -181,9 +186,6 @@ const createStyles = theme => {
     textBlack: {
       color: '#000',
     },
-    flexRow: {
-      flexDirection: 'row',
-    },
     mt2: {
       marginTop: theme.spacing[2],
     },
@@ -259,9 +261,6 @@ const createStyles = theme => {
       // opacity: 0.5,
       // marginBottom: 15,
       color: 'white',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     goNext: {
       width: 64,
@@ -297,18 +296,64 @@ const createStyles = theme => {
     },
     ...w50,
     ...vhCenter,
+    ...dFlex,
+    ...flexRow,
   });
 
   return styles;
 };
 
+async function getObjectClientSide(handle) {
+  const totalEntries = await AsyncStorage.getItem(`${handle}__TOTAL_RECORDS`);
+  let multiGetPayLoad = [...new Array(+totalEntries)];
+  multiGetPayLoad = multiGetPayLoad.map((_, index) => {
+    const key = `${handle}__${index}`;
+    return key;
+  });
+  const valuesAsEntries = await AsyncStorage.multiGet(multiGetPayLoad);
+  const valuesAsObj = Object.fromEntries(valuesAsEntries);
+  console.log(Object.values(valuesAsObj));
+  const storedData = Object.fromEntries(
+    Object.values(valuesAsObj).map(x => JSON.parse(x)),
+  );
+  return storedData;
+}
+
+async function storeObjectClientSide(obj, handle) {
+  try {
+    const objectEntries = Object.entries(obj);
+    const totalEntries = objectEntries.length;
+    await AsyncStorage.setItem(`${handle}__TOTAL_RECORDS`, '' + totalEntries);
+    if (!objectEntries.length) return;
+    let multiSetPayload = [...new Array(totalEntries)];
+    multiSetPayload = multiSetPayload.map((_, index) => {
+      const key = `${handle}__${index}`;
+      return [key, JSON.stringify(objectEntries[index])];
+    });
+    let d = new Date();
+    await AsyncStorage.multiSet([...multiSetPayload]);
+    d = new Date();
+    const v = await getObjectClientSide(handle);
+    d = new Date();
+    console.log(v);
+  } catch (e) {
+    console.log(e);
+    //save error
+  }
+}
+
 export default function IngredientsScreen({ navigation }) {
+  const dispatch = useDispatch();
   const Styles = useThemeAwareObject(createStyles);
+  const commonStyle = useCommonStyle();
+  const user = useUserInfoHook();
+  const isLoggedIn = !!Object.keys(user).length;
   const [onIngPressed, setonIngPressed] = useState({});
   const [selectedTab, setSelectedTab] = useState('');
   const [selectedTabName, setSelectedTabName] = useState('');
   const [searchVal, setSearchValue] = useState('');
-
+  const [isSavedSelection, setIsSavedSelection] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const {
     data: dataIngMainCategory,
     isFetching: isFetchingMainCategory,
@@ -338,40 +383,24 @@ export default function IngredientsScreen({ navigation }) {
     setSelectedTabName(ingredientMainCategories[0]?.name);
     setSelectedTab(ingredientMainCategories[0]?.name);
   }, [ingredientMainCategories?.length]);
-  // const localStorage = {
-  //   async getItem(key) {
-  //     try {
-  //       const value = await AsyncStorage.getItem(key);
-  //       if (value !== null) {
-  //         // We have data!!
-  //         return value;
-  //       }
-  //     } catch (error) {
-  //       // Error retrieving data
-  //     }
-  //   },
-  //   async setItem(key, value) {
-  //     try {
-  //       const data = await AsyncStorage.setItem(key, value);
-  //     } catch (error) {
-  //       throw error;
-  //     }
-  //   },
-  // };
+
   useEffect(() => {
     setSearchValue('');
   }, [selectedTab]);
-  // const saveIngredient = () => {
-  //   console.log(onIngPressed, 'SAVED');
-  //   localStorage.setItem('selectedIng', JSON.stringify(onIngPressed));
-  // };
-  // useEffect(() => {
-  //   localStorage.getItem('selectedIng').then(val => {
-  //     console.log(JSON.parse(val), 'LOADERD');
-  //     if (val) setonIngPressed(JSON.parse(val));
-  //   });
-  //   return () => {};
-  // }, []);
+
+  useEffect(() => {
+    const getAsyncIngredientData = async () => {
+      try {
+        let d = new Date();
+        const v = await getObjectClientSide('INGREDIENT');
+        console.log(new Date() - d, 'milliseconds expensive');
+        setonIngPressed(v);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getAsyncIngredientData();
+  }, []);
 
   useEffect(() => {
     if (!selectedTabName) return;
@@ -390,42 +419,73 @@ export default function IngredientsScreen({ navigation }) {
 
   const clearAllSelectedIngredients = useCallback(() => {
     setonIngPressed({});
+    setIsSavedSelection(false);
   });
+
+  const handleSaveSelection = () => {
+    if (!isLoggedIn) {
+      setModalVisible(true);
+      return;
+    }
+    storeObjectClientSide(onIngPressed, 'INGREDIENT').then(() => {
+      Toast.show('Your selection has been saved!', Toast.SHORT);
+      setIsSavedSelection(true);
+    });
+  };
 
   const isIngredientSelected = Object.values(onIngPressed).find(
     obj => Object.keys(obj)?.length,
   );
   return (
     <>
-      <View style={{ ...Styles.helperTextRow, ...vhCenter }}>
+      <View style={{ ...Styles.helperTextRow }}>
         <FontAwesomeIcon color="white" icon={faListCheck} size={24} />
-        <Text style={Styles.helperText}>
-          {' '}
-          Select ingredients and get recipes
-        </Text>
+        <Text style={Styles.helperText}> Select ingredients</Text>
+        {isIngredientSelected && !isSavedSelection && (
+          <TouchableOpacity
+            onPress={handleSaveSelection}
+            activeOpacity={0.8}
+            style={{
+              ...commonStyle.mlAuto,
+              ...vhCenter.vhCenter,
+              ...Styles.flexRow,
+            }}>
+            <>
+              <FontAwesomeIcon color="white" icon={faSave} size={24} />
+              <Text
+                style={{
+                  ...Styles.helperText,
+                  ...vhCenter.vhCenter,
+                  ...commonStyle.ml1,
+                }}>
+                Save selection
+              </Text>
+            </>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={Styles.mainContainer}>
-        {isIngredientSelected && (
-          <TouchableHighlight
-            style={Styles.clearIngredientsContainer}
-            underlayColor="transperent"
-            onPress={clearAllSelectedIngredients}>
-            <>
-              <View style={Styles.clearIngredientsIconContainer}>
-                <FontAwesomeIcon icon={faClose} size={24} color={'#878787'} />
-              </View>
-              <Text style={Styles.clearIngredientsText}>
-                Clear All Selected Ingredients
-              </Text>
-            </>
-          </TouchableHighlight>
-        )}
+        {isIngredientSelected &&
+          !!ingredientSubCategories?.length &&
+          !isFetchingSubCategory &&
+          !!selectedTab && (
+            <TouchableOpacity
+              style={Styles.clearIngredientsContainer}
+              underlayColor="transperent"
+              onPress={clearAllSelectedIngredients}>
+              <>
+                <View style={Styles.clearIngredientsIconContainer}>
+                  <FontAwesomeIcon icon={faClose} size={24} color={'#878787'} />
+                </View>
+                <Text style={Styles.clearIngredientsText}>Clear All</Text>
+              </>
+            </TouchableOpacity>
+          )}
         <SafeAreaView>
           <ScrollView keyboardShouldPersistTaps="handled">
             <View style={{ ...Styles.itemContainer }}>
               <View style={{ width: '100%' }}>
-                {console.log({ selectedTab, isFetchingSubCategory })}
                 <LoaderLayout
                   isLoading={isFetchingSubCategory || selectedTab == null}>
                   {!ingredientSubCategories?.length &&
@@ -448,6 +508,7 @@ export default function IngredientsScreen({ navigation }) {
                             selectedTab={selectedTab}
                             onIngPressed={onIngPressed}
                             setonIngPressed={arg => {
+                              setIsSavedSelection(false);
                               setonIngPressed(arg);
                               // saveIngredient(arg);
                             }}
@@ -547,6 +608,11 @@ export default function IngredientsScreen({ navigation }) {
             </View>
           </View>
         </SafeAreaView>
+        <AuthModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          navigation={navigation}
+        />
         <View>
           <View>
             <View style={Styles.tabItems}></View>

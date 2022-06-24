@@ -8,8 +8,8 @@ export * from './Login';
 export * from './CreateAccount';
 export * from './Otp';
 export * from './ForgotPassword';
+export * from './ForgotPasswordOtpPassword';
 export * from './Profile';
 export * from './Credits';
 export * from './ResetPassword';
-
 export * from './Ingredients';

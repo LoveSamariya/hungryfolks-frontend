@@ -4,6 +4,14 @@ import { View, Text } from 'react-native';
 import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
 import createStyles from './UserAvatar.style';
 
+const getAvatarCharacters = name => {
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map(x => x[0])
+    .join('');
+};
+
 function UserAvatar({
   name = '',
   height = 150,
@@ -24,7 +32,7 @@ function UserAvatar({
         ...style,
       }}>
       <Text style={{ ...Styles.userAvatarText, fontSize, color }}>
-        {name[0]}
+        {getAvatarCharacters(name)}
       </Text>
     </View>
   );

@@ -23,9 +23,10 @@ import {
   ProfileScreen,
   CreditsScreen,
   ResetPasswordScreen,
+  ForgotPasswordEmailScreen,
+  ForgotPasswordOtpPassword,
 } from './src/screens';
 
-import { useCommonStyle } from './src/hooks/commonStyle';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
 
@@ -118,6 +119,16 @@ export default function App() {
               <Stack.Screen
                 name="Otp"
                 component={OtpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ForgotPasswordEmail"
+                component={ForgotPasswordEmailScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ForgotPasswordOtpPassword"
+                component={ForgotPasswordOtpPassword}
                 options={{ headerShown: false }}
               />
               <Stack.Screen

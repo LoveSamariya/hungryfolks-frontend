@@ -4,5 +4,4 @@ export const filtersEnum = Object.freeze({
   Glutenfree: 'Gluten free',
   Halal: 'Halal',
   Allergyfriendly: 'Allergy friendly',
-  Nonveg: 'Nonveg',
 });

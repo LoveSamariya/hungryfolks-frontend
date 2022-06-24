@@ -70,7 +70,12 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
   const { sessionAwareNavigate } = useCallBackSessionNavigation(navigation);
 
   const onLoginSuccess = () => {
-    sessionAwareNavigate('Home');
+    sessionAwareNavigate('Home', () => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    });
   };
 
   const onSubmit = userInfo => {
@@ -128,6 +133,7 @@ export default function LoginScreen({ onLoginPressed, navigation }) {
             />
             <TouchableOpacity
               onPress={() => {
+                navigation.navigate('ForgotPasswordEmail');
                 // console.log('THIS');
               }}>
               <Text

@@ -8,7 +8,9 @@ const createStyles = theme => {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    userAvatarText: {},
+    userAvatarText: {
+      textTransform: 'uppercase',
+    },
   });
 
   return styles;

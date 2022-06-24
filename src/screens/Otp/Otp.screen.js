@@ -35,7 +35,12 @@ export default function OtpScreen({ navigation }) {
   const { sessionAwareNavigate } = useCallBackSessionNavigation(navigation);
 
   const onOtpVerified = () => {
-    sessionAwareNavigate('Home');
+    sessionAwareNavigate('Home', () => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    });
   };
   const onOtpVerificationPressed = otpData => {
     dispatch(

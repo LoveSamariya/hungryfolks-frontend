@@ -60,6 +60,7 @@ export default function OtpVerification({
             control={control}
             name={formNames.otp.name}
             label={formNames.otp.label}
+            maxLength={6}
             keyboardType={'numeric'}
             required
           />

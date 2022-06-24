@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableHighlight, Text, View } from 'react-native';
+import { TouchableHighlight, Text, View, TouchableOpacity } from 'react-native';
 import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
 import { createStyles } from './CustomButton.style';
 import { Loader } from '../../../shared';
@@ -29,7 +29,7 @@ export default function CustomButton({
     };
   }
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       underlayColor="transperent"
       activeOpacity={isLoading ? 1 : 0.7}
       onPress={() => {
@@ -62,6 +62,6 @@ export default function CustomButton({
           />
         )}
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }

@@ -13,7 +13,3 @@ export const UPDATE_RATINGS = id => `/DishRecipe/${id}/Update-Rating`;
 
 export const INGREDIENT_MAIN_CATEGORY = '/IngredientMainCategory';
 export const INGREDIENT_SUB_CATEGORY = '/IngredientSubCategory';
-
-// client storage keys
-// TODO Improvements
-export const USER_PROFILE = 'USER_PROFILE';
