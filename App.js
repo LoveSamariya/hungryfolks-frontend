@@ -29,6 +29,7 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
+import { Alert } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -90,6 +91,7 @@ function MyTabs() {
 
 export default function App() {
   const initialRouteName = 'AppInit';
+
   return (
     <AuthProviderGoogle>
       <ThemeProvider initial={DEFAULT_LIGHT_THEME}>

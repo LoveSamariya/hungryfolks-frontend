@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
@@ -32,6 +33,7 @@ import {
 import { useUserInfoHook } from '../../hooks/userInfoHook';
 import { useDispatch } from 'react-redux';
 import { alignItemsCenter } from '../../constants/common';
+import { useGoogleAuth } from '../../context/auth.google.context';
 const guestUserData = {
   name: 'Guest Account',
 };
@@ -41,6 +43,8 @@ function ProfileScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
   const CommonStyles = useCommonStyle();
   const dispatch = useDispatch();
+  const { signOut } = useGoogleAuth();
+
   // const user = {
   //   profile: {
   //     name: 'Harshad prajapati',
@@ -56,7 +60,9 @@ function ProfileScreen({ navigation }) {
     });
   };
   const handleLogOut = () => {
-    dispatch(logoutReq({ onLogoutSuccess }));
+    signOut().then(() => {
+      dispatch(logoutReq({ onLogoutSuccess }));
+    });
   };
   return (
     <>

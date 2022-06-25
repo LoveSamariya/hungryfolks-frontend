@@ -7,6 +7,7 @@ import * as Keychain from 'react-native-keychain';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
+  setAppPassedAuth,
   setAxiosAuthorizationToken,
   setUserProfileCredentials,
 } from '../../services/auth/auth.slice';
@@ -48,7 +49,7 @@ const getUserProfileDataFromClientStorage = async () => {
   }
 };
 
-const getPassedAuth = async () => {
+export const getPassedAuth = async () => {
   try {
     const value = await AsyncStorage.getItem(PASSED_AUTH);
     return !!value;
@@ -85,6 +86,7 @@ export default function AppInitScreen({ navigation }) {
           setAxiosAuthorizationToken(userCredentials.accessToken);
         }
         getPassedAuth().then(passedAuth => {
+          dispatch(setAppPassedAuth(passedAuth));
           if (passedAuth) {
             navigation.replace('Home');
             return;

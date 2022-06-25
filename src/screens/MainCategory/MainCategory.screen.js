@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
+  Alert,
 } from 'react-native';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
@@ -16,8 +17,15 @@ import Search from './components/Search';
 import { useGetMainCategoryQuery } from './recipes.services';
 import qs from 'qs';
 import NoData from '../../shared/UI/NoData/NoData';
-import { CustomStatusBar, LoaderLayout } from '../../shared';
+import {
+  CustomStatusBar,
+  InfiniteScrollView,
+  LoaderLayout,
+} from '../../shared';
 import { useTheme } from '../../context/thme.context';
+import { PAGE_SIZE } from '../../constants/constants';
+import { numberOfPages } from '../../shared/helperFunctions';
+
 const createStyles = theme => {
   const styles = StyleSheet.create({
     container: {
@@ -72,11 +80,19 @@ export default function MainCategoryScreen({ navigation }) {
   const { theme } = useTheme();
   const [searchValue, setSearchValue] = useState('');
 
-  const { data, error, isLoading } = useGetMainCategoryQuery(
-    qs.stringify({ searchText: searchValue }),
+  const [pageNumber, setPageNumber] = useState(1);
+  const { data, isLoading, isFetching } = useGetMainCategoryQuery(
+    qs.stringify({ searchText: searchValue, pageNumber, pageSize: PAGE_SIZE }),
   );
 
-  const { mainCategories } = data || {};
+  const [mainCategories, setMainCategories] = useState([]);
+
+  React.useEffect(() => {
+    const preArray = [...mainCategories];
+    if (!data?.mainCategories?.length) return;
+    setMainCategories([]);
+    setMainCategories([...preArray, ...data?.mainCategories]);
+  }, [qs.stringify(data)]);
 
   const onCardPressed = (id, name) => {
     navigation.navigate('SubCategory', {
@@ -123,10 +139,12 @@ export default function MainCategoryScreen({ navigation }) {
               </View>
             </SafeAreaView>
           </View>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled">
+          <InfiniteScrollView
+            isFetching={isFetching}
+            totalRecords={data?.totalRecords}
+            pageSize={PAGE_SIZE}
+            pageNumber={pageNumber}
+            onFetchNext={() => setPageNumber(pageNumber + 1)}>
             <View style={{ paddingBottom: 64 }}>
               <LoaderLayout isLoading={isLoading}>
                 <View style={Styles.headingGap}>
@@ -139,9 +157,9 @@ export default function MainCategoryScreen({ navigation }) {
                 </View>
 
                 <View style={Styles.row}>
-                  {mainCategories?.map(({ name, id, image }) => {
+                  {mainCategories?.map(({ name, id, image }, index) => {
                     return (
-                      <View style={Styles.col} key={name}>
+                      <View style={Styles.col} key={`${id}${index}`}>
                         <Card
                           title={name}
                           onCardPressed={() => onCardPressed(id, name)}>
@@ -153,7 +171,7 @@ export default function MainCategoryScreen({ navigation }) {
                 </View>
               </LoaderLayout>
             </View>
-          </ScrollView>
+          </InfiniteScrollView>
           {!mainCategories?.length && !isLoading && <NoData />}
         </View>
       </SafeAreaView>

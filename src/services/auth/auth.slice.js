@@ -13,6 +13,7 @@ import { USER_PROFILE, PASSED_AUTH } from '../../constants/storageKeys';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginWithEnum } from '../../constants/enum';
 
 export function setAxiosAuthorizationToken(auth_token) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + auth_token;
@@ -26,10 +27,9 @@ export async function clearAsyncStorage() {
   }
 }
 
-export async function setAppInitiated(appInitiated) {
+export async function setAppInitiatedClientSide(appInitiated) {
   await AsyncStorage.setItem(PASSED_AUTH, appInitiated);
 }
-
 async function setEmailTokenClientSide(data) {
   const {
     profile: { email },
@@ -64,7 +64,6 @@ async function setUsernameIDClientSide(data) {
     const jsonValue = JSON.stringify({ id, name });
     await AsyncStorage.setItem(USER_PROFILE, jsonValue);
   } catch (e) {
-    console.log(e, 'sdfjk');
     // saving error
   }
 }
@@ -81,15 +80,15 @@ async function resetUsernameIDClientSide() {
 
 export const loginReq = createAsyncThunk(
   `auth/login`,
-  async ({ userInfo, onLoginSuccess }, { rejectWithValue }) => {
+  async ({ userInfo, onLoginSuccess }, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(`${API_URL}${LOGIN}`, userInfo);
       setAxiosAuthorizationToken(response.data.accessToken);
-
+      dispatch(setAppPassedAuth(loginWithEnum.hungryFolks));
       await Promise.all([
         setEmailTokenClientSide(response.data),
         setUsernameIDClientSide(response.data),
-        setAppInitiated('true'),
+        setAppInitiatedClientSide(loginWithEnum.hungryFolks),
       ]);
       onLoginSuccess();
       return response.data;
@@ -101,12 +100,18 @@ export const loginReq = createAsyncThunk(
 
 export const logoutReq = createAsyncThunk(
   `auth/logout`,
-  async ({ onLogoutSuccess }, { rejectWithValue }) => {
+  async ({ onLogoutSuccess }, { rejectWithValue, getState }) => {
+    const {
+      auth: { passedAuth },
+    } = getState();
+
+    console.log(passedAuth, 'passedAuth---');
+
     try {
       await Promise.all([
         resetEmailTokenClientSide(),
         resetUsernameIDClientSide(),
-        setAppInitiated(''),
+        setAppInitiatedClientSide(''),
       ]);
       setAxiosAuthorizationToken(null);
       clearAsyncStorage();
@@ -135,7 +140,7 @@ export const otpVerifyReq = createAsyncThunk(
   `auth/otp-verify`,
   async (
     { verificationCode, onOtpVerified },
-    { rejectWithValue, getState },
+    { rejectWithValue, getState, dispatch },
   ) => {
     const {
       auth: {
@@ -149,11 +154,13 @@ export const otpVerifyReq = createAsyncThunk(
         email,
         verificationToken,
       });
+      dispatch(setAppPassedAuth(loginWithEnum.hungryFolks));
+
       onOtpVerified();
       setAxiosAuthorizationToken(response.data.accessToken);
       setEmailTokenClientSide(response.data);
       setUsernameIDClientSide(response.data);
-      setAppInitiated('true');
+      setAppInitiatedClientSide(loginWithEnum.hungryFolks);
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -186,13 +193,17 @@ export const resendOtpReq = createAsyncThunk(
 
 export const externalLogin = createAsyncThunk(
   `auth/externalLogin`,
-  async ({ idToken, onExternalLoginSuccess }, { rejectWithValue }) => {
+  async (
+    { idToken, onExternalLoginSuccess },
+    { rejectWithValue, dispatch },
+  ) => {
     try {
-      console.log(45);
       const response = await axios.post(`${API_URL}${EXTERNAL_LOGIN}`, {
         idToken,
         provider: 'GOOGLE',
       });
+
+      dispatch(setAppPassedAuth(loginWithEnum.google));
 
       await Promise.all([
         setEmailTokenClientSide(response.data),
@@ -200,7 +211,6 @@ export const externalLogin = createAsyncThunk(
       ]);
 
       onExternalLoginSuccess();
-      console.log(response.data);
       return response.data;
     } catch (err) {
       console.log(err.response.data);
@@ -217,6 +227,7 @@ export const authSlice = createSlice({
     isLoginLoading: false,
     isCreateAccountLoading: false,
     isOtpLoading: false,
+    passedAuth: null,
     userInfo: {},
     user: {},
     callbackSession: {},
@@ -230,6 +241,9 @@ export const authSlice = createSlice({
     },
     setCallbackSession(state, action) {
       state.callbackSession = action.payload;
+    },
+    setAppPassedAuth(state, action) {
+      state.passedAuth = action.payload;
     },
     // standard reducer logic, with auto-generated action types per reducer
   },
@@ -299,6 +313,7 @@ export const {
   resetLoginError,
   setUserProfileCredentials,
   setCallbackSession,
+  setAppPassedAuth,
 } = authSlice.actions;
 
 export const selectLoginError = state => state.auth.loginError;
@@ -308,3 +323,4 @@ export const selectCreateAccountLoadingState = state =>
 export const selectOtpLoadingState = state => state.auth.isOtpLoading;
 export const selectUserInfo = state => state.auth.userInfo;
 export const selectCallbackSession = state => state.auth.callbackSession;
+export const selectPassedAuth = state => state.auth.passedAuth;

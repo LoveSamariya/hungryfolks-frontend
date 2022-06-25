@@ -10,6 +10,7 @@ export const mainCategoryApi = createApi({
   endpoints: builder => ({
     getMainCategory: builder.query({
       query: query => {
+        console.log(query, 'query');
         return `${MAIN_CATEGORY}?${query}`;
       },
     }),

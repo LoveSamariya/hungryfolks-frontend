@@ -8,24 +8,30 @@ import { useGoogleAuth } from '../../../context/auth.google.context';
 import { CustomGoogleSigninButton } from '../CustomGoogleSigninButton';
 import { useDispatch } from 'react-redux';
 import { externalLogin } from '../../../services/auth/auth.slice';
+import { useNavigation } from '@react-navigation/native';
 
 GoogleSignin.configure(config);
 
 export default function GoogleSigninButtonContainer({ ...props }) {
   const dispatch = useDispatch();
-  const { signIn, userInfo } = useGoogleAuth();
+  const { signIn, userInfo, signOut } = useGoogleAuth();
+
+  const navigation = useNavigation();
 
   const userInfoObj = userInfo || {};
-  console.log(userInfoObj, 'userInfoObj---------------------');
   const onExternalLoginSuccess = () => {
-    console.log('success');
+    navigation.replace('Home');
   };
   React.useEffect(() => {
     if (!Object.keys(userInfoObj)?.length) {
       return;
     }
     dispatch(
-      externalLogin({ idToken: userInfoObj.idToken, onExternalLoginSuccess }),
+      externalLogin({
+        idToken: userInfoObj.idToken,
+        onExternalLoginSuccess,
+        loginWith: 'GOOGLE',
+      }),
     );
   }, [qs.stringify(userInfoObj)]);
 

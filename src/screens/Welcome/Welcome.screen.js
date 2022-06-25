@@ -12,7 +12,8 @@ import createStyles from './Welcome.style';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 
 import { AuthMethods, CustomStatusBar } from '../../shared';
-import { setAppInitiated } from '../../services/auth/auth.slice';
+import { setAppInitiatedClientSide } from '../../services/auth/auth.slice';
+import { loginWithEnum } from '../../constants/enum';
 
 export default function WelcomeScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
@@ -38,7 +39,7 @@ export default function WelcomeScreen({ navigation }) {
             <TouchableHighlight
               underlayColor="transperent"
               onPress={() => {
-                setAppInitiated('true');
+                setAppInitiatedClientSide(loginWithEnum.guest);
                 navigation.replace('Home');
               }}>
               <Text style={{ marginTop: 12, textDecorationLine: 'underline' }}>

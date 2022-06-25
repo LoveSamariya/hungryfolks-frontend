@@ -17,7 +17,8 @@ import qs from 'qs';
 import { filtersEnum } from '../../constants/enum';
 import NoData from '../../shared/UI/NoData/NoData';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
-import { BackButton, TopBar } from '../../shared';
+import { BackButton, InfiniteScrollView, TopBar } from '../../shared';
+import { PAGE_SIZE } from '../../constants/constants';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -166,29 +167,27 @@ export default function DishRecipesScreen({ navigation, route }) {
   const [searchValue, setSearchValue] = useState('');
   const [selectedChips, setSelectedChips] = useState('');
 
-  const { data, error, isLoading } = useGetDishRecipeQuery(
-    qs.stringify(
-      ingredient?.SubCategory
-        ? {
-            keywords: ingredient?.SubCategory,
-            searchText: searchValue,
-            dishType: selectedChips,
-          }
-        : {
-            MainCategory,
-            SubCategory,
-            searchText: searchValue,
-            dishType: selectedChips,
-          },
-      { indices: false },
-    ),
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const { data, isFetching, isLoading } = useGetDishRecipeQuery(
+    qs.stringify({ pageNumber, pageSize: PAGE_SIZE }),
   );
+
+  const [dishRecipes, setDishRecipes] = useState([]);
+
+  React.useEffect(() => {
+    console.log('TEST-');
+    // const preArray = [...dishRecipes];
+    if (!data?.dishRecipes?.length) return;
+    // setDishRecipes([]);
+    setDishRecipes(preArray => [...preArray, ...data?.dishRecipes]);
+  }, [qs.stringify(data)]);
 
   const onSearchValueChange = useCallback(val => {
     setSearchValue(val);
   }, []);
 
-  const { dishRecipes } = data || {};
+  // const { dishRecipes } = data || {};
 
   const onCardPressed = code => {
     navigation.navigate('DishRecipeDetails', {
@@ -248,10 +247,12 @@ export default function DishRecipesScreen({ navigation, route }) {
       </SafeAreaView>
       <SafeAreaView style={Styles.cardListing}>
         <LoaderLayout isLoading={isLoading}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled">
+          <InfiniteScrollView
+            isFetching={isFetching}
+            totalRecords={data?.totalRecords}
+            pageSize={PAGE_SIZE}
+            pageNumber={pageNumber}
+            onFetchNext={() => setPageNumber(pageNumber + 1)}>
             {dishRecipes?.map(({ name, image, rating, code }) => {
               return (
                 <CardInfo
@@ -265,7 +266,7 @@ export default function DishRecipesScreen({ navigation, route }) {
               );
             })}
             {!dishRecipes?.length && !isLoading && <NoData />}
-          </ScrollView>
+          </InfiniteScrollView>
         </LoaderLayout>
       </SafeAreaView>
     </>

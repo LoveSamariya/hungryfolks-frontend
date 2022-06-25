@@ -17,6 +17,6 @@ export * from './UI/AuthMethods';
 export * from './UI/TopBar';
 export * from './UI/CustomPasswordInput';
 export * from './UI/ResetpasswordForm';
-
+export * from './UI/InfiniteScrollView';
 //Regex exports
 export * from './regex';
