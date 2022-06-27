@@ -7,6 +7,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   DISH_RECIPE_FROM_CODE,
   DISH_RECIPE_FROM_ID,
+  GET_USER_RATINGS,
   MAIN_CATEGORY,
   UPDATE_RATINGS,
 } from '../../services/constants';
@@ -22,6 +23,7 @@ export const updateRatingsReq = createAsyncThunk(
       const response = await axios.put(
         `${API_URL}${UPDATE_RATINGS(recipeId)}`,
         ratingsValue,
+        { headers: { 'Content-Type': 'application/json' } },
       );
       console.log(response.data);
       onUpdateRatingsSuccess();
@@ -33,10 +35,32 @@ export const updateRatingsReq = createAsyncThunk(
   },
 );
 
+export const getUserRatingsReq = createAsyncThunk(
+  `dishRecipeDetails/getUserRatings`,
+  async ({ recipeId }, { rejectWithValue }) => {
+    console.log(232332332323232332);
+    try {
+      console.log(`${API_URL}${GET_USER_RATINGS(recipeId)}`);
+      const response = await axios.get(
+        `${API_URL}${GET_USER_RATINGS(recipeId)}`,
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      console.log(err.response);
+      return rejectWithValue(err.response.data);
+    }
+  },
+);
+
 export const dishRecipeDetailsSlice = createSlice({
   name: 'dishRecipeDetails',
-  initialState: {},
+  initialState: { userRating: null },
   reducers: {
+    resetUserRating: state => {
+      state.userRating = null;
+    },
     // standard reducer logic, with auto-generated action types per reducer
   },
   extraReducers: builder => {
@@ -52,6 +76,20 @@ export const dishRecipeDetailsSlice = createSlice({
         // state.isLoginLoading = false;
         // state.loginError = action.payload;
         console.log(action.payload, 'act', action.error);
+      });
+
+    builder
+      .addCase(getUserRatingsReq.pending, (state, action) => {
+        // state.isLoginLoading = true;
+      })
+      .addCase(getUserRatingsReq.fulfilled, (state, action) => {
+        state.userRating = action?.payload?.rate;
+        console.log(action.payload);
+      })
+      .addCase(getUserRatingsReq.rejected, (state, action) => {
+        // state.isLoginLoading = false;
+        // state.loginError = action.payload;
+        console.log(action.payload, action.error);
       });
   },
 });
@@ -72,3 +110,9 @@ export const dishRecipeDetailsApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const { useGetDishRecipeFromCodeQuery } = dishRecipeDetailsApi;
+
+// Slice actions
+export const { resetUserRating } = dishRecipeDetailsSlice.actions;
+
+//State selector functions
+export const userRatingSelector = state => state.dishRecipeDetails.userRating;

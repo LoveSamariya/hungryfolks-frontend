@@ -82,8 +82,12 @@ export default function MainCategoryScreen({ navigation }) {
 
   const [pageNumber, setPageNumber] = useState(1);
   const { data, isLoading, isFetching } = useGetMainCategoryQuery(
-    qs.stringify({ searchText: searchValue, pageNumber, pageSize: PAGE_SIZE }),
+    qs.stringify({ pageNumber, pageSize: PAGE_SIZE }),
   );
+
+  // const { data, isLoading, isFetching } = useGetMainCategoryQuery(
+  //   qs.stringify({ pageNumber, pageSize: PAGE_SIZE }),
+  // );
 
   const [mainCategories, setMainCategories] = useState([]);
 

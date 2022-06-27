@@ -10,6 +10,7 @@ import { AuthProviderGoogle } from './src/context/auth.google.context';
 import { ThemeProvider, useTheme } from './src/context/thme.context';
 
 import {
+  IntroScreen,
   AppInitScreen,
   DishRecipeDetails,
   DishRecipesScreen,
@@ -90,7 +91,7 @@ function MyTabs() {
 }
 
 export default function App() {
-  const initialRouteName = 'AppInit';
+  const initialRouteName = 'Home';
 
   return (
     <AuthProviderGoogle>
@@ -98,6 +99,11 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator initialRouteName={initialRouteName}>
             <>
+              <Stack.Screen
+                name="Intro"
+                component={IntroScreen}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen
                 name="AppInit"
                 component={AppInitScreen}

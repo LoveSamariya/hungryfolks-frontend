@@ -1,3 +1,4 @@
+export * from './Intro';
 export * from './AppInit';
 export * from './MainCategory';
 export * from './SubCategory';
@@ -11,5 +12,4 @@ export * from './ForgotPassword';
 export * from './Profile';
 export * from './Credits';
 export * from './ResetPassword';
-
 export * from './Ingredients';

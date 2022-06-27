@@ -18,5 +18,7 @@ export * from './UI/TopBar';
 export * from './UI/CustomPasswordInput';
 export * from './UI/ResetpasswordForm';
 export * from './UI/InfiniteScrollView';
+export * from './UI/CustomCarousel';
+export * from './UI/CustomOverlay';
 //Regex exports
 export * from './regex';

@@ -4,7 +4,7 @@ export default {
     'https://www.googleapis.com/auth/userinfo.profile',
   ], // [Android] what API you want to access on behalf of the user, default is email and profile
   webClientId:
-    '1077474204084-7vf5ifhtmvsgdpr4ileft32v01p3mb2v.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    '398209848846-0rre80sr6fca18u6r3grgcrk688jqrnf.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
   hostedDomain: '', // specifies a hosted domain restriction
   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.

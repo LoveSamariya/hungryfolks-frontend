@@ -7,6 +7,11 @@ const variants = {
     backgroundColor: '#f5eedc',
     barStyle: 'dark-content',
   }),
+  transparentLight: theme => ({
+    backgroundColor: 'transparent',
+    barStyle: 'light-content',
+    translucent: true,
+  }),
 };
 
 export default variants;

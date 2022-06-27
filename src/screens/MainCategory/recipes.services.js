@@ -1,7 +1,7 @@
 // Need to use the React-specific entry point to import createApi
 import { API_URL } from '@env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { MAIN_CATEGORY } from '../../services/constants';
+import { KEYWORD, MAIN_CATEGORY } from '../../services/constants';
 
 // Define a service using a base URL and expected endpoints
 export const mainCategoryApi = createApi({
@@ -14,9 +14,15 @@ export const mainCategoryApi = createApi({
         return `${MAIN_CATEGORY}?${query}`;
       },
     }),
+    getKeyword: builder.query({
+      query: query => {
+        console.log(query, 'query');
+        return `${KEYWORD}?${query}`;
+      },
+    }),
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetMainCategoryQuery } = mainCategoryApi;
+export const { useGetMainCategoryQuery, useGetKeywordQuery } = mainCategoryApi;

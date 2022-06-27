@@ -21,11 +21,15 @@ import { useUserInfoHook } from '../../hooks/userInfoHook';
 import {
   useGetDishRecipeFromCodeQuery,
   updateRatingsReq,
+  userRatingSelector,
+  getUserRatingsReq,
+  resetUserRating,
 } from './dishRecipeDetails.services';
 import { setCallbackSession } from '../../services/auth/auth.slice';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 import { BackButton, AuthModal, CustomButton, TopBar } from '../../shared';
+import { useSelector } from 'react-redux';
 // import {WebView} from 'react-native';
 
 function TableListData({ styles: Styles, title, info, icon }) {
@@ -244,6 +248,7 @@ export default function DishRecipeDetails({ route, navigation }) {
   const { code, ratings: ratingsFromParams } = route.params;
   const { data, error, isLoading } = useGetDishRecipeFromCodeQuery(code);
   const { width } = useWindowDimensions();
+  const userRatings = useSelector(userRatingSelector);
   // console.log(data);
   const {
     name,
@@ -332,6 +337,13 @@ export default function DishRecipeDetails({ route, navigation }) {
     dispatch(setCallbackSession({}));
   };
 
+  React.useEffect(() => {
+    if (!id) return;
+    if (isLoggedIn) dispatch(getUserRatingsReq({ recipeId: id }));
+    return () => {
+      dispatch(resetUserRating());
+    };
+  }, [id]);
   return (
     <>
       <TopBar navigation={navigation} />
@@ -623,7 +635,7 @@ export default function DishRecipeDetails({ route, navigation }) {
                       type="custom"
                       defaultRating={1}
                       ratingCount={5}
-                      startingValue={ratingsFromParams || 0}
+                      startingValue={ratingsFromParams || userRatings || 0}
                       starContainerStyle={{ backgroundColor: 'red' }}
                       ratingContainerStyle={{ backgroundColor: 'red' }}
                       tintColor={'#f5f5f5'}
