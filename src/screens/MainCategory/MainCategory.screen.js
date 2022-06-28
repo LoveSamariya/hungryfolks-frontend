@@ -110,7 +110,7 @@ export default function MainCategoryScreen({ navigation }) {
 
   const [globalSearchText, setGlobalSearchText] = useState(undefined);
   const [isGlobalSearchActive, setIsGlobalSearchActive] = useState(false);
-  const [mainCategorySearchText, setMainCategorySearchText] = useState('');
+  const [mainCategorySearchText, setMainCategorySearchText] = useState(null);
 
   const { data, isLoading, isFetching } = useGetMainCategoryQuery(
     qs.stringify({
@@ -135,7 +135,6 @@ export default function MainCategoryScreen({ navigation }) {
 
   React.useEffect(() => {
     const preArray = [...mainCategories];
-    console.log(data, 'data useEffect');
     if (!data?.mainCategories?.length) return;
     setMainCategories([]);
     setMainCategories([...preArray, ...data?.mainCategories]);
@@ -147,11 +146,12 @@ export default function MainCategoryScreen({ navigation }) {
       setMainCategories([]);
     } else if (!globalSearchText && isGlobalSearchActive) {
       setIsGlobalSearchActive(false);
-    } else if (!isGlobalSearchActive) {
-      setMainCategories([]);
-      setMainCategorySearchText('');
     }
-    console.log(mainCategories, data);
+    // else if (!isGlobalSearchActive) {
+    //   console.log('Global search------------------------------');
+    //   setMainCategories([]);
+    //   setMainCategorySearchText('');
+    // }
   }, [globalSearchText, isGlobalSearchActive]);
 
   const onCardPressed = (id, name) => {
@@ -162,23 +162,24 @@ export default function MainCategoryScreen({ navigation }) {
   };
 
   const onSearchValueChange = val => {
-    setGlobalSearchText(val);
-
-    // if (val) {
-    //   setGlobalSearchText(val);
-    // } else if (globalSearchText == undefined) {
-    //   return;
-    // } else if (globalSearchText == '') {
-    //   setGlobalSearchText('');
-    // }
+    console.log('////', val);
+    if (val) {
+      setGlobalSearchText(val);
+    } else {
+      setMainCategorySearchText('');
+      setGlobalSearchText('');
+    }
   };
 
   const handleMainCategorySearchPress = searchResult => {
     setMainCategorySearchText(searchResult);
+    setGlobalSearchText('');
     setIsGlobalSearchActive(false);
   };
 
-  const handleDishRecipeSearchPress = useCallback(searchResult => {}, []);
+  const handleDishRecipeSearchPress = useCallback(searchResult => {
+    navigation.navigate('DishRecipe', { searchText: searchResult });
+  }, []);
 
   const searchResultPressHandlers = React.useMemo(
     () => ({
@@ -275,7 +276,6 @@ export default function MainCategoryScreen({ navigation }) {
                         key={index}
                         style={{
                           borderColor: 'red',
-                          // borderWidth: 1,
                           marginBottom: 8,
                           backgroundColor: 'white',
                           paddingHorizontal: 24,

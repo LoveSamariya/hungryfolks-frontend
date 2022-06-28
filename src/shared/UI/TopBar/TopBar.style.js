@@ -10,7 +10,8 @@ const createStyles = theme => {
       position: 'absolute',
       top: 0,
       zIndex: 999,
-      paddingVertical: 4,
+      paddingTop: 4,
+      paddingBottom: 8,
       backgroundColor: theme.color.highlight1,
     },
     backButton: {

@@ -63,7 +63,7 @@ function Search({
             if (onClosePressed) {
               onClosePressed();
             }
-            onInputValueChange('');
+            onInputValueChange(null);
           }}
         />
       )}

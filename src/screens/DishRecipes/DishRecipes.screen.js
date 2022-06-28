@@ -36,6 +36,7 @@ const createStyles = theme => {
       fontFamily: theme.fontFamily.primaryBold,
       color: '#ffffff',
       textAlign: 'center',
+      marginLeft: 8,
     },
     cardOne: {
       height: 226,
@@ -129,6 +130,9 @@ const createStyles = theme => {
       minWidth: 124,
       borderRadius: 12,
     },
+    noBreadCrumbGap: {
+      marginTop: 56,
+    },
   });
   return styles;
 };
@@ -161,8 +165,14 @@ function Chips({ Styles, title, onPress, isSelected, value }) {
 export default function DishRecipesScreen({ navigation, route }) {
   const Styles = useThemeAwareObject(createStyles);
 
-  const { id, MainCategory, SubCategory, customTitle, ingredient } =
-    route.params || {};
+  const {
+    id,
+    MainCategory,
+    SubCategory,
+    customTitle,
+    ingredient,
+    searchText = '',
+  } = route.params || {};
 
   const [searchValue, setSearchValue] = useState('');
   const [selectedChips, setSelectedChips] = useState('');
@@ -170,7 +180,7 @@ export default function DishRecipesScreen({ navigation, route }) {
   const [pageNumber, setPageNumber] = useState(1);
 
   const { data, isFetching, isLoading } = useGetDishRecipeQuery(
-    qs.stringify({ pageNumber, pageSize: PAGE_SIZE }),
+    qs.stringify({ pageNumber, pageSize: PAGE_SIZE, searchText }),
   );
 
   const [dishRecipes, setDishRecipes] = useState([]);
@@ -182,6 +192,10 @@ export default function DishRecipesScreen({ navigation, route }) {
     // setDishRecipes([]);
     setDishRecipes(preArray => [...preArray, ...data?.dishRecipes]);
   }, [qs.stringify(data)]);
+
+  useEffect(() => {
+    setSearchValue(searchText);
+  }, [searchText]);
 
   const onSearchValueChange = useCallback(val => {
     setSearchValue(val);
@@ -205,24 +219,35 @@ export default function DishRecipesScreen({ navigation, route }) {
 
   return (
     <>
-      <TopBar navigation={navigation} />
-      <View style={Styles.headerAsBreadCrums}>
-        <SafeAreaView style={Styles.searchWrapper}>
-          <Search
-            onSearchValueChange={onSearchValueChange}
-            controlledInput
-            value={searchValue}
-            onClosePressed={() => setSearchValue('')}
-          />
-        </SafeAreaView>
-      </View>
+      <TopBar navigation={navigation}>
+        {!!searchText && (
+          <Text style={Styles.headerAsBreadCrumsTitle}>{searchText}</Text>
+        )}
+      </TopBar>
+      {!searchText && (
+        <View style={Styles.headerAsBreadCrums}>
+          <SafeAreaView style={Styles.searchWrapper}>
+            <Search
+              onSearchValueChange={onSearchValueChange}
+              controlledInput
+              value={searchValue}
+              onClosePressed={() => setSearchValue('')}
+            />
+          </SafeAreaView>
+        </View>
+      )}
       <SafeAreaView>
         <ScrollView
           horizontal={true}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
-          <View style={{ ...Styles.filterChipsContainer, ...Styles.listingBg }}>
+          <View
+            style={{
+              ...Styles.filterChipsContainer,
+              ...Styles.listingBg,
+              ...(searchText ? Styles.noBreadCrumbGap : {}),
+            }}>
             <Chips
               Styles={Styles}
               title={'All'}
