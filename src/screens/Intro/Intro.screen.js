@@ -15,21 +15,31 @@ import { setIntroPassedClientSide } from '../../services/auth/auth.slice';
 
 const data = [
   {
-    image: require('../../assets/images/introimage_1.jpg'),
-    slideTitle: 'lorem ipsum',
+    slideTitle: 'Recipes by \nMain Categories',
     slideDescription:
       'Lorem ipsum dolor sit amet,Lorem ipsum dolor sit amet,Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse porta facilisis vehicula. Fusce in est et nisl tempor tempus ornare ac turpis.',
   },
   {
-    image: require('../../assets/images/introimage_1.jpg'),
-    slideTitle: 'lorem ipsum',
+    slideTitle: 'Recipes based on \nIngredients',
+    slideDescription:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse porta facilisis vehicula. Fusce in est et nisl tempor tempus ornare ac turpis.',
+  },
+  {
+    slideTitle: 'Save your \nFavourite Ingredients',
     slideDescription:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse porta facilisis vehicula. Fusce in est et nisl tempor tempus ornare ac turpis.',
   },
 ];
 
+const dataHighlightImage = [
+  require('../../assets/images/intro/intro_1.jpg'),
+  require('../../assets/images/intro/intro_2.jpg'),
+  require('../../assets/images/intro/intro_3.jpg'),
+  require('../../assets/images/intro/intro_4.jpg'),
+];
+
 const dataDetailSlider = data;
-const dataImageSlider = data;
+const dataImageSlider = dataHighlightImage;
 
 export default function IntroScreen({ navigation }) {
   const Styles = useIntroStyle();
@@ -49,16 +59,7 @@ export default function IntroScreen({ navigation }) {
   );
   const renderImageSliderItem = React.useCallback(
     ({ item, index }) => {
-      return (
-        <Image
-          source={
-            index % 2 === 0
-              ? require('../../assets/images/introimage_1.jpg')
-              : require('../../assets/images/introimage_2.jpg')
-          }
-          style={Styles.imageSliderImage}
-        />
-      );
+      return <Image source={item} style={Styles.imageSliderImage} />;
     },
     [Styles],
   );
@@ -93,6 +94,8 @@ export default function IntroScreen({ navigation }) {
             data={dataImageSlider}
             renderItem={renderImageSliderItem}
             pagination={false}
+            autoplayInterval={5000}
+            scrollEnabled={false}
             loop
             autoplay
           />
@@ -129,6 +132,7 @@ export default function IntroScreen({ navigation }) {
             renderItem={renderItem}
             containerCustomStyle={Styles.sliderContainerCustomStyle}
             useScrollView
+            scrollEnabled={false}
           />
         </View>
       </View>
