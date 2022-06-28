@@ -10,13 +10,13 @@ export const mainCategoryApi = createApi({
   endpoints: builder => ({
     getMainCategory: builder.query({
       query: query => {
-        console.log(query, 'query');
+        console.log(query, 'query getMainCategory');
         return `${MAIN_CATEGORY}?${query}`;
       },
     }),
     getKeyword: builder.query({
       query: query => {
-        console.log(query, 'query');
+        console.log(query, 'query getKeyword');
         return `${KEYWORD}?${query}`;
       },
     }),

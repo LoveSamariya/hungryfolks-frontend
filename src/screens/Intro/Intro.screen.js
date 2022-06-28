@@ -11,6 +11,7 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 import { CustomCarousel, CustomOverlay, CustomStatusBar } from '../../shared';
 import useIntroStyle from './Intro.style';
+import { setIntroPassedClientSide } from '../../services/auth/auth.slice';
 
 const data = [
   {
@@ -64,6 +65,7 @@ export default function IntroScreen({ navigation }) {
 
   const handleIntroEnd = () => {
     navigation.replace('Welcome');
+    setIntroPassedClientSide('1');
   };
 
   const isLastDetailSlide = () => {

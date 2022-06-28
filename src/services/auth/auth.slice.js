@@ -9,27 +9,78 @@ import {
   RESEND_OTP,
   EXTERNAL_LOGIN,
 } from '../constants';
-import { USER_PROFILE, PASSED_AUTH } from '../../constants/storageKeys';
+import {
+  USER_PROFILE,
+  PASSED_AUTH,
+  PASSED_INTRO,
+  LAST_LOGGED_IN,
+} from '../../constants/storageKeys';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginWithEnum } from '../../constants/enum';
+import { __PERMANENT__KEY__ } from '../../constants/constants';
 
 export function setAxiosAuthorizationToken(auth_token) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + auth_token;
 }
 
-export async function clearAsyncStorage() {
+export async function clearAsyncStorageWithExclude() {
   try {
-    await AsyncStorage.clear();
+    let keys = await AsyncStorage.getAllKeys();
+    keys = keys.filter(key => key.indexOf(__PERMANENT__KEY__) > 0);
+    await AsyncStorage.multiRemove(keys);
   } catch (e) {
-    // clear error
+    console.log(e);
+  }
+}
+export async function clearAsyncStorage(safeMode = true) {
+  try {
+    if (!safeMode) return await AsyncStorage.clear();
+    return await clearAsyncStorageWithExclude();
+  } catch (e) {
+    console.log(e);
   }
 }
 
-export async function setAppInitiatedClientSide(appInitiated) {
-  await AsyncStorage.setItem(PASSED_AUTH, appInitiated);
+export async function asyncStorageHelper(key, value) {
+  try {
+    if (value === undefined) {
+      return JSON.parse(await AsyncStorage.getItem(key));
+    } else {
+      return await AsyncStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch (e) {
+    console.log(e);
+  }
 }
+
+export async function lastLoggedInClientSide(date) {
+  return await asyncStorageHelper(LAST_LOGGED_IN, date);
+}
+
+export async function setAppInitiatedClientSide(appInitiated) {
+  try {
+    await AsyncStorage.setItem(PASSED_AUTH, appInitiated);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function setIntroPassedClientSide(passedIntro) {
+  try {
+    await AsyncStorage.setItem(PASSED_INTRO, passedIntro);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function getIntroPassedClientSide() {
+  try {
+    return await AsyncStorage.getItem(PASSED_INTRO);
+  } catch (e) {}
+}
+
 async function setEmailTokenClientSide(data) {
   const {
     profile: { email },
@@ -90,6 +141,7 @@ export const loginReq = createAsyncThunk(
         setUsernameIDClientSide(response.data),
         setAppInitiatedClientSide(loginWithEnum.hungryFolks),
       ]);
+      await lastLoggedInClientSide(+new Date());
       onLoginSuccess();
       return response.data;
     } catch (err) {
@@ -100,7 +152,7 @@ export const loginReq = createAsyncThunk(
 
 export const logoutReq = createAsyncThunk(
   `auth/logout`,
-  async ({ onLogoutSuccess }, { rejectWithValue, getState }) => {
+  async ({ onLogoutSuccess } = {}, { rejectWithValue, getState }) => {
     const {
       auth: { passedAuth },
     } = getState();
@@ -115,7 +167,7 @@ export const logoutReq = createAsyncThunk(
       ]);
       setAxiosAuthorizationToken(null);
       clearAsyncStorage();
-      onLogoutSuccess();
+      onLogoutSuccess && onLogoutSuccess();
       return true;
     } catch (err) {
       return rejectWithValue(false);
@@ -155,12 +207,12 @@ export const otpVerifyReq = createAsyncThunk(
         verificationToken,
       });
       dispatch(setAppPassedAuth(loginWithEnum.hungryFolks));
-
       onOtpVerified();
       setAxiosAuthorizationToken(response.data.accessToken);
       setEmailTokenClientSide(response.data);
       setUsernameIDClientSide(response.data);
       setAppInitiatedClientSide(loginWithEnum.hungryFolks);
+      await lastLoggedInClientSide(new Date());
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -209,6 +261,7 @@ export const externalLogin = createAsyncThunk(
         setEmailTokenClientSide(response.data),
         setUsernameIDClientSide(response.data),
       ]);
+      await lastLoggedInClientSide(new Date());
 
       onExternalLoginSuccess();
       return response.data;

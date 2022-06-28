@@ -7,6 +7,9 @@ import * as Keychain from 'react-native-keychain';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
+  getIntroPassedClientSide,
+  lastLoggedInClientSide,
+  logoutReq,
   setAppPassedAuth,
   setAxiosAuthorizationToken,
   setUserProfileCredentials,
@@ -18,6 +21,9 @@ import { CustomStatusBar } from '../../shared';
 import createStyles from './AppInit.style';
 import { useUserInfoHook } from '../../hooks/userInfoHook';
 import { PASSED_AUTH, USER_PROFILE } from '../../constants/storageKeys';
+import { diffInDays } from '../../shared/helperFunctions';
+import { useGoogleAuth } from '../../context/auth.google.context';
+import { AUTH_EXPIRATION_DAYS } from '../../constants/constants';
 
 const getCredentialFromClientStorage = async () => {
   try {
@@ -62,41 +68,86 @@ export default function AppInitScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useUserInfoHook();
   const Styles = useThemeAwareObject(createStyles);
+  const { signOut } = useGoogleAuth();
 
-  React.useEffect(() => {
-    const handleSetUserProfileCredentials = usr => {
-      dispatch(setUserProfileCredentials(usr));
-    };
+  const handleLogOut = () => {
+    signOut().then(() => {
+      dispatch(logoutReq());
+    });
+  };
 
-    Promise.all([
+  const handleSetUserProfileCredentials = usr => {
+    dispatch(setUserProfileCredentials(usr));
+  };
+
+  const handleLoggedInUser = (userCredentials, userProfile) => {
+    handleSetUserProfileCredentials({
+      profile: {
+        email: userCredentials.email,
+        name: userProfile.name,
+        id: userProfile.id,
+      },
+      accessToken: userCredentials.accessToken,
+    });
+    setAxiosAuthorizationToken(userCredentials.accessToken);
+  };
+
+  const handleUserNavigation = async () => {
+    const passedAuth = await getPassedAuth();
+    dispatch(setAppPassedAuth(passedAuth));
+    if (passedAuth) {
+      navigation.replace('Home');
+      return;
+    }
+
+    const passedIntro = await getIntroPassedClientSide();
+    if (!passedIntro) {
+      navigation.replace('Intro');
+      return;
+    }
+
+    navigation.replace('Welcome');
+  };
+
+  const isUserTokenValid = async () => {
+    const lastLoggedIn = await lastLoggedInClientSide();
+    const loggedInBeforeDays = diffInDays(lastLoggedIn, new Date());
+    console.log(loggedInBeforeDays, AUTH_EXPIRATION_DAYS);
+    return loggedInBeforeDays <= AUTH_EXPIRATION_DAYS;
+  };
+
+  const handleAuthInit = async () => {
+    const authValues = await Promise.all([
       getCredentialFromClientStorage(),
       getUserProfileDataFromClientStorage(),
-    ])
-      .then(values => {
-        const [userCredentials, userProfile] = values;
-        if (userCredentials && userProfile) {
-          handleSetUserProfileCredentials({
-            profile: {
-              email: userCredentials.email,
-              name: userProfile.name,
-              id: userProfile.id,
-            },
-            accessToken: userCredentials.accessToken,
-          });
-          setAxiosAuthorizationToken(userCredentials.accessToken);
-        }
-        getPassedAuth().then(passedAuth => {
-          dispatch(setAppPassedAuth(passedAuth));
-          if (passedAuth) {
-            navigation.replace('Home');
-            return;
-          }
-          navigation.replace('Welcome');
-        });
-      })
-      .catch(e => {
-        console.log(e);
-      });
+    ]);
+
+    const [userCredentials, userProfile] = authValues;
+    const isUserLoggedIn = userCredentials && userProfile;
+
+    if (isUserLoggedIn) {
+      const userTokenValid = await isUserTokenValid();
+
+      if (!userTokenValid) {
+        handleLogOut();
+        navigation.replace('Welcome');
+        return false;
+      }
+
+      await handleLoggedInUser(userCredentials, userProfile);
+    }
+    return true;
+  };
+  const onAppInit = async () => {
+    const authOk = await handleAuthInit();
+    if (!authOk) return;
+    await handleUserNavigation();
+  };
+
+  React.useEffect(() => {
+    onAppInit().catch(e => {
+      console.log(e);
+    });
   }, []);
 
   return (

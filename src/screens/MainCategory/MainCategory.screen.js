@@ -1,4 +1,8 @@
-import { faTableList, faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTableList,
+  faBars,
+  faAngleRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useCallback, useState } from 'react';
 import {
@@ -9,12 +13,17 @@ import {
   View,
   TouchableHighlight,
   Alert,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
 import { Heading1 } from '../../shared/UI/TypoGraphy/Typography';
 import Search from './components/Search';
-import { useGetMainCategoryQuery } from './recipes.services';
+import {
+  useGetKeywordQuery,
+  useGetMainCategoryQuery,
+} from './recipes.services';
 import qs from 'qs';
 import NoData from '../../shared/UI/NoData/NoData';
 import {
@@ -25,6 +34,13 @@ import {
 import { useTheme } from '../../context/thme.context';
 import { PAGE_SIZE } from '../../constants/constants';
 import { numberOfPages } from '../../shared/helperFunctions';
+import { keywordExplain, keywordTypes } from '../../constants/enum';
+import {
+  alignItemsCenter,
+  dFlex,
+  flexRow,
+  justifyContentCenter,
+} from '../../constants/common';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -71,6 +87,16 @@ const createStyles = theme => {
     headingIcon: {
       marginRight: theme.spacing[2],
     },
+    searchChipsTitle: {
+      fontSize: 18,
+    },
+    searchChipsSubtitle: {
+      color: theme.color.gray3,
+    },
+    ...dFlex,
+    ...alignItemsCenter,
+    ...justifyContentCenter,
+    ...flexRow,
   });
   return styles;
 };
@@ -78,25 +104,55 @@ const createStyles = theme => {
 export default function MainCategoryScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
   const { theme } = useTheme();
-  const [searchValue, setSearchValue] = useState('');
-
-  const [pageNumber, setPageNumber] = useState(1);
-  const { data, isLoading, isFetching } = useGetMainCategoryQuery(
-    qs.stringify({ pageNumber, pageSize: PAGE_SIZE }),
-  );
-
-  // const { data, isLoading, isFetching } = useGetMainCategoryQuery(
-  //   qs.stringify({ pageNumber, pageSize: PAGE_SIZE }),
-  // );
 
   const [mainCategories, setMainCategories] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const [globalSearchText, setGlobalSearchText] = useState(undefined);
+  const [isGlobalSearchActive, setIsGlobalSearchActive] = useState(false);
+  const [mainCategorySearchText, setMainCategorySearchText] = useState('');
+
+  const { data, isLoading, isFetching } = useGetMainCategoryQuery(
+    qs.stringify({
+      pageNumber,
+      pageSize: PAGE_SIZE,
+      searchText: mainCategorySearchText,
+    }),
+  );
+
+  const {
+    data: dataSearch,
+    isLoading: isLoadingSearch,
+    isFetching: isFetchingSearch,
+  } = useGetKeywordQuery(
+    qs.stringify({
+      pageNumber,
+      pageSize: PAGE_SIZE,
+      searchText: globalSearchText,
+    }),
+    { skip: !globalSearchText },
+  );
 
   React.useEffect(() => {
     const preArray = [...mainCategories];
+    console.log(data, 'data useEffect');
     if (!data?.mainCategories?.length) return;
     setMainCategories([]);
     setMainCategories([...preArray, ...data?.mainCategories]);
   }, [qs.stringify(data)]);
+
+  React.useEffect(() => {
+    if (globalSearchText && !isGlobalSearchActive) {
+      setIsGlobalSearchActive(true);
+      setMainCategories([]);
+    } else if (!globalSearchText && isGlobalSearchActive) {
+      setIsGlobalSearchActive(false);
+    } else if (!isGlobalSearchActive) {
+      setMainCategories([]);
+      setMainCategorySearchText('');
+    }
+    console.log(mainCategories, data);
+  }, [globalSearchText, isGlobalSearchActive]);
 
   const onCardPressed = (id, name) => {
     navigation.navigate('SubCategory', {
@@ -105,9 +161,37 @@ export default function MainCategoryScreen({ navigation }) {
     });
   };
 
-  const onSearchValueChange = useCallback(val => {
-    setSearchValue(val);
-  }, []);
+  const onSearchValueChange = val => {
+    setGlobalSearchText(val);
+
+    // if (val) {
+    //   setGlobalSearchText(val);
+    // } else if (globalSearchText == undefined) {
+    //   return;
+    // } else if (globalSearchText == '') {
+    //   setGlobalSearchText('');
+    // }
+  };
+
+  const handleMainCategorySearchPress = searchResult => {
+    setMainCategorySearchText(searchResult);
+    setIsGlobalSearchActive(false);
+  };
+
+  const handleDishRecipeSearchPress = useCallback(searchResult => {}, []);
+
+  const searchResultPressHandlers = React.useMemo(
+    () => ({
+      [keywordTypes.mainCategory]: handleMainCategorySearchPress,
+      [keywordTypes.dishRecipe]: handleDishRecipeSearchPress,
+    }),
+    [],
+  );
+
+  const handleSearchResultPress = ({ result, type }) => {
+    const searchResultPressHandler = searchResultPressHandlers[type];
+    searchResultPressHandler && searchResultPressHandler(result);
+  };
 
   return (
     <>
@@ -144,6 +228,7 @@ export default function MainCategoryScreen({ navigation }) {
             </SafeAreaView>
           </View>
           <InfiniteScrollView
+            disabled={!!dataSearch?.length}
             isFetching={isFetching}
             totalRecords={data?.totalRecords}
             pageSize={PAGE_SIZE}
@@ -151,32 +236,86 @@ export default function MainCategoryScreen({ navigation }) {
             onFetchNext={() => setPageNumber(pageNumber + 1)}>
             <View style={{ paddingBottom: 64 }}>
               <LoaderLayout isLoading={isLoading}>
-                <View style={Styles.headingGap}>
-                  <FontAwesomeIcon
-                    icon={faTableList}
-                    size={24}
-                    style={{ ...Styles.onSurface, ...Styles.headingIcon }}
-                  />
-                  <Heading1>Main categories</Heading1>
-                </View>
-
-                <View style={Styles.row}>
-                  {mainCategories?.map(({ name, id, image }, index) => {
+                {!isGlobalSearchActive && (
+                  <>
+                    <View style={Styles.headingGap}>
+                      <FontAwesomeIcon
+                        icon={faTableList}
+                        size={24}
+                        style={{ ...Styles.onSurface, ...Styles.headingIcon }}
+                      />
+                      <Heading1>Main categories</Heading1>
+                    </View>
+                    <View style={Styles.row}>
+                      {mainCategories?.map(({ name, id, image }, index) => {
+                        return (
+                          <View style={Styles.col} key={`${id}${index}`}>
+                            <Card
+                              title={name}
+                              onCardPressed={() => onCardPressed(id, name)}>
+                              <Image
+                                style={Styles.img}
+                                source={{ uri: image }}
+                              />
+                            </Card>
+                          </View>
+                        );
+                      })}
+                    </View>
+                    {!mainCategories?.length && !isFetching && <NoData />}
+                  </>
+                )}
+                {isGlobalSearchActive &&
+                  dataSearch?.map(({ result, type }, index) => {
                     return (
-                      <View style={Styles.col} key={`${id}${index}`}>
-                        <Card
-                          title={name}
-                          onCardPressed={() => onCardPressed(id, name)}>
-                          <Image style={Styles.img} source={{ uri: image }} />
-                        </Card>
-                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleSearchResultPress({ result, type })
+                        }
+                        key={index}
+                        style={{
+                          borderColor: 'red',
+                          // borderWidth: 1,
+                          marginBottom: 8,
+                          backgroundColor: 'white',
+                          paddingHorizontal: 24,
+                          paddingVertical: 8,
+                          borderRadius: 12,
+                        }}>
+                        <Text
+                          style={{
+                            ...Styles.text,
+                            ...Styles.onSurface,
+                            ...Styles.searchChipsTitle,
+                          }}>
+                          {result}
+                        </Text>
+                        <View
+                          style={{
+                            ...Styles.dFlex,
+                            ...Styles.alignItemsCenter,
+                            ...Styles.flexRow,
+                          }}>
+                          <Text
+                            style={{
+                              ...Styles.text,
+                              ...Styles.searchChipsSubtitle,
+                            }}>
+                            {keywordExplain[type]}
+                          </Text>
+                          <FontAwesomeIcon
+                            icon={faAngleRight}
+                            size={12}
+                            color={theme.color.gray3}
+                            style={{ marginTop: 3, marginLeft: 4 }}
+                          />
+                        </View>
+                      </TouchableOpacity>
                     );
                   })}
-                </View>
               </LoaderLayout>
             </View>
           </InfiniteScrollView>
-          {!mainCategories?.length && !isLoading && <NoData />}
         </View>
       </SafeAreaView>
     </>

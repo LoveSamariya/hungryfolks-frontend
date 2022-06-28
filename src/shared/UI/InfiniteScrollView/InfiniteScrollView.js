@@ -14,6 +14,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 export default function InfiniteScrollView({
+  disabled,
   children,
   isFetching,
   totalRecords,
@@ -28,6 +29,7 @@ export default function InfiniteScrollView({
       showsHorizontalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
       onScroll={({ nativeEvent }) => {
+        if (disabled) return;
         if (isCloseToBottom(nativeEvent)) {
           if (
             isFetching ||
