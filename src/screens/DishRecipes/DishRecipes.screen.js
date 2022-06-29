@@ -96,6 +96,7 @@ const createStyles = theme => {
       paddingLeft: theme.spacing[3],
       paddingRight: theme.spacing[3],
       paddingBottom: 200,
+      marginBottom: 200,
     },
     filterChipsContainer: {
       display: 'flex',
@@ -180,7 +181,13 @@ export default function DishRecipesScreen({ navigation, route }) {
   const [pageNumber, setPageNumber] = useState(1);
 
   const { data, isFetching, isLoading } = useGetDishRecipeQuery(
-    qs.stringify({ pageNumber, pageSize: PAGE_SIZE, searchText }),
+    qs.stringify({
+      mainCategory: MainCategory,
+      subCategory: SubCategory,
+      pageNumber,
+      pageSize: PAGE_SIZE,
+      searchText,
+    }),
   );
 
   const [dishRecipes, setDishRecipes] = useState([]);
@@ -271,28 +278,30 @@ export default function DishRecipesScreen({ navigation, route }) {
         </ScrollView>
       </SafeAreaView>
       <SafeAreaView style={Styles.cardListing}>
-        <LoaderLayout isLoading={isLoading}>
-          <InfiniteScrollView
-            isFetching={isFetching}
-            totalRecords={data?.totalRecords}
-            pageSize={PAGE_SIZE}
-            pageNumber={pageNumber}
-            onFetchNext={() => setPageNumber(pageNumber + 1)}>
-            {dishRecipes?.map(({ name, image, rating, code }) => {
-              return (
-                <CardInfo
-                  code={code}
-                  key={code}
-                  title={name}
-                  rating={rating}
-                  onCardPressed={() => onCardPressed(code)}>
-                  <Image style={Styles.img} source={{ uri: image }} />
-                </CardInfo>
-              );
-            })}
-            {!dishRecipes?.length && !isLoading && <NoData />}
-          </InfiniteScrollView>
-        </LoaderLayout>
+        <InfiniteScrollView
+          isFetching={isFetching || isLoading}
+          totalRecords={data?.totalRecords}
+          pageSize={PAGE_SIZE}
+          pageNumber={pageNumber}
+          containerStyle={{ paddingBottom: 120 }}
+          onFetchNext={() => setPageNumber(pageNumber + 1)}>
+          {dishRecipes?.map(({ name, image, rating, code }) => {
+            return (
+              <CardInfo
+                code={code}
+                key={code}
+                title={name}
+                rating={rating}
+                onCardPressed={() => onCardPressed(code)}>
+                <Image style={Styles.img} source={{ uri: image }} />
+              </CardInfo>
+            );
+          })}
+          {!data?.dishRecipes?.length &&
+            !data?.totalRecords &&
+            !isLoading &&
+            !isFetching && <NoData />}
+        </InfiniteScrollView>
       </SafeAreaView>
     </>
   );

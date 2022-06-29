@@ -15,7 +15,9 @@ import {
   Alert,
   Text,
   TouchableOpacity,
+  AppState,
 } from 'react-native';
+
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
 import { Heading1 } from '../../shared/UI/TypoGraphy/Typography';
@@ -48,11 +50,23 @@ const createStyles = theme => {
       flex: 1,
       backgroundColor: theme.color.pageBgColor,
       color: theme.color.onSurface,
-      padding: theme.spacing[5],
+      paddingHorizontal: theme.spacing[5],
       fontFamily: 'RobotoCondensed-Bold',
     },
+    stickyHeader: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      position: 'absolute',
+      zIndex: 9,
+      paddingHorizontal: theme.spacing[3],
+      top: 0,
+      paddingTop: theme.spacing[4],
+      paddingBottom: theme.spacing[2],
+      backgroundColor: `${theme.color.pageBgColor}ea`,
+    },
     bottomGap: {
-      marginBottom: 42,
+      marginBottom: 0,
     },
     row: {
       display: 'flex',
@@ -143,7 +157,7 @@ export default function MainCategoryScreen({ navigation }) {
   React.useEffect(() => {
     if (globalSearchText && !isGlobalSearchActive) {
       setIsGlobalSearchActive(true);
-      setMainCategories([]);
+      // setMainCategorySearchText('');
     } else if (!globalSearchText && isGlobalSearchActive) {
       setIsGlobalSearchActive(false);
     }
@@ -166,8 +180,8 @@ export default function MainCategoryScreen({ navigation }) {
     if (val) {
       setGlobalSearchText(val);
     } else {
-      setMainCategorySearchText('');
       setGlobalSearchText('');
+      setMainCategories([]);
     }
   };
 
@@ -196,48 +210,41 @@ export default function MainCategoryScreen({ navigation }) {
 
   return (
     <>
-      <CustomStatusBar variant="primary" />
+      <CustomStatusBar variant="pageBg" />
+      <SafeAreaView style={Styles.stickyHeader}>
+        <View style={{ flex: 1 }}>
+          <Search
+            placeholder="Search categories"
+            onSearchValueChange={onSearchValueChange}
+          />
+        </View>
+        <View style={{ marginLeft: 8 }}>
+          <TouchableHighlight
+            underlayColor="transperent"
+            onPress={() => {
+              navigation.navigate('Profile');
+            }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              fill={theme.color.highlight1}
+              size={24}
+            />
+          </TouchableHighlight>
+        </View>
+      </SafeAreaView>
 
       <SafeAreaView style={Styles.container}>
         <View style={Styles.bottomGap}>
-          <View style={{ paddingBottom: 8 }}>
-            <SafeAreaView
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <View style={{ flex: 1 }}>
-                <Search
-                  placeholder="Search categories"
-                  onSearchValueChange={onSearchValueChange}
-                />
-              </View>
-              <View style={{ marginLeft: 8 }}>
-                <TouchableHighlight
-                  underlayColor="transperent"
-                  onPress={() => {
-                    navigation.navigate('Profile');
-                  }}>
-                  <FontAwesomeIcon
-                    icon={faBars}
-                    fill={theme.color.highlight1}
-                    size={24}
-                  />
-                </TouchableHighlight>
-              </View>
-            </SafeAreaView>
-          </View>
-          <InfiniteScrollView
-            disabled={!!dataSearch?.length}
-            isFetching={isFetching}
-            totalRecords={data?.totalRecords}
-            pageSize={PAGE_SIZE}
-            pageNumber={pageNumber}
-            onFetchNext={() => setPageNumber(pageNumber + 1)}>
-            <View style={{ paddingBottom: 64 }}>
-              <LoaderLayout isLoading={isLoading}>
-                {!isGlobalSearchActive && (
+          {!isGlobalSearchActive && (
+            <InfiniteScrollView
+              disabled={!!dataSearch?.length}
+              isFetching={isFetching}
+              totalRecords={data?.totalRecords}
+              pageSize={PAGE_SIZE}
+              pageNumber={pageNumber}
+              onFetchNext={() => setPageNumber(pageNumber + 1)}>
+              <View style={{ paddingBottom: 64, paddingTop: 64 }}>
+                <>
                   <>
                     <View style={Styles.headingGap}>
                       <FontAwesomeIcon
@@ -263,11 +270,23 @@ export default function MainCategoryScreen({ navigation }) {
                         );
                       })}
                     </View>
-                    {!mainCategories?.length && !isFetching && <NoData />}
+                    {!data?.mainCategories?.length &&
+                      !data?.totalRecords &&
+                      !isFetching &&
+                      !isLoading && <NoData />}
                   </>
-                )}
-                {isGlobalSearchActive &&
-                  dataSearch?.map(({ result, type }, index) => {
+                </>
+              </View>
+            </InfiniteScrollView>
+          )}
+          {isGlobalSearchActive && (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled">
+              <View style={{ marginTop: 84 }}>
+                <LoaderLayout isLoading={isLoadingSearch || isFetchingSearch}>
+                  {dataSearch?.map(({ result, type }, index) => {
                     return (
                       <TouchableOpacity
                         onPress={() =>
@@ -313,9 +332,13 @@ export default function MainCategoryScreen({ navigation }) {
                       </TouchableOpacity>
                     );
                   })}
-              </LoaderLayout>
-            </View>
-          </InfiniteScrollView>
+                  {!dataSearch?.length &&
+                    !isFetchingSearch &&
+                    !isLoadingSearch && <NoData />}
+                </LoaderLayout>
+              </View>
+            </ScrollView>
+          )}
         </View>
       </SafeAreaView>
     </>

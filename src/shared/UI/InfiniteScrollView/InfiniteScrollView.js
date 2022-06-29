@@ -1,5 +1,7 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { useTheme } from '../../../context/thme.context';
+import { Loader } from '../Loader';
 
 export function numberOfPages(totalRecords, pageSize) {
   return Math.ceil(totalRecords / pageSize);
@@ -21,8 +23,11 @@ export default function InfiniteScrollView({
   pageNumber,
   pageSize,
   onFetchNext,
+  containerStyle,
   ...props
 }) {
+  const { theme } = useTheme(); // Theme specific
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -41,7 +46,11 @@ export default function InfiniteScrollView({
       }}
       scrollEventThrottle={400}
       {...props}>
-      {children}
+      <View style={containerStyle}>
+        {children}
+
+        {isFetching && <Loader color={theme.color.highlight1} />}
+      </View>
     </ScrollView>
   );
 }

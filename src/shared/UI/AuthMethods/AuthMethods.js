@@ -7,16 +7,16 @@ function AuthMethods({ navigation }) {
       <CustomButton
         variant={'SecondaryLight'}
         text="Login"
-        style={{
-          width: '100%',
-        }}
+        style={{ marginBottom: 18 }}
         onPress={() => navigation.navigate('Login')}
+        btnBlock
       />
       <CustomButton
         variant={'SecondaryLight'}
         text="Register"
-        style={{ marginTop: 18, marginBottom: 18, width: '100%' }}
+        style={{ marginBottom: 18 }}
         onPress={() => navigation.navigate('CreateAccount')}
+        btnBlock
       />
 
       <GoogleSigninButtonContainer />

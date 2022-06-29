@@ -23,12 +23,13 @@ import {
 } from './Ingredients.services';
 import { dFlex, flexRow, vhCenter, w50 } from '../../constants/common';
 import NoData from '../../shared/UI/NoData/NoData';
-import { AuthModal, LoaderLayout } from '../../shared';
+import { AuthModal, CustomStatusBar, LoaderLayout } from '../../shared';
 import { useCommonStyle } from '../../hooks/commonStyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserInfoHook } from '../../hooks/userInfoHook';
 import { setCallbackSession } from '../../services/auth/auth.slice';
 import { useDispatch } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 function SelectableIngredient({
   Styles,
@@ -354,6 +355,7 @@ export default function IngredientsScreen({ navigation }) {
   const [searchVal, setSearchValue] = useState('');
   const [isSavedSelection, setIsSavedSelection] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+
   const {
     data: dataIngMainCategory,
     isFetching: isFetchingMainCategory,
@@ -438,6 +440,7 @@ export default function IngredientsScreen({ navigation }) {
   );
   return (
     <>
+      <CustomStatusBar variant="primary" />
       <View style={{ ...Styles.helperTextRow }}>
         <FontAwesomeIcon color="white" icon={faListCheck} size={24} />
         <Text style={Styles.helperText}> Select ingredients</Text>

@@ -19,7 +19,7 @@ export const createStyles = theme => {
       alignItems: 'center',
       flex: 1,
     },
-    btnTextBase: {
+    btnLabelBase: {
       // common style of button
       textAlign: 'center',
     },
@@ -52,11 +52,16 @@ export const createStyles = theme => {
     btnLabelSecondaryLight: {
       color: theme.color.gray3,
     },
+    //textVariants
     btnTextPrimary: {
       backgroundColor: 'transparent',
     },
     btnLabelTextPrimary: {
       color: theme.color.highlight1,
+    },
+    btnLabelTextGreyUnderline: {
+      color: theme.color.gray3,
+      textDecorationLine: 'underline',
     },
   });
   return styles;

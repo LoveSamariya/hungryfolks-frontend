@@ -12,6 +12,10 @@ const variants = {
     barStyle: 'light-content',
     translucent: true,
   }),
+  pageBg: theme => ({
+    backgroundColor: `${theme.color.pageBgColor}`,
+    barStyle: 'dark-content',
+  }),
 };
 
 export default variants;

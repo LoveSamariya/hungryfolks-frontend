@@ -28,7 +28,7 @@ export function setAxiosAuthorizationToken(auth_token) {
 export async function clearAsyncStorageWithExclude() {
   try {
     let keys = await AsyncStorage.getAllKeys();
-    keys = keys.filter(key => key.indexOf(__PERMANENT__KEY__) > 0);
+    keys = keys.filter(key => key.indexOf(__PERMANENT__KEY__) !== 0);
     await AsyncStorage.multiRemove(keys);
   } catch (e) {
     console.log(e);
@@ -156,8 +156,6 @@ export const logoutReq = createAsyncThunk(
     const {
       auth: { passedAuth },
     } = getState();
-
-    console.log(passedAuth, 'passedAuth---');
 
     try {
       await Promise.all([

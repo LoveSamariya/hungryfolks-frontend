@@ -11,9 +11,10 @@ import {
 import createStyles from './Welcome.style';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 
-import { AuthMethods, CustomStatusBar } from '../../shared';
+import { AuthMethods, CustomButton, CustomStatusBar } from '../../shared';
 import { setAppInitiatedClientSide } from '../../services/auth/auth.slice';
 import { loginWithEnum } from '../../constants/enum';
+import { useTimeOutHook } from '../../hooks/timeOutHook';
 
 export default function WelcomeScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
@@ -36,16 +37,15 @@ export default function WelcomeScreen({ navigation }) {
           </View>
           <View style={Styles.authArea}>
             <AuthMethods navigation={navigation} />
-            <TouchableHighlight
-              underlayColor="transperent"
+            <CustomButton
+              text="Continue as guest"
+              variant={'TextGreyUnderline'}
               onPress={() => {
                 setAppInitiatedClientSide(loginWithEnum.guest);
                 navigation.replace('Home');
-              }}>
-              <Text style={{ marginTop: 12, textDecorationLine: 'underline' }}>
-                Continue as guest
-              </Text>
-            </TouchableHighlight>
+              }}
+              style={{ marginTop: 12 }}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

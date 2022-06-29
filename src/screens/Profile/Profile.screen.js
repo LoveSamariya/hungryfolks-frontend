@@ -7,14 +7,15 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Share,
 } from 'react-native';
 
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
-  faUserCircle,
   faArrowRightFromBracket,
+  faShareFromSquare,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useCommonStyle } from '../../hooks/commonStyle';
@@ -34,6 +35,7 @@ import { useUserInfoHook } from '../../hooks/userInfoHook';
 import { useDispatch } from 'react-redux';
 import { alignItemsCenter } from '../../constants/common';
 import { useGoogleAuth } from '../../context/auth.google.context';
+import { useTheme } from '../../context/thme.context';
 const guestUserData = {
   name: 'Guest Account',
 };
@@ -44,7 +46,7 @@ function ProfileScreen({ navigation }) {
   const CommonStyles = useCommonStyle();
   const dispatch = useDispatch();
   const { signOut } = useGoogleAuth();
-
+  const { theme } = useTheme();
   // const user = {
   //   profile: {
   //     name: 'Harshad prajapati',
@@ -106,6 +108,7 @@ function ProfileScreen({ navigation }) {
                 ...Styles.profilePageContent,
               }}>
               <UserAvatar name={username} />
+
               <View
                 style={{
                   ...Styles.dFlex,
@@ -125,11 +128,27 @@ function ProfileScreen({ navigation }) {
                   {user?.profile?.email}
                 </Text>
               )}
-              {!isLoggedIn && (
-                <View style={{ ...Styles.authMethodsContainer }}>
-                  <AuthMethods navigation={navigation} />
-                </View>
-              )}
+
+              <CustomButton
+                variant={'SecondaryLight'}
+                text="Share this app"
+                style={{ marginTop: 18, marginBottom: 18 }}
+                onPress={() => {
+                  Share.share({
+                    title: 'HUNGRY FOLKS',
+                    message:
+                      'https://play.google.com/store/apps/details?id=com.hungry_folks',
+                    url: 'https://play.google.com/store/apps/details?id=com.hungry_folks',
+                  });
+                }}>
+                <FontAwesomeIcon
+                  icon={faShareFromSquare}
+                  size={24}
+                  style={{ marginRight: 6 }}
+                  color={theme.color.gray3}></FontAwesomeIcon>
+              </CustomButton>
+
+              {!isLoggedIn && <AuthMethods navigation={navigation} />}
               {/* TODO */}
               {/* <CustomButton
                 text="Reset password"
@@ -143,7 +162,9 @@ function ProfileScreen({ navigation }) {
                   style={{
                     ...Styles.footerText,
                   }}
-                  onPress={() => navigation.navigate('Credits')}>
+                  onPress={() => {
+                    navigation.navigate('Credits');
+                  }}>
                   <Text
                     style={{
                       textAlign: 'right',
