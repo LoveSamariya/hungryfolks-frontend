@@ -31,7 +31,7 @@ export async function clearAsyncStorageWithExclude() {
     keys = keys.filter(key => key.indexOf(__PERMANENT__KEY__) !== 0);
     await AsyncStorage.multiRemove(keys);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 }
 export async function clearAsyncStorage(safeMode = true) {
@@ -39,7 +39,7 @@ export async function clearAsyncStorage(safeMode = true) {
     if (!safeMode) return await AsyncStorage.clear();
     return await clearAsyncStorageWithExclude();
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 }
 
@@ -51,7 +51,7 @@ export async function asyncStorageHelper(key, value) {
       return await AsyncStorage.setItem(key, JSON.stringify(value));
     }
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 }
 
@@ -63,7 +63,7 @@ export async function setAppInitiatedClientSide(appInitiated) {
   try {
     await AsyncStorage.setItem(PASSED_AUTH, appInitiated);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 }
 
@@ -71,7 +71,7 @@ export async function setIntroPassedClientSide(passedIntro) {
   try {
     await AsyncStorage.setItem(PASSED_INTRO, passedIntro);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 }
 
@@ -92,7 +92,6 @@ async function setEmailTokenClientSide(data) {
       accessToken,
     );
     setAxiosAuthorizationToken(accessToken);
-    console.log(email, accessToken, 'email, accessToken', savedClientSide);
   } catch (e) {
     // saving error
   }
@@ -264,7 +263,6 @@ export const externalLogin = createAsyncThunk(
       onExternalLoginSuccess();
       return response.data;
     } catch (err) {
-      console.log(err.response.data);
       return rejectWithValue(err.response.data);
     }
   },
@@ -306,10 +304,8 @@ export const authSlice = createSlice({
       .addCase(createAccountReq.fulfilled, (state, action) => {
         state.userInfo = { ...action.payload };
         state.isLoginLoading = false;
-        console.log(action.payload, state.userInfo);
       })
       .addCase(createAccountReq.rejected, (state, action) => {
-        console.log(action.payload, 'asd');
         state.isCreateAccountLoading = false;
       });
 
@@ -320,7 +316,6 @@ export const authSlice = createSlice({
       .addCase(loginReq.fulfilled, (state, action) => {
         state.userInfo = { ...action.payload };
         state.isLoginLoading = false;
-        console.log(action.payload);
       })
       .addCase(loginReq.rejected, (state, action) => {
         state.isLoginLoading = false;
@@ -331,7 +326,6 @@ export const authSlice = createSlice({
       .addCase(externalLogin.pending, (state, action) => {})
       .addCase(externalLogin.fulfilled, (state, action) => {
         state.userInfo = { ...action.payload };
-        console.log(action.payload);
       })
       .addCase(externalLogin.rejected, (state, action) => {});
 
@@ -348,12 +342,10 @@ export const authSlice = createSlice({
       .addCase(otpVerifyReq.fulfilled, (state, action) => {
         state.userInfo = { ...action.payload };
         state.isLoginLoading = false;
-        console.log(action.payload);
       })
       .addCase(otpVerifyReq.rejected, (state, action) => {
         state.isOtpLoading = false;
         state.isLoginLoading = false;
-        console.log(action.payload);
 
         state.otpVerifyError = action.payload;
       });

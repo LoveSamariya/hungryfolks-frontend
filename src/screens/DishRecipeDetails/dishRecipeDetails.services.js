@@ -18,18 +18,15 @@ export const updateRatingsReq = createAsyncThunk(
     { recipeId, ratingsValue, onUpdateRatingsSuccess },
     { rejectWithValue },
   ) => {
-    console.log(5456, `${API_URL}${UPDATE_RATINGS(recipeId)}`);
     try {
       const response = await axios.put(
         `${API_URL}${UPDATE_RATINGS(recipeId)}`,
         ratingsValue,
         { headers: { 'Content-Type': 'application/json' } },
       );
-      console.log(response.data);
       onUpdateRatingsSuccess();
       return response.data;
     } catch (err) {
-      console.log(err.response);
       return rejectWithValue(err.response.data);
     }
   },
@@ -38,17 +35,12 @@ export const updateRatingsReq = createAsyncThunk(
 export const getUserRatingsReq = createAsyncThunk(
   `dishRecipeDetails/getUserRatings`,
   async ({ recipeId }, { rejectWithValue }) => {
-    console.log(232332332323232332);
     try {
-      console.log(`${API_URL}${GET_USER_RATINGS(recipeId)}`);
       const response = await axios.get(
         `${API_URL}${GET_USER_RATINGS(recipeId)}`,
       );
-      console.log(response.data);
       return response.data;
     } catch (err) {
-      console.log(err);
-      console.log(err.response);
       return rejectWithValue(err.response.data);
     }
   },
@@ -70,12 +62,10 @@ export const dishRecipeDetailsSlice = createSlice({
       })
       .addCase(updateRatingsReq.fulfilled, (state, action) => {
         // state.userInfo = { ...action.payload };
-        console.log(action.payload);
       })
       .addCase(updateRatingsReq.rejected, (state, action) => {
         // state.isLoginLoading = false;
         // state.loginError = action.payload;
-        console.log(action.payload, 'act', action.error);
       });
 
     builder
@@ -84,12 +74,10 @@ export const dishRecipeDetailsSlice = createSlice({
       })
       .addCase(getUserRatingsReq.fulfilled, (state, action) => {
         state.userRating = action?.payload?.rate;
-        console.log(action.payload);
       })
       .addCase(getUserRatingsReq.rejected, (state, action) => {
         // state.isLoginLoading = false;
         // state.loginError = action.payload;
-        console.log(action.payload, action.error);
       });
   },
 });

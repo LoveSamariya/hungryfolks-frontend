@@ -79,7 +79,6 @@ export default function ForgotPasswordOtpPassword({ navigation }) {
       });
       return;
     }
-    console.log(formData);
   };
   return (
     <View style={Styles.page}>

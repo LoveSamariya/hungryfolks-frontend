@@ -249,7 +249,7 @@ export default function DishRecipeDetails({ route, navigation }) {
   const { data, error, isLoading } = useGetDishRecipeFromCodeQuery(code);
   const { width } = useWindowDimensions();
   const userRatings = useSelector(userRatingSelector);
-  // console.log(data);
+
   const {
     name,
     description,

@@ -81,7 +81,6 @@ export default function CreateAccountScreen({ navigation }) {
   };
 
   const onSubmit = userInfo => {
-    console.log(userInfo, passwordValue, repeatPasswordValue);
     if (passwordValue != repeatPasswordValue) {
       setError(formNames.confirmPassword.name, {
         type: 'custom',

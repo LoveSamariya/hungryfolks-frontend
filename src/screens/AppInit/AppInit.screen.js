@@ -112,7 +112,6 @@ export default function AppInitScreen({ navigation }) {
   const isUserTokenValid = async () => {
     const lastLoggedIn = await lastLoggedInClientSide();
     const loggedInBeforeDays = diffInDays(lastLoggedIn, new Date());
-    console.log(loggedInBeforeDays, AUTH_EXPIRATION_DAYS);
     return loggedInBeforeDays <= AUTH_EXPIRATION_DAYS;
   };
 
@@ -145,9 +144,7 @@ export default function AppInitScreen({ navigation }) {
   };
 
   React.useEffect(() => {
-    onAppInit().catch(e => {
-      console.log(e);
-    });
+    onAppInit().catch(() => {});
   }, []);
 
   return (

@@ -45,25 +45,10 @@ export default function ForgotPasswordEmailScreen({ navigation }) {
     mode: 'onChange',
   });
 
-  //   const isLoading = useSelector(selectOtpLoadingState);
   const CommonStyle = useThemeAwareObject(commonCreateStyle);
   const Styles = useThemeAwareObject(createStyles);
-  const { sessionAwareNavigate } = useCallBackSessionNavigation(navigation);
 
-  //   const onOtpVerificationPressed = otpData => {
-  //     dispatch(
-  //       otpVerifyReq({
-  //         verificationCode: otpData.verificationCode,
-  //         onOtpVerified,
-  //       }),
-  //     );
-  //   };
-
-  //   const onResendOtpPressed = onResendOtpSuccess => {
-  //     dispatch(resendOtpReq({ onResendOtpSuccess }));
-  //   };
   const onSubmit = formData => {
-    console.log(formData);
     navigation.navigate('ForgotPasswordOtpPassword');
   };
 

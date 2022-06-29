@@ -313,7 +313,6 @@ async function getObjectClientSide(handle) {
   });
   const valuesAsEntries = await AsyncStorage.multiGet(multiGetPayLoad);
   const valuesAsObj = Object.fromEntries(valuesAsEntries);
-  console.log(Object.values(valuesAsObj));
   const storedData = Object.fromEntries(
     Object.values(valuesAsObj).map(x => JSON.parse(x)),
   );
@@ -336,9 +335,8 @@ async function storeObjectClientSide(obj, handle) {
     d = new Date();
     const v = await getObjectClientSide(handle);
     d = new Date();
-    console.log(v);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     //save error
   }
 }
@@ -395,10 +393,9 @@ export default function IngredientsScreen({ navigation }) {
       try {
         let d = new Date();
         const v = await getObjectClientSide('INGREDIENT');
-        console.log(new Date() - d, 'milliseconds expensive');
         setonIngPressed(v);
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     };
     getAsyncIngredientData();

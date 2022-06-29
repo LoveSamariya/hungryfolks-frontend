@@ -15,7 +15,6 @@ export const mainCategoryApi = createApi({
     }),
     getKeyword: builder.query({
       query: query => {
-        console.log(query, 'query getKeyword');
         return `${KEYWORD}?${query}`;
       },
     }),

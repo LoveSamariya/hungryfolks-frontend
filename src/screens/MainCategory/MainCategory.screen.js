@@ -161,11 +161,6 @@ export default function MainCategoryScreen({ navigation }) {
     } else if (!globalSearchText && isGlobalSearchActive) {
       setIsGlobalSearchActive(false);
     }
-    // else if (!isGlobalSearchActive) {
-    //   console.log('Global search------------------------------');
-    //   setMainCategories([]);
-    //   setMainCategorySearchText('');
-    // }
   }, [globalSearchText, isGlobalSearchActive]);
 
   const onCardPressed = (id, name) => {
@@ -176,7 +171,6 @@ export default function MainCategoryScreen({ navigation }) {
   };
 
   const onSearchValueChange = val => {
-    console.log('////', val);
     if (val) {
       setGlobalSearchText(val);
     } else {

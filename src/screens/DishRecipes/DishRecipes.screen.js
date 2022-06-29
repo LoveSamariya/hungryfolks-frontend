@@ -193,10 +193,7 @@ export default function DishRecipesScreen({ navigation, route }) {
   const [dishRecipes, setDishRecipes] = useState([]);
 
   React.useEffect(() => {
-    console.log('TEST-');
-    // const preArray = [...dishRecipes];
     if (!data?.dishRecipes?.length) return;
-    // setDishRecipes([]);
     setDishRecipes(preArray => [...preArray, ...data?.dishRecipes]);
   }, [qs.stringify(data)]);
 
@@ -207,8 +204,6 @@ export default function DishRecipesScreen({ navigation, route }) {
   const onSearchValueChange = useCallback(val => {
     setSearchValue(val);
   }, []);
-
-  // const { dishRecipes } = data || {};
 
   const onCardPressed = code => {
     navigation.navigate('DishRecipeDetails', {

@@ -31,7 +31,6 @@ export default function Login({ onLoginPressed, loginError }) {
   const Styles = useThemeAwareObject(commonCreateStyle);
 
   const onSubmit = data => {
-    console.log(data);
     onLoginPressed(data);
   };
 

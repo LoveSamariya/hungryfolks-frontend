@@ -11,7 +11,7 @@ function ResetPasswordScreen({ navigation }) {
   const Styles = useThemeAwareObject(createStyles);
   const CommonStyles = useCommonStyle();
   const onResetPassWordSubmit = formData => {
-    console.log(formData);
+    // console.log(formData);
   };
   return (
     <View style={Styles.page}>
