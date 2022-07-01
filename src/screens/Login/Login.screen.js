@@ -48,15 +48,9 @@ const formNames = {
   },
 };
 
-// TODO
-const testData = {
-  email: 'iamharshad.prajapati@gmail.com',
-  password: 'Admin@123',
-};
-
 export default function LoginScreen({ onLoginPressed, navigation }) {
   const { handleSubmit, control, formState } = useForm({
-    defaultValues: { ...testData },
+    defaultValues: {},
     mode: 'onChange',
   });
 
