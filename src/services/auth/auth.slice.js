@@ -257,6 +257,7 @@ export const externalLogin = createAsyncThunk(
       await Promise.all([
         setEmailTokenClientSide(response.data),
         setUsernameIDClientSide(response.data),
+        setAppInitiatedClientSide(loginWithEnum.google),
       ]);
       await lastLoggedInClientSide(new Date());
 

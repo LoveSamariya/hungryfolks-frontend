@@ -30,12 +30,14 @@ import {
   CustomStatusBar,
   TopBar,
   CustomButton,
+  LineDivider,
 } from '../../shared';
 import { useUserInfoHook } from '../../hooks/userInfoHook';
 import { useDispatch } from 'react-redux';
 import { alignItemsCenter } from '../../constants/common';
 import { useGoogleAuth } from '../../context/auth.google.context';
 import { useTheme } from '../../context/thme.context';
+import { SHARE_APP_DATA } from '../../constants/constants';
 const guestUserData = {
   name: 'Guest Account',
 };
@@ -66,6 +68,11 @@ function ProfileScreen({ navigation }) {
       dispatch(logoutReq({ onLogoutSuccess }));
     });
   };
+
+  const handleAppShare = () => {
+    Share.share(SHARE_APP_DATA);
+  };
+
   return (
     <>
       <CustomStatusBar variant="primary" />
@@ -132,21 +139,16 @@ function ProfileScreen({ navigation }) {
               <CustomButton
                 variant={'SecondaryLight'}
                 text="Share this app"
-                style={{ marginTop: 18, marginBottom: 18 }}
-                onPress={() => {
-                  Share.share({
-                    title: 'HUNGRY FOLKS',
-                    message:
-                      'https://play.google.com/store/apps/details?id=com.hungry_folks',
-                    url: 'https://play.google.com/store/apps/details?id=com.hungry_folks',
-                  });
-                }}>
+                style={{ marginTop: 18, marginBottom: 56 }}
+                onPress={handleAppShare}>
                 <FontAwesomeIcon
                   icon={faShareFromSquare}
                   size={24}
                   style={{ marginRight: 6 }}
                   color={theme.color.gray3}></FontAwesomeIcon>
               </CustomButton>
+
+              {!isLoggedIn && <LineDivider style={{ marginBottom: 32 }} />}
 
               {!isLoggedIn && <AuthMethods navigation={navigation} />}
               {/* TODO */}
@@ -157,25 +159,24 @@ function ProfileScreen({ navigation }) {
                   navigation.navigate('ResetPassword');
                 }}
               /> */}
-              <View style={{ marginTop: 'auto', display: 'flex' }}>
-                <TouchableOpacity
-                  style={{
-                    ...Styles.footerText,
-                  }}
-                  onPress={() => {
-                    navigation.navigate('Credits');
-                  }}>
-                  <Text
-                    style={{
-                      textAlign: 'right',
-                      marginLeft: 'auto',
-                      ...Styles.textUnderline,
-                      ...Styles.textBlack,
-                    }}>
-                    credits
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <CustomButton
+                text="Privacy Policy"
+                style={{ marginTop: 48 }}
+                variant="TextGreyUnderline"
+              />
+              <CustomButton
+                text="Terms of Use"
+                style={{ marginTop: 24 }}
+                variant="TextGreyUnderline"
+              />
+              <CustomButton
+                text="Credits"
+                style={{ marginTop: 24 }}
+                variant="TextGreyUnderline"
+                onPress={() => {
+                  navigation.navigate('Credits');
+                }}
+              />
             </View>
           </View>
         </ScrollView>

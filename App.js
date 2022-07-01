@@ -91,7 +91,7 @@ function MyTabs() {
 }
 
 export default function App() {
-  const initialRouteName = 'Welcome';
+  const initialRouteName = 'AppInit';
 
   return (
     <AuthProviderGoogle>

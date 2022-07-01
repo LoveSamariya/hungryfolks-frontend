@@ -8,7 +8,10 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
+    "a": "cd android && explorer /select,app\\build\\outputs\\apk\\release\\app-release.apk",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "pack:apk": "cd android && gradlew clean && gradlew assembleRelease -x bundleReleaseJsAndAssets && explorer /select,explorer /select,app\\build\\outputs\\apk\\release\\app-release.apk",
+    "build:apk": "npm run bundle-android && npm run pack:apk  "
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.17.0",

@@ -12,7 +12,7 @@ const createStyles = theme => {
       zIndex: 999,
       paddingTop: 4,
       paddingBottom: 8,
-      backgroundColor: theme.color.highlight1,
+      backgroundColor: `${theme.color.highlight2}ef`,
     },
     backButton: {
       marginLeft: 12,

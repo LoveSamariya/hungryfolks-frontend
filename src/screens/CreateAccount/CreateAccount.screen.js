@@ -50,14 +50,6 @@ const formNames = {
   },
 };
 
-const testData = {
-  name: 'Harshad prajapati',
-  email: 'iamharshad.prajapati+2@gmail.com',
-  age: '28',
-  password: 'Admin@123',
-  confirmPassword: 'Admin@123',
-};
-
 export default function CreateAccountScreen({ navigation }) {
   const dispatch = useDispatch();
   const {
@@ -67,7 +59,7 @@ export default function CreateAccountScreen({ navigation }) {
     watch,
     setError,
   } = useForm({
-    defaultValues: { ...testData },
+    defaultValues: {},
     mode: 'onChange',
   });
 

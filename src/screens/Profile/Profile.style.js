@@ -37,10 +37,7 @@ const createStyles = theme => {
       // alignItems: 'center',
     },
     footerText: {
-      marginTop: 'auto',
       display: 'flex',
-      alignSelf: 'flex-end',
-      marginRight: 4,
     },
     authMethodsContainer: {
       height: '100%',

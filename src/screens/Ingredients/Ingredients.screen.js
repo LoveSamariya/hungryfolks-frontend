@@ -135,7 +135,7 @@ const createStyles = theme => {
     mainContainer: {
       height: '100%',
       backgroundColor: '#EEEDDE',
-      paddingBottom: 180,
+      paddingBottom: 130,
     },
     itemContainer: {
       // display: 'flex',
@@ -155,7 +155,7 @@ const createStyles = theme => {
       paddingBottom: 16,
       paddingLeft: 16,
       paddingRight: 16,
-      bottom: 56,
+      bottom: 0,
       left: 0,
       right: 0,
       position: 'absolute',
@@ -251,9 +251,14 @@ const createStyles = theme => {
       backgroundColor: '#028000',
     },
     helperTextRow: {
-      backgroundColor: theme.color.highlight1,
+      position: 'absolute',
+      backgroundColor: `${theme.color.highlight1}ef`,
       flexDirection: 'row',
       padding: 16,
+      left: 0,
+      right: 0,
+      top: 0,
+      zIndex: 9,
     },
     helperText: {
       color: theme.color.onSurface,
@@ -269,7 +274,7 @@ const createStyles = theme => {
       backgroundColor: theme.color.highlight1,
       borderRadius: 64 / 2,
       position: 'absolute',
-      bottom: 200,
+      bottom: 142,
       zIndex: 2,
       right: 16,
       shadowOffset: { width: 0, height: 1 },
@@ -278,6 +283,14 @@ const createStyles = theme => {
       elevation: 5,
     },
     clearIngredientsContainer: {
+      position: 'absolute',
+      top: 53,
+      zIndex: 9,
+      left: 0,
+      right: 0,
+      backgroundColor: `#EEEDDEEF`,
+    },
+    clearIngredientsButton: {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
@@ -437,7 +450,7 @@ export default function IngredientsScreen({ navigation }) {
   );
   return (
     <>
-      <CustomStatusBar variant="primary" />
+      <CustomStatusBar variant="primary1" />
       <View style={{ ...Styles.helperTextRow }}>
         <FontAwesomeIcon color="white" icon={faListCheck} size={24} />
         <Text style={Styles.helperText}> Select ingredients</Text>
@@ -470,17 +483,23 @@ export default function IngredientsScreen({ navigation }) {
           !!ingredientSubCategories?.length &&
           !isFetchingSubCategory &&
           !!selectedTab && (
-            <TouchableOpacity
-              style={Styles.clearIngredientsContainer}
-              underlayColor="transperent"
-              onPress={clearAllSelectedIngredients}>
-              <>
-                <View style={Styles.clearIngredientsIconContainer}>
-                  <FontAwesomeIcon icon={faClose} size={24} color={'#878787'} />
-                </View>
-                <Text style={Styles.clearIngredientsText}>Clear All</Text>
-              </>
-            </TouchableOpacity>
+            <View style={Styles.clearIngredientsContainer}>
+              <TouchableOpacity
+                underlayColor="transperent"
+                onPress={clearAllSelectedIngredients}
+                style={Styles.clearIngredientsButton}>
+                <>
+                  <View style={Styles.clearIngredientsIconContainer}>
+                    <FontAwesomeIcon
+                      icon={faClose}
+                      size={24}
+                      color={'#878787'}
+                    />
+                  </View>
+                  <Text style={Styles.clearIngredientsText}>Clear All</Text>
+                </>
+              </TouchableOpacity>
+            </View>
           )}
         <SafeAreaView>
           <ScrollView keyboardShouldPersistTaps="handled">
@@ -490,13 +509,18 @@ export default function IngredientsScreen({ navigation }) {
                   isLoading={isFetchingSubCategory || selectedTab == null}>
                   {!ingredientSubCategories?.length &&
                     !isFetchingSubCategory &&
-                    !!selectedTab && <NoData />}
+                    !!selectedTab && (
+                      <NoData
+                        style={{ marginTop: 36 }}
+                        text={`Oops! It's something that's not available. \n \n  Try something different`}
+                      />
+                    )}
                   <View
                     style={{
                       display: 'flex',
                       flexDirection: 'row',
                       flexWrap: 'wrap',
-                      marginTop: 16,
+                      marginTop: 105,
                       marginBottom: 140,
                     }}>
                     {ingredientSubCategories &&

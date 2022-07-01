@@ -7,4 +7,8 @@ export default [
     link: 'https://www.veryicon.com/icons/miscellaneous/arrows/go-back-2.html',
     title: 'Camera back icons created by Freepik - Flaticon',
   },
+  {
+    link: 'https://www.flaticon.com/free-icons/lunch',
+    title: 'Lunch icons created by Freepik - Flaticon',
+  },
 ];

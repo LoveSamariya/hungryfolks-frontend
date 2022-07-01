@@ -11,11 +11,11 @@ const createStyles = theme => {
   return styles;
 };
 
-function NoData({ style = {} }) {
+function NoData({ text, style }) {
   const Styles = useThemeAwareObject(createStyles);
 
   return (
-    <View>
+    <View style={style}>
       <View>
         <Image
           source={require('../../../assets/images/no-data.png')}
@@ -24,6 +24,7 @@ function NoData({ style = {} }) {
             width: '100%',
             height: 324,
             resizeMode: 'contain',
+            opacity: 0.1,
           }}
         />
       </View>
@@ -33,8 +34,10 @@ function NoData({ style = {} }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          opacity: 0.8,
+          textAlign: 'center',
         }}>
-        No Data Found!
+        {text || 'No Data Found!'}
       </Heading1>
     </View>
   );

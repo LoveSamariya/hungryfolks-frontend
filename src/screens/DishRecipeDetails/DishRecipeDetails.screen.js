@@ -1,11 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { TouchableOpacity, useWindowDimensions } from 'react-native';
+import { Alert, TouchableOpacity, useWindowDimensions } from 'react-native';
 
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-simple-toast';
+
 import {
   dFlex,
   flexColumn,
@@ -28,7 +30,14 @@ import {
 import { setCallbackSession } from '../../services/auth/auth.slice';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
-import { BackButton, AuthModal, CustomButton, TopBar } from '../../shared';
+import {
+  BackButton,
+  AuthModal,
+  CustomButton,
+  TopBar,
+  CustomImage,
+  CustomStatusBar,
+} from '../../shared';
 import { useSelector } from 'react-redux';
 // import {WebView} from 'react-native';
 
@@ -99,7 +108,7 @@ const createStyles = theme => {
     },
     headerAsBreadCrums: {
       height: 124,
-      backgroundColor: theme.color.highlight1,
+      backgroundColor: theme.color.highlight2,
       display: 'flex',
       // alignItems: 'center',
     },
@@ -243,9 +252,9 @@ export default function DishRecipeDetails({ route, navigation }) {
   const user = useUserInfoHook();
   const isLoggedIn = !!Object.keys(user).length;
   const [modalVisible, setModalVisible] = useState(false);
-  const [isRatingsDirty, setIsRatingsDirty] = useState(false);
-  const [ratings, setRatings] = useState(0);
   const { code, ratings: ratingsFromParams } = route.params;
+  const [isRatingsDirty, setIsRatingsDirty] = useState(!!ratingsFromParams);
+  const [ratings, setRatings] = useState(ratingsFromParams || 0);
   const { data, error, isLoading } = useGetDishRecipeFromCodeQuery(code);
   const { width } = useWindowDimensions();
   const userRatings = useSelector(userRatingSelector);
@@ -288,8 +297,18 @@ export default function DishRecipeDetails({ route, navigation }) {
       marginTop: 0,
       marginBottom: 0,
     },
-    ol: { ...renderHtmlElementStyle, paddingLeft: 18 },
-    li: { ...renderHtmlElementStyle, paddingLeft: 8, marginTop: -2 },
+    ol: {
+      ...renderHtmlElementStyle,
+      paddingLeft: 28,
+      paddingRight: 8,
+    },
+    li: {
+      ...renderHtmlElementStyle,
+      paddingLeft: 8,
+      marginTop: -3,
+      textAlign: 'justify',
+      lineHeight: 24,
+    },
     p: renderHtmlElementStyle,
     h1: renderHtmlElementStyle,
     h2: renderHtmlElementStyle,
@@ -307,7 +326,7 @@ export default function DishRecipeDetails({ route, navigation }) {
   };
 
   const onUpdateRatingsSuccess = () => {
-    setIsRatingsDirty(false);
+    Toast.show('Your ratings has been saved!', Toast.SHORT);
   };
 
   const onSubmitReview = () => {
@@ -324,6 +343,7 @@ export default function DishRecipeDetails({ route, navigation }) {
       );
       return;
     }
+
     dispatch(
       updateRatingsReq({
         recipeId: id,
@@ -331,6 +351,7 @@ export default function DishRecipeDetails({ route, navigation }) {
         onUpdateRatingsSuccess,
       }),
     );
+    setIsRatingsDirty(false);
   };
 
   const onAuthModalClosed = () => {
@@ -346,6 +367,7 @@ export default function DishRecipeDetails({ route, navigation }) {
   }, [id]);
   return (
     <>
+      <CustomStatusBar variant="primary1" />
       <TopBar navigation={navigation} />
       <SafeAreaView style={Styles.pageBgColor}>
         <ScrollView
@@ -357,7 +379,10 @@ export default function DishRecipeDetails({ route, navigation }) {
             <LoaderLayout isLoading={isLoading}>
               <View>
                 <View style={Styles.detailImageContainer}>
-                  <Image style={Styles.detailedImage} source={{ uri: image }} />
+                  <CustomImage
+                    style={Styles.detailedImage}
+                    source={{ uri: image }}
+                  />
                 </View>
                 <View style={Styles.container}>
                   <Text
@@ -579,8 +604,8 @@ export default function DishRecipeDetails({ route, navigation }) {
                           ...Styles.flexRow,
                           ...Styles.flexWrap,
                         }}>
-                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {!!carbohydrates && (
+                        {!!carbohydrates && (
+                          <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
                             <Text style={Styles.onSurface}>
                               <Text style={Styles.greyText}>
                                 {' '}
@@ -588,31 +613,31 @@ export default function DishRecipeDetails({ route, navigation }) {
                               </Text>{' '}
                               - {carbohydrates}
                             </Text>
-                          )}
-                        </View>
-                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {!!fat && (
+                          </View>
+                        )}
+                        {!!fat && (
+                          <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
                             <Text style={Styles.onSurface}>
-                              <Text style={Styles.greyText}> fat</Text> - {fat}
+                              <Text style={Styles.greyText}> Fat</Text> - {fat}
                             </Text>
-                          )}
-                        </View>
-                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {!!protein && (
+                          </View>
+                        )}
+                        {!!protein && (
+                          <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
                             <Text style={Styles.onSurface}>
-                              <Text style={Styles.greyText}> protein</Text> -{' '}
+                              <Text style={Styles.greyText}> Protein</Text> -{' '}
                               {protein}
                             </Text>
-                          )}
-                        </View>
-                        <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
-                          {!!sugar && (
+                          </View>
+                        )}
+                        {!!sugar && (
+                          <View style={{ ...Styles.halfColumn, ...Styles.py2 }}>
                             <Text style={Styles.onSurface}>
-                              <Text style={Styles.greyText}> sugar</Text> -{' '}
+                              <Text style={Styles.greyText}> Sugar</Text> -{' '}
                               {sugar}
                             </Text>
-                          )}
-                        </View>
+                          </View>
+                        )}
                       </View>
                     </>
                   )}
@@ -641,12 +666,13 @@ export default function DishRecipeDetails({ route, navigation }) {
                       tintColor={'#f5f5f5'}
                       onFinishRating={handleRatingsChange}
                     />
-                    {(isRatingsDirty || ratingsFromParams) && (
-                      <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={onSubmitReview}>
-                        <Text style={{ marginTop: 8 }}>Save review</Text>
-                      </TouchableOpacity>
+                    {isRatingsDirty && (
+                      <CustomButton
+                        text="Save review"
+                        onPress={onSubmitReview}
+                        style={{ marginTop: 8 }}
+                        variant="TextGreyUnderline"
+                      />
                     )}
                   </View>
                 </View>

@@ -9,6 +9,7 @@ import {
 import { THEME_TYPOGRAPHY } from '../../../constants/typography';
 import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
 import { Rating, AirbnbRating } from 'react-native-ratings';
+import { CustomImage } from '../CustomImage';
 
 const createStyles = theme => {
   const styles = StyleSheet.create({
@@ -68,10 +69,12 @@ export default function CardInfo({
       <View style={Styles.card}>
         <View style={Styles.cardImgContainer}>
           {children}
-          <Image style={Styles.img} source={{ uri: image }} />
+          <CustomImage style={Styles.img} source={{ uri: image }} />
         </View>
         <View style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <Text style={Styles.cardText}>{title}</Text>
+          <Text style={Styles.cardText} numberOfLines={2}>
+            {title}
+          </Text>
           <View
             style={{
               display: 'flex',

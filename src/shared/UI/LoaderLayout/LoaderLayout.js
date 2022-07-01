@@ -4,5 +4,5 @@ import Loader from '../Loader/Loader';
 
 export default function LoaderLayout({ isLoading, children }) {
   const { theme } = useTheme();
-  return isLoading ? <Loader color={theme.color.highlight1} /> : children;
+  return isLoading ? <Loader color={theme.color.highlight2} /> : children;
 }

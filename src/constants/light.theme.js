@@ -6,6 +6,7 @@ const DEFAULT_LIGHT_COLOR_THEME = {
   onSecondary: '#ffffff',
   highlight: '#FFE800',
   highlight1: '#EB4F16',
+  highlight2: '#EB5924',
   lightHighlight1: '#f07f56',
   onHighlight: '#000000',
   surface: '#ffffff',

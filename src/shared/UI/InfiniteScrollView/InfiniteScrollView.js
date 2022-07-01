@@ -48,8 +48,9 @@ export default function InfiniteScrollView({
       {...props}>
       <View style={containerStyle}>
         {children}
-
-        {isFetching && <Loader color={theme.color.highlight1} />}
+        {isFetching && (
+          <Loader color={theme.color.highlight1} style={{ marginTop: 18 }} />
+        )}
       </View>
     </ScrollView>
   );

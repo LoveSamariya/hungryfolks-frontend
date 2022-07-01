@@ -19,14 +19,17 @@ export default function LineDivider({
           backgroundColor: borderColor,
         }}
       />
-      <Text
-        style={{
-          ...Styles.lineDividerText,
-          fontSize: fontSize || 18,
-          color: color || '#cccccc',
-        }}>
-        {text}
-      </Text>
+      {text && (
+        <Text
+          style={{
+            ...Styles.lineDividerText,
+            fontSize: fontSize || 18,
+            color: color || '#cccccc',
+          }}>
+          {text}
+        </Text>
+      )}
+
       <View
         style={{
           ...Styles.lineDividerLine,

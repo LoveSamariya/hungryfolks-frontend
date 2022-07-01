@@ -20,5 +20,6 @@ export * from './UI/ResetpasswordForm';
 export * from './UI/InfiniteScrollView';
 export * from './UI/CustomCarousel';
 export * from './UI/CustomOverlay';
+export * from './UI/CustomImage';
 //Regex exports
 export * from './regex';

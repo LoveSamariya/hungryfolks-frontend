@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 import { useThemeAwareObject } from '../../hooks/themeAwareObject';
 import Card from '../../shared/UI/Card/Card';
-import { CustomStatusBar, TopBar, LoaderLayout } from '../../shared';
+import {
+  CustomStatusBar,
+  TopBar,
+  LoaderLayout,
+  CustomImage,
+} from '../../shared';
 
 import { useGetSubCategoryQuery } from './subCategory.services';
 import qs from 'qs';
@@ -27,7 +32,7 @@ const createStyles = theme => {
     },
     headerAsBreadCrums: {
       height: 124,
-      backgroundColor: theme.color.highlight1,
+      backgroundColor: theme.color.highlight2,
     },
     headerAsBreadCrumsTitle: {
       fontSize: 24,
@@ -74,7 +79,7 @@ export default function SubCategoryScreen({ navigation, route }) {
 
   return (
     <>
-      <CustomStatusBar variant="primary" />
+      <CustomStatusBar variant="primary1" />
       <TopBar navigation={navigation} />
 
       <SafeAreaView
@@ -118,7 +123,7 @@ export default function SubCategoryScreen({ navigation, route }) {
                         key={name}
                         title={name}
                         onCardPressed={() => onCardPressed(name)}>
-                        <Image
+                        <CustomImage
                           source={{ uri: image }}
                           style={{ height: '100%', width: '100%' }}
                         />
