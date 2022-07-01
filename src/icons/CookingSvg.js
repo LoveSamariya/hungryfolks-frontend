@@ -1,34 +1,12 @@
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  Text,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Rect,
-  Use,
-  Image,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-} from 'react-native-svg';
+import React from 'react';
+import Svg, { G, Path, Polygon, Rect } from 'react-native-svg';
 
 /* Use this if you are using Expo
   import * as Svg from 'react-native-svg';
   const { Circle, Rect } = Svg;
   */
 
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function CookingSvgIcon() {
   return (
@@ -36,7 +14,7 @@ export default function CookingSvgIcon() {
       <View
         style={[
           StyleSheet.absoluteFill,
-          {alignItems: 'center', justifyContent: 'center'},
+          { alignItems: 'center', justifyContent: 'center' },
         ]}>
         <Svg
           version="1.1"

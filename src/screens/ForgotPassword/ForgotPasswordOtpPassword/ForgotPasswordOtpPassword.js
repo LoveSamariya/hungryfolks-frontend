@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
 
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { useThemeAwareObject } from '../../../hooks/themeAwareObject';
 
@@ -13,11 +13,9 @@ import {
   CustomButton,
   CustomPasswordInput,
   CustomStatusBar,
-  EMAIL_REGEX,
   FormField,
   HookFormInput,
 } from '../../../shared';
-import { OtpVerification } from '../../../shared/UI/LoginSignup/components';
 
 import {
   otpVerifyReq,
