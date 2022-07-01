@@ -23,14 +23,12 @@ import {
   LoginScreen,
   ProfileScreen,
   CreditsScreen,
-  ResetPasswordScreen,
   ForgotPasswordEmailScreen,
   ForgotPasswordOtpPassword,
 } from './src/screens';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBowlRice, faPuzzlePiece } from '@fortawesome/free-solid-svg-icons';
-import { Alert } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -144,11 +142,11 @@ export default function App() {
                 component={ProfileScreen}
                 options={{ headerShown: false }}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="ResetPassword"
                 component={ResetPasswordScreen}
                 options={{ headerShown: false }}
-              />
+              /> */}
               <Stack.Screen
                 name="Credits"
                 component={CreditsScreen}

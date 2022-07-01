@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Alert, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-simple-toast';
@@ -31,7 +30,6 @@ import { setCallbackSession } from '../../services/auth/auth.slice';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 import {
-  BackButton,
   AuthModal,
   CustomButton,
   TopBar,

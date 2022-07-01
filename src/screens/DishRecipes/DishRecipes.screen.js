@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Text,
   View,
   StyleSheet,
-  Image,
   ScrollView,
-  TouchableHighlight,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -21,7 +19,6 @@ import NoData from '../../shared/UI/NoData/NoData';
 import LoaderLayout from '../../shared/UI/LoaderLayout/LoaderLayout';
 import {
   BackButton,
-  CustomImage,
   CustomStatusBar,
   InfiniteScrollView,
   TopBar,

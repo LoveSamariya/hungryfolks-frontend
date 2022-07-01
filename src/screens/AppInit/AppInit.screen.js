@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { View, SafeAreaView, ScrollView, Image } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import * as Keychain from 'react-native-keychain';
 import AsyncStorage from '@react-native-async-storage/async-storage';
